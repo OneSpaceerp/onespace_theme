@@ -11,21 +11,9 @@ app_version = "16.0.0"
 app_license = "MIT"
 required_apps = ["frappe"]
 
-# --- Includes in <head> for Desk (Admin UI) ---
-app_include_css = [
-    "/assets/onespace/css/tokens.css",
-    "/assets/onespace/css/icons.css",
-    "/assets/onespace/css/onespace.css",
-    "/assets/onespace/css/onespace-dark.css",
-]
-
-app_include_js = [
-    "/assets/onespace/js/theme_switcher.js",
-    "/assets/onespace/js/icons.js",
-    "/assets/onespace/js/about_override.js",
-    "/assets/onespace/js/app_launcher.js",
-    "/assets/onespace/js/onespace.js",
-]
+# --- Includes in <head> for Desk (Admin UI) via esbuild Bundler ---
+app_include_css = ["onespace.bundle.css"]
+app_include_js = ["onespace.bundle.js"]
 
 app_include_icons = "/assets/onespace/icons/onespace-icons.svg"
 
@@ -40,14 +28,9 @@ add_to_apps_screen = [
 ]
 
 # --- Includes in <head> for Web / Portal Pages ---
-web_include_css = [
-    "/assets/onespace/css/tokens.css",
-    "/assets/onespace/css/onespace-web.css",
-]
+web_include_css = ["onespace.bundle.css"]
+web_include_js = ["onespace.bundle.js"]
 
-web_include_js = [
-    "/assets/onespace/js/theme_switcher.js",
-]
 
 # --- Brand Identity & Splash Screens ---
 app_logo_url = "/assets/onespace/images/onespace_light.png"

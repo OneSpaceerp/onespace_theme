@@ -54,5 +54,16 @@ def boot_session(bootinfo):
         if hasattr(bootinfo, "navbar_settings") and isinstance(bootinfo.navbar_settings, dict):
             bootinfo.navbar_settings["app_logo"] = "/assets/onespace/images/onespace_light.png"
 
+        # 6. Custom Theme Configuration (Grounded in v16 Theming Guide)
+        bootinfo.custom_theme_config = {
+            "primary_color": "#FF3700",
+            "secondary_color": "#475569",
+            "dark_primary_color": "#FF3700",
+            "bg_color": "#F8FAFC",
+            "dark_bg_color": "#0A0E17",
+            "border_radius": "Rounded",
+            "custom_logo": "/assets/onespace/images/onespace_light.png"
+        }
+
     except Exception as e:
         frappe.log_error(f"OneSpace boot_session hook error: {e}")

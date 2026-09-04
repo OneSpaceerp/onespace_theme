@@ -1,0 +1,64 @@
+/* OneSpace ERP Systems v16 — Dark Theme Tokens */
+:root[data-theme="dark"],
+[data-theme="dark"],
+.dark {
+  /* Frappe Core System Tokens */
+  --primary: #FF3700;
+  --primary-color: #FF3700;
+  --primary-hover: #E03000;
+  --primary-active: #B22400;
+  --primary-light: #381812;
+  --primary-tint: rgba(255, 55, 0, 0.18);
+  --color-primary: #FF3700;
+  --color-primary-500: #FF3700;
+  --color-primary-600: #E03000;
+  --color-primary-700: #B22400;
+  --brand-color: #FF3700;
+
+  /* Desk Surface Architecture (Stitch Dark) */
+  --bg-color: #0A0E17;
+  --fg-color: #151D2F;
+  --card-bg: #151D2F;
+  --navbar-bg: rgba(14, 20, 36, 0.95);
+  --sidebar-bg: #0E1424;
+  --sidebar-select-color: rgba(255, 55, 0, 0.18);
+
+  /* Text & Contrast */
+  --text-color: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-light: #64748B;
+  --heading-color: #F8FAFC;
+
+  /* Borders & Separators */
+  --border-color: #273248;
+  --light-border-color: #1E293B;
+  --subtle-border: #1E293B;
+
+  /* Controls & Buttons */
+  --control-bg: #1B2438;
+  --input-bg: #1B2438;
+  --modal-bg: #151D2F;
+  --popover-bg: #1B2438;
+  --btn-default-bg: #1B2438;
+  --btn-default-hover-bg: #273647;
+  --btn-primary-bg: #FF3700;
+  --btn-primary-hover-bg: #E03000;
+}
+
+/* OS Preference Synchronization */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="automatic"],
+  :root:not([data-theme]) {
+    --primary: #FF3700;
+    --primary-hover: #E03000;
+    --bg-color: #0A0E17;
+    --fg-color: #151D2F;
+    --card-bg: #151D2F;
+    --navbar-bg: rgba(14, 20, 36, 0.95);
+    --sidebar-bg: #0E1424;
+    --sidebar-select-color: rgba(255, 55, 0, 0.18);
+    --text-color: #F8FAFC;
+    --text-muted: #94A3B8;
+    --border-color: #273248;
+  }
+}

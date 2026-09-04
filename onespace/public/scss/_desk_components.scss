@@ -1,0 +1,142 @@
+/* OneSpace ERP Systems v16 — Component & Layout Refinements */
+
+body, #app {
+  font-family: var(--theme-font-stack);
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.page-title,
+[class*="title"],
+[class*="heading"] {
+  font-family: var(--theme-font-display);
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* 1. Hide Developer & Framework Desktop Icons cleanly */
+[data-name="Framework"],
+[data-name="Frappe Framework"],
+[title="Framework"],
+[title="Frappe Framework"],
+a[href*="/desk/Framework"],
+a[href*="/desk/Frappe%20Framework"],
+div:has(> a[href*="/desk/Framework"]),
+div:has(> a[href*="/desk/Frappe%20Framework"]) {
+  display: none !important;
+}
+
+/* 2. Top-Left Logo Overhaul (Replace Frappe 3D Cube with OneSpace Icon) */
+header button:first-child svg,
+header a[href="/desk"] svg,
+nav button:first-child svg,
+nav a[href="/desk"] svg,
+#app header button:first-child svg,
+#app nav button:first-child svg,
+[data-page-route="desk"] button:first-child svg {
+  display: none !important;
+}
+
+header button:first-child,
+header a[href="/desk"],
+nav button:first-child,
+nav a[href="/desk"],
+#app header button:first-child,
+#app nav button:first-child,
+[data-page-route="desk"] button:first-child {
+  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
+  background-size: 28px 28px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: var(--theme-border-radius) !important;
+}
+
+/* 3. Primary Buttons */
+.btn-primary,
+button.btn-primary,
+button[variant="solid"],
+button[data-variant="solid"],
+.btn-primary-action {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: var(--theme-border-radius) !important;
+  box-shadow: 0 1px 3px rgba(255, 55, 0, 0.35) !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    box-shadow: 0 0 12px var(--os-brand-primary-glow) !important;
+  }
+}
+
+/* 4. Desktop Icon Cards (/desk) */
+[class*="desktop-icon"],
+.grid > a,
+.grid > div[role="button"] {
+  border-radius: var(--theme-border-radius-lg) !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--card-bg) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  padding: 16px 12px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), var(--os-brand-ring) !important;
+    border-color: var(--primary) !important;
+  }
+
+  span {
+    font-family: var(--theme-font-display) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    color: var(--text-color) !important;
+  }
+}
+
+/* 5. OneSpace Highlight Card */
+a[href*="/desk/onespace"],
+a[href*="/desk/OneSpace"] {
+  border: 1.5px solid rgba(255, 55, 0, 0.4) !important;
+  background: linear-gradient(135deg, rgba(255, 55, 0, 0.06) 0%, rgba(255, 55, 0, 0.12) 100%) !important;
+}
+
+/* 6. Persistent Sidebar & Active Links */
+aside,
+[class*="sidebar"],
+.body-sidebar {
+  background-color: var(--sidebar-bg) !important;
+  border-right: 1px solid var(--border-color) !important;
+
+  a[class*="active"],
+  button[class*="active"],
+  [class*="sidebar-item"][class*="active"] {
+    background-color: var(--sidebar-select-color) !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    border-radius: var(--theme-border-radius) !important;
+  }
+}
+
+/* 7. Form Controls & Inputs */
+.form-control,
+.input-with-feedback,
+input[placeholder*="Search"] {
+  border-radius: var(--theme-border-radius) !important;
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+
+  &:focus {
+    border-color: var(--primary) !important;
+    box-shadow: var(--os-brand-ring) !important;
+    outline: none !important;
+  }
+}

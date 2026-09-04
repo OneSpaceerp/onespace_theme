@@ -1,0 +1,277 @@
+/* OneSpace ERP Systems v16 — Master CSS Bundle
+   Grounded in Frappe v16 Theming Guide & Google Stitch 11292459283275273462 */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+  --theme-font-stack: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --theme-font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --theme-border-radius: 8px;
+  --theme-border-radius-sm: 4px;
+  --theme-border-radius-md: 8px;
+  --theme-border-radius-lg: 16px;
+  --theme-border-radius-full: 9999px;
+
+  --os-brand-primary: #FF3700;
+  --os-brand-primary-hover: #E03000;
+  --os-brand-primary-active: #B22400;
+  --os-brand-primary-tint: rgba(255, 55, 0, 0.12);
+  --os-brand-primary-glow: rgba(255, 55, 0, 0.35);
+  --os-brand-ring: 0 0 0 3px rgba(255, 55, 0, 0.18);
+}
+
+/* Light Theme Tokens */
+:root,
+:root[data-theme="light"],
+[data-theme="light"] {
+  --primary: #FF3700;
+  --primary-color: #FF3700;
+  --primary-hover: #E03000;
+  --primary-active: #B22400;
+  --primary-light: #FFDAD2;
+  --primary-tint: rgba(255, 55, 0, 0.10);
+  --color-primary: #FF3700;
+  --color-primary-500: #FF3700;
+  --color-primary-600: #E03000;
+  --color-primary-700: #B22400;
+  --brand-color: #FF3700;
+
+  --bg-color: #F8FAFC;
+  --fg-color: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --navbar-bg: rgba(255, 255, 255, 0.92);
+  --sidebar-bg: #FFFFFF;
+  --sidebar-select-color: rgba(255, 55, 0, 0.10);
+
+  --text-color: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --heading-color: #0F172A;
+
+  --border-color: #E2E8F0;
+  --light-border-color: #F1F5F9;
+  --subtle-border: #F1F5F9;
+
+  --control-bg: #F8FAFC;
+  --input-bg: #FFFFFF;
+  --modal-bg: #FFFFFF;
+  --popover-bg: #FFFFFF;
+  --btn-default-bg: #FFFFFF;
+  --btn-default-hover-bg: #F1F5F9;
+  --btn-primary-bg: #FF3700;
+  --btn-primary-hover-bg: #E03000;
+
+  --border-radius-sm: var(--theme-border-radius-sm);
+  --border-radius: var(--theme-border-radius-md);
+  --border-radius-md: var(--theme-border-radius-md);
+  --border-radius-lg: var(--theme-border-radius-lg);
+  --border-radius-full: var(--theme-border-radius-full);
+}
+
+/* Dark Theme Tokens */
+:root[data-theme="dark"],
+[data-theme="dark"],
+.dark {
+  --primary: #FF3700;
+  --primary-color: #FF3700;
+  --primary-hover: #E03000;
+  --primary-active: #B22400;
+  --primary-light: #381812;
+  --primary-tint: rgba(255, 55, 0, 0.18);
+  --color-primary: #FF3700;
+  --color-primary-500: #FF3700;
+  --color-primary-600: #E03000;
+  --color-primary-700: #B22400;
+  --brand-color: #FF3700;
+
+  --bg-color: #0A0E17;
+  --fg-color: #151D2F;
+  --card-bg: #151D2F;
+  --navbar-bg: rgba(14, 20, 36, 0.95);
+  --sidebar-bg: #0E1424;
+  --sidebar-select-color: rgba(255, 55, 0, 0.18);
+
+  --text-color: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-light: #64748B;
+  --heading-color: #F8FAFC;
+
+  --border-color: #273248;
+  --light-border-color: #1E293B;
+  --subtle-border: #1E293B;
+
+  --control-bg: #1B2438;
+  --input-bg: #1B2438;
+  --modal-bg: #151D2F;
+  --popover-bg: #1B2438;
+  --btn-default-bg: #1B2438;
+  --btn-default-hover-bg: #273647;
+  --btn-primary-bg: #FF3700;
+  --btn-primary-hover-bg: #E03000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="automatic"],
+  :root:not([data-theme]) {
+    --primary: #FF3700;
+    --primary-hover: #E03000;
+    --bg-color: #0A0E17;
+    --fg-color: #151D2F;
+    --card-bg: #151D2F;
+    --navbar-bg: rgba(14, 20, 36, 0.95);
+    --sidebar-bg: #0E1424;
+    --sidebar-select-color: rgba(255, 55, 0, 0.18);
+    --text-color: #F8FAFC;
+    --text-muted: #94A3B8;
+    --border-color: #273248;
+  }
+}
+
+/* Desk Components & Visual Refinements */
+body, #app {
+  font-family: var(--theme-font-stack);
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.page-title,
+[class*="title"],
+[class*="heading"] {
+  font-family: var(--theme-font-display);
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* 1. Cleanly hide Framework icons */
+[data-name="Framework"],
+[data-name="Frappe Framework"],
+[title="Framework"],
+[title="Frappe Framework"],
+a[href*="/desk/Framework"],
+a[href*="/desk/Frappe%20Framework"],
+div:has(> a[href*="/desk/Framework"]),
+div:has(> a[href*="/desk/Frappe%20Framework"]) {
+  display: none !important;
+}
+
+/* 2. Top-Left Logo (Frappe 3D Cube replaced by OneSpace) */
+header button:first-child svg,
+header a[href="/desk"] svg,
+nav button:first-child svg,
+nav a[href="/desk"] svg,
+#app header button:first-child svg,
+#app nav button:first-child svg,
+[data-page-route="desk"] button:first-child svg {
+  display: none !important;
+}
+
+header button:first-child,
+header a[href="/desk"],
+nav button:first-child,
+nav a[href="/desk"],
+#app header button:first-child,
+#app nav button:first-child,
+[data-page-route="desk"] button:first-child {
+  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
+  background-size: 28px 28px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: var(--theme-border-radius) !important;
+}
+
+/* 3. Primary Buttons */
+.btn-primary,
+button.btn-primary,
+button[variant="solid"],
+button[data-variant="solid"],
+.btn-primary-action {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: var(--theme-border-radius) !important;
+  box-shadow: 0 1px 3px rgba(255, 55, 0, 0.35) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover,
+button[variant="solid"]:hover,
+button[data-variant="solid"]:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  box-shadow: 0 0 12px var(--os-brand-primary-glow) !important;
+}
+
+/* 4. Desktop Icon Cards (/desk) */
+[class*="desktop-icon"],
+.grid > a,
+.grid > div[role="button"] {
+  border-radius: var(--theme-border-radius-lg) !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--card-bg) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  padding: 16px 12px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+[class*="desktop-icon"]:hover,
+.grid > a:hover,
+.grid > div[role="button"]:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), var(--os-brand-ring) !important;
+  border-color: var(--primary) !important;
+}
+
+[class*="desktop-icon"] span,
+.grid > a span,
+.grid > div[role="button"] span {
+  font-family: var(--theme-font-display) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: var(--text-color) !important;
+}
+
+/* 5. OneSpace Highlight Card */
+a[href*="/desk/onespace"],
+a[href*="/desk/OneSpace"] {
+  border: 1.5px solid rgba(255, 55, 0, 0.4) !important;
+  background: linear-gradient(135deg, rgba(255, 55, 0, 0.06) 0%, rgba(255, 55, 0, 0.12) 100%) !important;
+}
+
+/* 6. Persistent Sidebar & Navigation */
+aside,
+[class*="sidebar"],
+.body-sidebar {
+  background-color: var(--sidebar-bg) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+aside a[class*="active"],
+aside button[class*="active"],
+[class*="sidebar-item"][class*="active"] {
+  background-color: var(--sidebar-select-color) !important;
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+  border-radius: var(--theme-border-radius) !important;
+}
+
+/* 7. Inputs */
+.form-control,
+.input-with-feedback,
+input[placeholder*="Search"] {
+  border-radius: var(--theme-border-radius) !important;
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+}
+
+input[placeholder*="Search"]:focus {
+  border-color: var(--primary) !important;
+  box-shadow: var(--os-brand-ring) !important;
+  outline: none !important;
+}
