@@ -1,0 +1,20 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Server Error - OneSpace") }}{% endblock %}
+
+{% block page_content %}
+<div class="text-center py-5" style="font-family: var(--os-font-body);">
+  <div style="font-family: var(--os-font-display); font-size: 72px; font-weight: 800; color: var(--os-danger);">
+    500
+  </div>
+  <h2 style="font-family: var(--os-font-display); font-weight: 700; color: var(--os-text);">
+    {{ _("Internal System Error") }}
+  </h2>
+  <p style="color: var(--os-text-muted); max-width: 480px; margin: 12px auto 24px;">
+    {{ _("An unexpected system issue occurred. Our operations team has been notified.") }}
+  </p>
+  <a href="/app" class="btn btn-primary" style="background-color: var(--os-brand-primary); border-color: var(--os-brand-primary); padding: 8px 24px; border-radius: 8px; font-weight: 600;">
+    {{ _("Return to Safety") }}
+  </a>
+</div>
+{% endblock %}

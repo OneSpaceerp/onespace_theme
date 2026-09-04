@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Quotation QT-2026-0089 - OneSpace ERP Systems</title>
+  <link rel="icon" type="image/svg+xml" href="../onespace/public/images/favicon.svg">
+  <link rel="stylesheet" href="../onespace/public/css/tokens.css">
+  <link rel="stylesheet" href="../onespace/public/css/icons.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace-dark.css">
+  <style>
+    .preview-navbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--navbar-bg);
+      border-bottom: 1px solid var(--os-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .preview-sidebar {
+      width: 240px;
+      position: fixed;
+      top: 56px;
+      bottom: 0;
+      left: 0;
+      background: var(--os-surface);
+      border-right: 1px solid var(--os-border);
+      padding: 16px 12px;
+      overflow-y: auto;
+      z-index: 40;
+    }
+    .preview-main {
+      margin-left: 240px;
+      padding: 24px 32px;
+      min-height: calc(100vh - 56px);
+      background: var(--os-bg);
+    }
+    @media (max-width: 900px) {
+      .preview-sidebar { display: none; }
+      .preview-main { margin-left: 0; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="icon-sprite-container" style="display: none;"></div>
+
+  <!-- Header -->
+  <header class="preview-navbar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="desktop_app_launcher.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <img src="../onespace/public/images/onespace_light.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-light" style="height: 28px;">
+        <img src="../onespace/public/images/onespace_dark.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-dark" style="height: 28px; display: none;">
+        <span style="font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--os-brand-primary-tint); color: var(--os-brand-primary);">v16</span>
+      </a>
+      <div style="position: relative; width: 340px;">
+        <svg class="os-icon os-icon-sm" style="position: absolute; left: 10px; top: 10px; color: var(--os-text-muted);"><use href="#os-icon-search"></use></svg>
+        <input type="text" placeholder="Search in OneSpace (Ctrl + K)..." style="width: 100%; height: 36px; padding: 0 48px 0 32px; border-radius: 8px; border: 1px solid var(--os-border); background: var(--os-surface-low); color: var(--os-text); font-family: var(--os-font-body); font-size: 12px; outline: none; box-sizing: border-box;">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn-onespace-create" type="button">
+        <svg class="os-icon os-icon-sm" style="color: #FFF;"><use href="#os-icon-add"></use></svg>
+        <span>Create</span>
+      </button>
+      <button id="theme-toggle-btn" class="btn btn-default" style="padding: 6px 10px; height: 36px;">
+        <span id="theme-label" style="font-size: 12px; font-weight: 600;">Dark Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="preview-sidebar">
+    <nav style="display: flex; flex-direction: column; gap: 2px;">
+      <a href="desktop_app_launcher.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-dashboard"></use></svg>
+        <span>Launcher</span>
+      </a>
+      <a href="customer_list_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-customers"></use></svg>
+        <span>Customers</span>
+      </a>
+      <a href="customer_form_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 700; background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active); text-decoration: none;">
+        <svg class="os-icon os-icon-md" style="color: var(--os-brand-primary);"><use href="#os-icon-quotations"></use></svg>
+        <span>Quotations</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Stage: Form View -->
+  <main class="preview-main">
+    <!-- Sticky Context Action Bar -->
+    <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 14px 20px; margin-bottom: 20px; box-shadow: var(--os-shadow-ambient); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="customer_list_view.html" class="btn btn-default btn-sm" title="Back" style="width: 32px; height: 32px; padding: 0;">
+          <svg class="os-icon os-icon-sm"><use href="#os-icon-expand" style="transform: rotate(90deg);"></use></svg>
+        </a>
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+          <span style="font-family: var(--os-font-display); font-size: 18px; font-weight: 700; color: var(--os-text);">Sales Quotation</span>
+          <span style="font-family: var(--os-font-display); font-size: 18px; font-weight: 800; color: var(--os-brand-primary);">QT-2026-0089</span>
+        </div>
+        <span class="status-pill" style="background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active); font-weight: 700;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--os-brand-primary);"></span>
+          Draft
+        </span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn btn-default"><svg class="os-icon os-icon-sm"><use href="#os-icon-save"></use></svg><span>Save</span></button>
+        <button class="btn btn-primary"><svg class="os-icon os-icon-sm" style="color: #FFF;"><use href="#os-icon-success"></use></svg><span>Submit</span></button>
+        <button class="btn btn-default"><svg class="os-icon os-icon-sm"><use href="#os-icon-print"></use></svg><span>Print</span></button>
+        <button class="btn btn-default"><svg class="os-icon os-icon-sm"><use href="#os-icon-more"></use></svg></button>
+      </div>
+    </div>
+
+    <!-- Workflow Progression Pipeline Bar -->
+    <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-md); padding: 8px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; overflow-x: auto;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 6px; background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active); font-size: 12px; font-weight: 700;">
+        <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--os-brand-primary); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 10px;">1</span>
+        <span>Draft</span>
+      </div>
+      <div style="width: 24px; height: 1px; background: var(--os-border);"></div>
+      <div style="display: flex; align-items: center; gap: 8px; color: var(--os-text-muted); font-size: 12px; font-weight: 500;">
+        <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--os-surface-low); border: 1px solid var(--os-border); display: flex; align-items: center; justify-content: center; font-size: 10px;">2</span>
+        <span>Submitted</span>
+      </div>
+      <div style="width: 24px; height: 1px; background: var(--os-border);"></div>
+      <div style="display: flex; align-items: center; gap: 8px; color: var(--os-text-muted); font-size: 12px; font-weight: 500;">
+        <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--os-surface-low); border: 1px solid var(--os-border); display: flex; align-items: center; justify-content: center; font-size: 10px;">3</span>
+        <span>Ordered</span>
+      </div>
+      <div style="width: 24px; height: 1px; background: var(--os-border);"></div>
+      <div style="display: flex; align-items: center; gap: 8px; color: var(--os-text-muted); font-size: 12px; font-weight: 500;">
+        <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--os-surface-low); border: 1px solid var(--os-border); display: flex; align-items: center; justify-content: center; font-size: 10px;">4</span>
+        <span>Invoiced</span>
+      </div>
+    </div>
+
+    <!-- Form Section Cards -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+      <!-- Main Fields Column -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 20px; box-shadow: var(--os-shadow-card);">
+          <h3 style="font-family: var(--os-font-display); font-size: 16px; font-weight: 700; color: var(--os-text); margin: 0 0 16px 0; border-bottom: 1px solid var(--os-border); padding-bottom: 8px;">
+            Customer &amp; Commercial Terms
+          </h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label class="control-label">Customer</label>
+              <input type="text" class="form-control" value="Apex Global Logistics FZE">
+            </div>
+            <div>
+              <label class="control-label">Posting Date</label>
+              <input type="date" class="form-control" value="2026-09-04">
+            </div>
+            <div>
+              <label class="control-label">Valid Till</label>
+              <input type="date" class="form-control" value="2026-10-04">
+            </div>
+            <div>
+              <label class="control-label">Currency</label>
+              <select class="form-control"><option>USD ($)</option><option>EGP (E£)</option><option>SAR (﷼)</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Child Table: Quotation Items -->
+        <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 20px; box-shadow: var(--os-shadow-card);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <h3 style="font-family: var(--os-font-display); font-size: 16px; font-weight: 700; color: var(--os-text); margin: 0;">
+              Items &amp; Service Deliverables
+            </h3>
+            <button class="btn btn-default btn-sm">+ Add Item</button>
+          </div>
+          <div style="border: 1px solid var(--os-border); border-radius: 8px; overflow: hidden;">
+            <div style="display: flex; background: var(--os-surface-container); padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--os-text-muted); text-transform: uppercase;">
+              <div style="width: 30px;">#</div>
+              <div style="flex: 2;">Item Code &amp; Description</div>
+              <div style="width: 80px; text-align: right;">Qty</div>
+              <div style="width: 100px; text-align: right;">Rate</div>
+              <div style="width: 120px; text-align: right;">Amount</div>
+            </div>
+            <div style="display: flex; padding: 10px 12px; border-top: 1px solid var(--os-border-subtle); align-items: center; font-size: 13px;">
+              <div style="width: 30px; color: var(--os-text-muted);">1</div>
+              <div style="flex: 2; font-weight: 600;">ERP Enterprise Implementation Tier 1</div>
+              <div style="width: 80px; text-align: right;" class="tabular-numbers">1.00</div>
+              <div style="width: 100px; text-align: right;" class="tabular-numbers">$85,000.00</div>
+              <div style="width: 120px; text-align: right; font-weight: 700; color: var(--os-text);" class="tabular-numbers">$85,000.00</div>
+            </div>
+            <div style="display: flex; padding: 10px 12px; border-top: 1px solid var(--os-border-subtle); align-items: center; font-size: 13px;">
+              <div style="width: 30px; color: var(--os-text-muted);">2</div>
+              <div style="flex: 2; font-weight: 600;">Custom Integration &amp; Migration Pack</div>
+              <div style="width: 80px; text-align: right;" class="tabular-numbers">1.00</div>
+              <div style="width: 100px; text-align: right;" class="tabular-numbers">$39,500.00</div>
+              <div style="width: 120px; text-align: right; font-weight: 700; color: var(--os-text);" class="tabular-numbers">$39,500.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Totals & Sidebar Column -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 20px; box-shadow: var(--os-shadow-card);">
+          <h3 style="font-family: var(--os-font-display); font-size: 16px; font-weight: 700; color: var(--os-text); margin: 0 0 16px 0; border-bottom: 1px solid var(--os-border); padding-bottom: 8px;">
+            Summary &amp; Taxes
+          </h3>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--os-text-muted);">
+            <span>Net Total:</span>
+            <span class="tabular-numbers" style="font-weight: 600; color: var(--os-text);">$124,500.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--os-text-muted);">
+            <span>VAT / Taxes (14%):</span>
+            <span class="tabular-numbers" style="font-weight: 600; color: var(--os-text);">$17,430.00</span>
+          </div>
+          <hr style="border-color: var(--os-border); margin: 12px 0;">
+          <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: var(--os-brand-primary);">
+            <span>Grand Total:</span>
+            <span class="tabular-numbers">$141,930.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../onespace/public/js/theme_switcher.js"></script>
+  <script>
+    fetch('../onespace/public/icons/onespace-icons.svg')
+      .then(r => r.text())
+      .then(svg => document.getElementById('icon-sprite-container').innerHTML = svg);
+
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeLabel = document.getElementById('theme-label');
+    function sync(theme) { themeLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode'; }
+    toggleBtn.addEventListener('click', () => { OneSpace.toggleTheme(); sync(OneSpace.getTheme()); });
+    sync(OneSpace.getTheme());
+  </script>
+</body>
+</html>

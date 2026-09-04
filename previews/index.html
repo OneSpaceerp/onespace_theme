@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneSpace ERP Systems v16 — Visual QA Test Suite</title>
+  <link rel="icon" type="image/svg+xml" href="../onespace/public/images/favicon.svg">
+  <link rel="stylesheet" href="../onespace/public/css/tokens.css">
+  <link rel="stylesheet" href="../onespace/public/css/icons.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace-dark.css">
+  <style>
+    body {
+      background-color: var(--os-bg);
+      color: var(--os-text);
+      padding: 40px 24px;
+      font-family: var(--os-font-body);
+    }
+    .preview-card {
+      background: var(--os-surface);
+      border: 1px solid var(--os-border);
+      border-radius: var(--os-radius-xl);
+      padding: 24px;
+      box-shadow: var(--os-shadow-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      color: var(--os-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .preview-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--os-shadow-elevated);
+      border-color: var(--os-brand-primary);
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 1080px; margin: 0 auto;">
+    <!-- Top Header Hub -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; border-bottom: 1px solid var(--os-border); padding-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <img src="../onespace/public/images/onespace_icon.svg" alt="OneSpace" width="48" height="48">
+        <div>
+          <h1 style="font-family: var(--os-font-display); font-size: 28px; font-weight: 800; margin: 0; color: var(--os-text); letter-spacing: -0.02em;">
+            OneSpace ERP Systems v16
+          </h1>
+          <p style="font-size: 14px; color: var(--os-text-muted); margin: 4px 0 0 0;">
+            Interactive Visual QA Test Suite &bull; Primary Reference: Google Stitch Project <code style="background: var(--os-surface-low); padding: 2px 6px; border-radius: 4px;">11292459283275273462</code>
+          </p>
+        </div>
+      </div>
+
+      <button id="theme-toggle-btn" class="btn btn-default" style="font-weight: 600;">
+        <span id="theme-label">Dark Mode</span>
+      </button>
+    </div>
+
+    <!-- Screen Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px;">
+      <!-- Screen 1: App Launcher -->
+      <a href="desktop_app_launcher.html" class="preview-card">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; background: var(--os-brand-primary-tint); color: var(--os-brand-primary);">
+              Desktop &amp; Shell
+            </span>
+            <span style="font-size: 12px; color: var(--os-text-muted);">Verified against Stitch</span>
+          </div>
+          <h2 style="font-family: var(--os-font-display); font-size: 20px; font-weight: 700; margin: 0 0 8px 0;">
+            Desktop / App Launcher
+          </h2>
+          <p style="font-size: 13px; color: var(--os-text-muted); margin: 0 0 16px 0;">
+            Odoo/SaaS-inspired modular app grid, live clock, real-time sync pulse, global search with Ctrl+K shortcut, and responsive navigation rail.
+          </p>
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--os-brand-primary); display: flex; align-items: center; gap: 4px;">
+          <span>Launch Screen Preview &rarr;</span>
+        </div>
+      </a>
+
+      <!-- Screen 2: Customer List -->
+      <a href="customer_list_view.html" class="preview-card">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); color: #10B981;">
+              Data Table &amp; Filter
+            </span>
+            <span style="font-size: 12px; color: var(--os-text-muted);">Verified against Stitch</span>
+          </div>
+          <h2 style="font-family: var(--os-font-display); font-size: 20px; font-weight: 700; margin: 0 0 8px 0;">
+            Customer List View
+          </h2>
+          <p style="font-size: 13px; color: var(--os-text-muted); margin: 0 0 16px 0;">
+            Standardized 44px rows with left orange selection marker, view switcher (List/Kanban/Report), tabular currency figures, and status pills.
+          </p>
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--os-brand-primary); display: flex; align-items: center; gap: 4px;">
+          <span>Launch Screen Preview &rarr;</span>
+        </div>
+      </a>
+
+      <!-- Screen 3: Form View -->
+      <a href="customer_form_view.html" class="preview-card">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+              Record &amp; Workflow
+            </span>
+            <span style="font-size: 12px; color: var(--os-text-muted);">Verified against Stitch</span>
+          </div>
+          <h2 style="font-family: var(--os-font-display); font-size: 20px; font-weight: 700; margin: 0 0 8px 0;">
+            Sales Quotation Form View
+          </h2>
+          <p style="font-size: 13px; color: var(--os-text-muted); margin: 0 0 16px 0;">
+            Sticky action header, DocType title breadcrumb, workflow progression timeline, child items grid, and 38px inputs with orange focus rings.
+          </p>
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--os-brand-primary); display: flex; align-items: center; gap: 4px;">
+          <span>Launch Screen Preview &rarr;</span>
+        </div>
+      </a>
+
+      <!-- Screen 4: Login Experience -->
+      <a href="login_experience.html" class="preview-card">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; background: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+              Authentication
+            </span>
+            <span style="font-size: 12px; color: var(--os-text-muted);">Verified against Stitch</span>
+          </div>
+          <h2 style="font-family: var(--os-font-display); font-size: 20px; font-weight: 700; margin: 0 0 8px 0;">
+            OneSpace Sign In Experience
+          </h2>
+          <p style="font-size: 13px; color: var(--os-text-muted); margin: 0 0 16px 0;">
+            Ambient glow orbs, dynamic light/dark logo, password visibility eye toggle, cluster status pill, and 30-day session persistence.
+          </p>
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--os-brand-primary); display: flex; align-items: center; gap: 4px;">
+          <span>Launch Screen Preview &rarr;</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Verification Checklist Callout -->
+    <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 20px;">
+      <h3 style="font-family: var(--os-font-display); font-size: 16px; font-weight: 700; margin: 0 0 12px 0;">
+        Design System Compliance Summary
+      </h3>
+      <ul style="font-size: 13px; color: var(--os-text-muted); line-height: 1.8; margin: 0; padding-left: 20px;">
+        <li><strong>Primary Accent:</strong> Kinetic Orange (<code style="color: var(--os-brand-primary);">#FF3700</code>) applied with strategic restraint.</li>
+        <li><strong>Typography:</strong> Plus Jakarta Sans (Headers) + Manrope (Body/Controls) + Tabular Numerals on all metrics.</li>
+        <li><strong>Dark Mode:</strong> Deep Space Carbon (<code style="color: var(--os-brand-primary);">#0A0E17</code> / <code style="color: var(--os-brand-primary);">#151D2F</code>) contrast tuned without naive color inversion.</li>
+        <li><strong>White-Label Compliance:</strong> Zero customer-facing Frappe/ERPNext logos, titles, or marketing links. Legally required licenses preserved in <a href="../onespace/templates/pages/open_source_notices.html" style="color: var(--os-brand-primary);">Open Source Notices</a>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="../onespace/public/js/theme_switcher.js"></script>
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeLabel = document.getElementById('theme-label');
+    function sync(theme) { themeLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode'; }
+    toggleBtn.addEventListener('click', () => { OneSpace.toggleTheme(); sync(OneSpace.getTheme()); });
+    sync(OneSpace.getTheme());
+  </script>
+</body>
+</html>

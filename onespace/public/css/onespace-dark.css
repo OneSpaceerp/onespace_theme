@@ -1,0 +1,140 @@
+/**
+ * OneSpace ERP Systems v16 — Genuine Dark Theme Overrides
+ * Grounded in Stitch Project 11292459283275273462 (Dark Mode Views)
+ */
+
+[data-theme="dark"],
+body.dark,
+.dark {
+  background-color: var(--os-bg) !important;
+  color: var(--os-text) !important;
+}
+
+/* --- 1. Global Shell in Dark Mode --- */
+[data-theme="dark"] .navbar,
+[data-theme="dark"] header.navbar {
+  background-color: rgba(14, 20, 36, 0.92) !important;
+  border-bottom-color: var(--os-border-subtle) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .desk-sidebar,
+[data-theme="dark"] .layout-side-section {
+  background-color: var(--os-surface-rail) !important;
+  border-right-color: var(--os-border-subtle) !important;
+}
+
+/* Awesomebar / Search in Dark Mode */
+[data-theme="dark"] .awesomebar,
+[data-theme="dark"] .search-bar input {
+  background-color: var(--os-surface) !important;
+  border-color: var(--os-border) !important;
+  color: var(--os-text) !important;
+}
+
+[data-theme="dark"] .awesomebar:focus,
+[data-theme="dark"] .search-bar input:focus {
+  background-color: var(--os-surface-elevated) !important;
+  border-color: var(--os-brand-primary) !important;
+  box-shadow: var(--os-brand-ring) !important;
+}
+
+/* --- 2. Cards, Sections, and Panels --- */
+[data-theme="dark"] .form-layout,
+[data-theme="dark"] .form-section,
+[data-theme="dark"] .form-dashboard-section,
+[data-theme="dark"] .dashboard-widget-box,
+[data-theme="dark"] .widget-group,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .frappe-card {
+  background-color: var(--os-surface) !important;
+  border-color: var(--os-border) !important;
+  box-shadow: var(--os-shadow-card) !important;
+}
+
+/* Form Headers */
+[data-theme="dark"] .page-head,
+[data-theme="dark"] .page-header {
+  background-color: var(--os-bg) !important;
+  border-bottom-color: var(--os-border-subtle) !important;
+}
+
+/* --- 3. Inputs & Form Controls in Dark Mode --- */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .input-with-feedback,
+[data-theme="dark"] select.form-control {
+  background-color: var(--os-surface-high) !important;
+  border-color: var(--os-border) !important;
+  color: var(--os-text) !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] select.form-control:focus {
+  background-color: var(--os-surface-highest) !important;
+  border-color: var(--os-brand-primary) !important;
+  box-shadow: var(--os-brand-ring) !important;
+}
+
+/* --- 4. List Views & Tables in Dark Mode --- */
+[data-theme="dark"] .list-header,
+[data-theme="dark"] .list-row-head {
+  background-color: var(--os-surface-high) !important;
+  border-bottom-color: var(--os-border) !important;
+  color: var(--os-text-secondary) !important;
+}
+
+[data-theme="dark"] .list-row {
+  border-bottom-color: var(--os-border-subtle) !important;
+}
+
+[data-theme="dark"] .list-row:hover {
+  background-color: var(--os-surface-elevated) !important;
+}
+
+[data-theme="dark"] .list-row.selected,
+[data-theme="dark"] .list-row:has(input[type="checkbox"]:checked) {
+  background-color: rgba(255, 55, 0, 0.12) !important;
+  border-left-color: var(--os-brand-primary) !important;
+}
+
+/* --- 5. Popovers, Menus, Dialogs --- */
+[data-theme="dark"] .popover,
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--os-surface-elevated) !important;
+  border-color: var(--os-border) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: var(--os-surface-highest) !important;
+  color: var(--os-text) !important;
+}
+
+/* --- 6. Status Pills in Dark Mode --- */
+[data-theme="dark"] .indicator-pill.green,
+[data-theme="dark"] .status-pill-success {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #34D399 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="dark"] .indicator-pill.orange,
+[data-theme="dark"] .status-pill-warning {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #FBBF24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+[data-theme="dark"] .indicator-pill.red,
+[data-theme="dark"] .status-pill-danger {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #F87171 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+[data-theme="dark"] .indicator-pill.blue,
+[data-theme="dark"] .status-pill-info {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #60A5FA !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}

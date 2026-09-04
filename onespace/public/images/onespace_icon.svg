@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="os-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4D1A"/>
+      <stop offset="100%" stop-color="#DE2F00"/>
+    </linearGradient>
+    <filter id="os-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#FF3700" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Background Container -->
+  <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#os-grad)" filter="url(#os-shadow)"/>
+  <!-- Geometric "One Space" Nexus Emblem -->
+  <path d="M14 14H22V22H14V14Z" fill="#FFFFFF" fill-opacity="0.95"/>
+  <path d="M26 14H34V22H26V14Z" fill="#FFFFFF" fill-opacity="0.65"/>
+  <path d="M14 26H22V34H14V26Z" fill="#FFFFFF" fill-opacity="0.65"/>
+  <path d="M26 26H34V34H26V26Z" fill="#FFFFFF" fill-opacity="0.95"/>
+  <!-- Center Core Pixel Accent -->
+  <circle cx="24" cy="24" r="2.5" fill="#FFFFFF"/>
+</svg>

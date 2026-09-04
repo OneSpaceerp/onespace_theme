@@ -1,0 +1,20 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "onespace"
+authors = [
+    { name = "OneSpace Technologies", email = "dev@onespace.sh"}
+]
+description = "Commercial SaaS Visual Identity and Theme Layer for Frappe & ERPNext v16"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    "frappe"
+]
+
+[project.urls]
+Homepage = "https://onespace.sh"
+Repository = "https://github.com/onespace-erp/onespace_theme"

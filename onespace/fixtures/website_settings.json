@@ -1,0 +1,12 @@
+[
+  {
+    "doctype": "Website Settings",
+    "name": "Website Settings",
+    "app_name": "OneSpace",
+    "app_logo": "/assets/onespace/images/onespace_light.png",
+    "favicon": "/assets/onespace/images/favicon.svg",
+    "splash_image": "/assets/onespace/images/onespace_light.png",
+    "brand_html": "<img src=\"/assets/onespace/images/onespace_light.png\" alt=\"OneSpace\" style=\"height: 28px; width: auto;\">",
+    "copyright": "OneSpace Systems"
+  }
+]

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneSpace Desk - App Launcher (Visual QA Preview)</title>
+  <link rel="icon" type="image/svg+xml" href="../onespace/public/images/favicon.svg">
+  <link rel="stylesheet" href="../onespace/public/css/tokens.css">
+  <link rel="stylesheet" href="../onespace/public/css/icons.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace-dark.css">
+  <style>
+    /* Preview Shell Helpers */
+    .preview-navbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--navbar-bg);
+      border-bottom: 1px solid var(--os-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .preview-sidebar {
+      width: 240px;
+      position: fixed;
+      top: 56px;
+      bottom: 0;
+      left: 0;
+      background: var(--os-surface);
+      border-right: 1px solid var(--os-border);
+      padding: 16px 12px;
+      overflow-y: auto;
+      z-index: 40;
+    }
+    .preview-main {
+      margin-left: 240px;
+      padding: 24px 32px;
+      min-height: calc(100vh - 56px);
+      background: var(--os-bg);
+    }
+    @media (max-width: 900px) {
+      .preview-sidebar { display: none; }
+      .preview-main { margin-left: 0; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Inline SVG Icon Sprite -->
+  <div id="icon-sprite-container" style="display: none;"></div>
+
+  <!-- Global Header -->
+  <header class="preview-navbar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <img src="../onespace/public/images/onespace_light.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-light" style="height: 28px;">
+        <img src="../onespace/public/images/onespace_dark.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-dark" style="height: 28px; display: none;">
+        <span style="font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--os-brand-primary-tint); color: var(--os-brand-primary);">v16</span>
+      </a>
+
+      <!-- Search Bar -->
+      <div style="position: relative; width: 340px;">
+        <svg class="os-icon os-icon-sm" style="position: absolute; left: 10px; top: 10px; color: var(--os-text-muted);"><use href="#os-icon-search"></use></svg>
+        <input type="text" placeholder="Search in OneSpace (Ctrl + K)..." style="width: 100%; height: 36px; padding: 0 48px 0 32px; border-radius: 8px; border: 1px solid var(--os-border); background: var(--os-surface-low); color: var(--os-text); font-family: var(--os-font-body); font-size: 12px; outline: none; box-sizing: border-box;">
+        <kbd style="position: absolute; right: 8px; top: 9px; font-size: 10px; padding: 2px 4px; border-radius: 4px; background: var(--os-surface-container); color: var(--os-text-muted); border: 1px solid var(--os-border);">Ctrl+K</kbd>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn-onespace-create" type="button">
+        <svg class="os-icon os-icon-sm" style="color: #FFF;"><use href="#os-icon-add"></use></svg>
+        <span>Create</span>
+      </button>
+
+      <!-- Theme Switcher Button -->
+      <button id="theme-toggle-btn" class="btn btn-default" style="padding: 6px 10px; height: 36px;" title="Toggle Light/Dark Theme">
+        <span id="theme-label" style="font-size: 12px; font-weight: 600;">Dark Mode</span>
+      </button>
+
+      <!-- Notifications -->
+      <button class="btn btn-default" style="width: 36px; height: 36px; padding: 0; position: relative;">
+        <svg class="os-icon os-icon-sm"><use href="#os-icon-notifications"></use></svg>
+        <span style="position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--os-brand-primary);"></span>
+      </button>
+
+      <!-- Profile Avatar -->
+      <div style="display: flex; align-items: center; gap: 8px; padding-left: 8px; border-left: 1px solid var(--os-border);">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--os-brand-primary); color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
+          AO
+        </div>
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <span style="font-size: 12px; font-weight: 600; color: var(--os-text); line-height: 1.2;">Admin OneSpace</span>
+          <span style="font-size: 10px; color: var(--os-text-muted); line-height: 1;">Superuser</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <aside class="preview-sidebar">
+    <div style="margin-bottom: 16px;">
+      <button style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--os-border); background: var(--os-surface-low); color: var(--os-text); cursor: pointer;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;">
+          <svg class="os-icon os-icon-sm" style="color: var(--os-brand-primary);"><use href="#os-icon-accounting"></use></svg>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;">OneSpace HQ</span>
+        </div>
+        <svg class="os-icon os-icon-xs" style="color: var(--os-text-muted);"><use href="#os-icon-expand"></use></svg>
+      </button>
+    </div>
+
+    <!-- Quick Workspaces -->
+    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--os-text-muted); letter-spacing: 0.05em; padding: 0 4px; margin-bottom: 8px;">
+      Workspaces
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px;">
+      <a href="#" style="text-decoration: none; padding: 6px; text-align: center; font-size: 12px; font-weight: 600; border-radius: 6px; background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active);">Desk</a>
+      <a href="customer_list_view.html" style="text-decoration: none; padding: 6px; text-align: center; font-size: 12px; font-weight: 500; border-radius: 6px; background: var(--os-surface-low); color: var(--os-text-muted);">Sales</a>
+      <a href="#" style="text-decoration: none; padding: 6px; text-align: center; font-size: 12px; font-weight: 500; border-radius: 6px; background: var(--os-surface-low); color: var(--os-text-muted);">Accounts</a>
+      <a href="#" style="text-decoration: none; padding: 6px; text-align: center; font-size: 12px; font-weight: 500; border-radius: 6px; background: var(--os-surface-low); color: var(--os-text-muted);">Stock</a>
+    </div>
+
+    <!-- Primary Module Tree -->
+    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--os-text-muted); letter-spacing: 0.05em; padding: 0 4px; margin-bottom: 8px;">
+      Modules
+    </div>
+    <nav style="display: flex; flex-direction: column; gap: 2px;">
+      <a href="#" class="desk-sidebar-link selected" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 700; background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active); text-decoration: none;">
+        <svg class="os-icon os-icon-md" style="color: var(--os-brand-primary);"><use href="#os-icon-dashboard"></use></svg>
+        <span>Launcher</span>
+      </a>
+      <a href="customer_list_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-customers"></use></svg>
+        <span>Customers</span>
+      </a>
+      <a href="customer_form_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-quotations"></use></svg>
+        <span>Quotations</span>
+      </a>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-accounting"></use></svg>
+        <span>Accounting</span>
+      </a>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-stock"></use></svg>
+        <span>Stock</span>
+      </a>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-settings"></use></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Stage -->
+  <main class="preview-main">
+    <div id="app-launcher-mount"></div>
+  </main>
+
+  <!-- Load Sprite and Runtime JS -->
+  <script src="../onespace/public/js/theme_switcher.js"></script>
+  <script src="../onespace/public/js/app_launcher.js"></script>
+  <script>
+    // Load SVG sprite directly into preview
+    fetch('../onespace/public/icons/onespace-icons.svg')
+      .then(r => r.text())
+      .then(svg => {
+        document.getElementById('icon-sprite-container').innerHTML = svg;
+        // Mount App Launcher
+        OneSpace.renderAppLauncher(document.getElementById('app-launcher-mount'));
+      });
+
+    // Theme Toggle Handler
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeLabel = document.getElementById('theme-label');
+
+    function syncThemeUI(theme) {
+      themeLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      OneSpace.toggleTheme();
+      syncThemeUI(OneSpace.getTheme());
+    });
+
+    syncThemeUI(OneSpace.getTheme());
+  </script>
+</body>
+</html>

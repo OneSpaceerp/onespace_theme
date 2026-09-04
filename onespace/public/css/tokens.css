@@ -1,0 +1,265 @@
+/**
+ * OneSpace ERP Systems v16 — Core Design Tokens
+ * Grounded in Stitch Project 11292459283275273462
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+  /* --- 1. OneSpace Brand Colors --- */
+  --os-brand-primary: #FF3700;
+  --os-brand-primary-hover: #E03000;
+  --os-brand-primary-active: #B22400;
+  --os-brand-primary-container: #DE2F00;
+  --os-brand-primary-fixed: #FFDAD2;
+  --os-brand-primary-fixed-dim: #FFB4A3;
+  --os-brand-primary-on: #FFFFFF;
+  --os-brand-primary-tint: rgba(255, 55, 0, 0.10);
+  --os-brand-primary-tint-hover: rgba(255, 55, 0, 0.16);
+  --os-brand-primary-glow: rgba(255, 55, 0, 0.25);
+  --os-brand-ring: 0 0 0 3px rgba(255, 55, 0, 0.15);
+
+  /* --- 2. Typography --- */
+  --os-font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --os-font-body: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --os-font-mono: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+
+  /* Font scales */
+  --os-text-display-lg: 32px;
+  --os-lh-display-lg: 40px;
+  --os-tracking-display-lg: -0.02em;
+
+  --os-text-headline-lg: 24px;
+  --os-lh-headline-lg: 32px;
+  --os-tracking-headline-lg: -0.015em;
+
+  --os-text-headline-md: 20px;
+  --os-lh-headline-md: 28px;
+  --os-tracking-headline-md: -0.01em;
+
+  --os-text-headline-sm: 16px;
+  --os-lh-headline-sm: 24px;
+  --os-tracking-headline-sm: -0.005em;
+
+  --os-text-body-lg: 15px;
+  --os-lh-body-lg: 24px;
+
+  --os-text-body-md: 13px;
+  --os-lh-body-md: 20px;
+
+  --os-text-body-sm: 12px;
+  --os-lh-body-sm: 18px;
+
+  --os-text-label-lg: 13px;
+  --os-lh-label-lg: 18px;
+
+  --os-text-label-md: 12px;
+  --os-lh-label-md: 16px;
+  --os-tracking-label-md: 0.02em;
+
+  --os-text-label-sm: 11px;
+  --os-lh-label-sm: 14px;
+  --os-tracking-label-sm: 0.04em;
+
+  /* --- 3. Geometry & Radii --- */
+  --os-radius-xs: 2px;
+  --os-radius-sm: 4px;
+  --os-radius-md: 8px;      /* Default for buttons, inputs, dropdowns */
+  --os-radius-lg: 12px;     /* Cards, popovers */
+  --os-radius-xl: 16px;     /* Modals, large panels, app launcher icons */
+  --os-radius-2xl: 24px;
+  --os-radius-full: 9999px; /* Status capsules, pills, badges */
+
+  /* --- 4. Spacing --- */
+  --os-space-xxs: 0.125rem;  /* 2px */
+  --os-space-xs: 0.25rem;    /* 4px */
+  --os-space-sm: 0.5rem;     /* 8px */
+  --os-space-md: 0.75rem;    /* 12px */
+  --os-space-base: 1rem;     /* 16px */
+  --os-space-lg: 1.5rem;     /* 24px */
+  --os-space-xl: 2rem;       /* 32px */
+  --os-space-2xl: 3rem;      /* 48px */
+  --os-rail-width: 4.5rem;   /* 72px */
+  --os-sidebar-width: 16rem; /* 256px */
+  --os-header-height: 3.5rem;/* 56px */
+
+  /* --- 5. Semantic States --- */
+  --os-success: #10B981;
+  --os-success-bg: #ECFDF5;
+  --os-success-text: #065F46;
+  --os-success-border: #A7F3D0;
+
+  --os-warning: #F59E0B;
+  --os-warning-bg: #FFFBEB;
+  --os-warning-text: #92400E;
+  --os-warning-border: #FDE68A;
+
+  --os-danger: #EF4444;
+  --os-danger-bg: #FEF2F2;
+  --os-danger-text: #991B1B;
+  --os-danger-border: #FECACA;
+
+  --os-info: #3B82F6;
+  --os-info-bg: #EFF6FF;
+  --os-info-text: #1E40AF;
+  --os-info-border: #BFDBFE;
+
+  /* --- 6. Light Mode Surfaces & Lines (Default) --- */
+  --os-bg: #FBF8FF;
+  --os-surface: #FFFFFF;
+  --os-surface-low: #F4F2FD;
+  --os-surface-container: #EEEDF7;
+  --os-surface-high: #E8E7F1;
+  --os-surface-highest: #E3E1EC;
+  --os-surface-elevated: #FFFFFF;
+  --os-surface-dim: #DAD9E3;
+
+  --os-border: #E4E4E7;
+  --os-border-subtle: #EEEDF7;
+  --os-border-strong: #CBD5E1;
+
+  --os-text: #1A1B22;
+  --os-text-secondary: #5E3F38;
+  --os-text-muted: #71717A;
+  --os-text-inverse: #FFFFFF;
+
+  --os-shadow-ambient: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --os-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  --os-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --os-shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+
+  /* --- 7. Native Frappe Framework v16 Variable Mappings (Light) --- */
+  --primary: var(--os-brand-primary);
+  --primary-color: var(--os-brand-primary);
+  --primary-hover: var(--os-brand-primary-hover);
+  --primary-active: var(--os-brand-primary-active);
+  --primary-light: var(--os-brand-primary-fixed);
+  --primary-tint: var(--os-brand-primary-tint);
+
+  --bg-color: var(--os-bg);
+  --fg-color: var(--os-surface);
+  --card-bg: var(--os-surface);
+  --navbar-bg: rgba(255, 255, 255, 0.88);
+  --sidebar-bg: var(--os-surface);
+
+  --text-color: var(--os-text);
+  --text-muted: var(--os-text-muted);
+  --heading-color: var(--os-text);
+
+  --border-color: var(--os-border);
+  --light-border-color: var(--os-border-subtle);
+  --subtle-border: var(--os-border-subtle);
+
+  --control-bg: var(--os-surface-low);
+  --control-bg-on-gray: var(--os-surface);
+  --input-bg: var(--os-surface);
+  --modal-bg: var(--os-surface);
+  --popover-bg: var(--os-surface);
+
+  --btn-default-bg: var(--os-surface);
+  --btn-default-hover-bg: var(--os-surface-low);
+  --btn-primary-bg: var(--os-brand-primary);
+  --btn-primary-hover-bg: var(--os-brand-primary-hover);
+
+  --border-radius-sm: var(--os-radius-sm);
+  --border-radius: var(--os-radius-md);
+  --border-radius-md: var(--os-radius-md);
+  --border-radius-lg: var(--os-radius-xl);
+  --border-radius-full: var(--os-radius-full);
+
+  --shadow-sm: var(--os-shadow-ambient);
+  --shadow-base: var(--os-shadow-card);
+  --shadow-lg: var(--os-shadow-elevated);
+}
+
+/* --- 8. Dark Mode Surfaces & Lines --- */
+[data-theme="dark"],
+body.dark,
+.dark {
+  /* Dark Mode Brand Colors */
+  --os-brand-primary: #FF3700;
+  --os-brand-primary-hover: #E03000;
+  --os-brand-primary-active: #B22400;
+  --os-brand-primary-container: #FF3700;
+  --os-brand-primary-fixed: #381812;
+  --os-brand-primary-fixed-dim: #FFB4A3;
+  --os-brand-primary-on: #FFFFFF;
+  --os-brand-primary-tint: rgba(255, 55, 0, 0.18);
+  --os-brand-primary-tint-hover: rgba(255, 55, 0, 0.28);
+  --os-brand-primary-glow: rgba(255, 55, 0, 0.35);
+  --os-brand-ring: 0 0 0 3px rgba(255, 55, 0, 0.25);
+
+  /* Dark Surfaces from Stitch */
+  --os-bg: #0A0E17;
+  --os-surface: #151D2F;
+  --os-surface-low: #111726;
+  --os-surface-container: #151D2F;
+  --os-surface-high: #1B2438;
+  --os-surface-highest: #273647;
+  --os-surface-elevated: #1B2438;
+  --os-surface-rail: #0E1424;
+
+  --os-border: #273248;
+  --os-border-subtle: #1E293B;
+  --os-border-strong: #3A4154;
+
+  --os-text: #F8FAFC;
+  --os-text-secondary: #CBD5E1;
+  --os-text-muted: #64748B;
+  --os-text-inverse: #0A0E17;
+
+  /* Dark Semantic States */
+  --os-success-bg: rgba(16, 185, 129, 0.15);
+  --os-success-text: #34D399;
+  --os-success-border: rgba(16, 185, 129, 0.3);
+
+  --os-warning-bg: rgba(245, 158, 11, 0.15);
+  --os-warning-text: #FBBF24;
+  --os-warning-border: rgba(245, 158, 11, 0.3);
+
+  --os-danger-bg: rgba(239, 68, 68, 0.15);
+  --os-danger-text: #F87171;
+  --os-danger-border: rgba(239, 68, 68, 0.3);
+
+  --os-info-bg: rgba(59, 130, 246, 0.15);
+  --os-info-text: #60A5FA;
+  --os-info-border: rgba(59, 130, 246, 0.3);
+
+  --os-shadow-ambient: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  --os-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --os-shadow-elevated: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
+  --os-shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Native Frappe v16 Mappings (Dark) */
+  --primary: var(--os-brand-primary);
+  --primary-color: var(--os-brand-primary);
+  --primary-hover: var(--os-brand-primary-hover);
+  --primary-active: var(--os-brand-primary-active);
+  --primary-light: var(--os-brand-primary-fixed);
+  --primary-tint: var(--os-brand-primary-tint);
+
+  --bg-color: var(--os-bg);
+  --fg-color: var(--os-surface);
+  --card-bg: var(--os-surface);
+  --navbar-bg: rgba(14, 20, 36, 0.92);
+  --sidebar-bg: var(--os-surface-rail);
+
+  --text-color: var(--os-text);
+  --text-muted: var(--os-text-muted);
+  --heading-color: var(--os-text);
+
+  --border-color: var(--os-border);
+  --light-border-color: var(--os-border-subtle);
+  --subtle-border: var(--os-border-subtle);
+
+  --control-bg: var(--os-surface-high);
+  --control-bg-on-gray: var(--os-surface-high);
+  --input-bg: var(--os-surface-high);
+  --modal-bg: var(--os-surface);
+  --popover-bg: var(--os-surface-elevated);
+
+  --btn-default-bg: var(--os-surface-high);
+  --btn-default-hover-bg: var(--os-surface-highest);
+  --btn-primary-bg: var(--os-brand-primary);
+  --btn-primary-hover-bg: var(--os-brand-primary-hover);
+}

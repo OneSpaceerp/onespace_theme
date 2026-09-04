@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers - OneSpace ERP Systems</title>
+  <link rel="icon" type="image/svg+xml" href="../onespace/public/images/favicon.svg">
+  <link rel="stylesheet" href="../onespace/public/css/tokens.css">
+  <link rel="stylesheet" href="../onespace/public/css/icons.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace.css">
+  <link rel="stylesheet" href="../onespace/public/css/onespace-dark.css">
+  <style>
+    .preview-navbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--navbar-bg);
+      border-bottom: 1px solid var(--os-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .preview-sidebar {
+      width: 240px;
+      position: fixed;
+      top: 56px;
+      bottom: 0;
+      left: 0;
+      background: var(--os-surface);
+      border-right: 1px solid var(--os-border);
+      padding: 16px 12px;
+      overflow-y: auto;
+      z-index: 40;
+    }
+    .preview-main {
+      margin-left: 240px;
+      padding: 24px 32px;
+      min-height: calc(100vh - 56px);
+      background: var(--os-bg);
+    }
+    @media (max-width: 900px) {
+      .preview-sidebar { display: none; }
+      .preview-main { margin-left: 0; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="icon-sprite-container" style="display: none;"></div>
+
+  <!-- Header -->
+  <header class="preview-navbar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="desktop_app_launcher.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <img src="../onespace/public/images/onespace_light.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-light" style="height: 28px;">
+        <img src="../onespace/public/images/onespace_dark.png" alt="OneSpace" class="onespace-brand-logo onespace-logo-dark" style="height: 28px; display: none;">
+        <span style="font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--os-brand-primary-tint); color: var(--os-brand-primary);">v16</span>
+      </a>
+      <div style="position: relative; width: 340px;">
+        <svg class="os-icon os-icon-sm" style="position: absolute; left: 10px; top: 10px; color: var(--os-text-muted);"><use href="#os-icon-search"></use></svg>
+        <input type="text" placeholder="Search in OneSpace (Ctrl + K)..." style="width: 100%; height: 36px; padding: 0 48px 0 32px; border-radius: 8px; border: 1px solid var(--os-border); background: var(--os-surface-low); color: var(--os-text); font-family: var(--os-font-body); font-size: 12px; outline: none; box-sizing: border-box;">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn-onespace-create" type="button">
+        <svg class="os-icon os-icon-sm" style="color: #FFF;"><use href="#os-icon-add"></use></svg>
+        <span>Create</span>
+      </button>
+      <button id="theme-toggle-btn" class="btn btn-default" style="padding: 6px 10px; height: 36px;">
+        <span id="theme-label" style="font-size: 12px; font-weight: 600;">Dark Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="preview-sidebar">
+    <nav style="display: flex; flex-direction: column; gap: 2px;">
+      <a href="desktop_app_launcher.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-dashboard"></use></svg>
+        <span>Launcher</span>
+      </a>
+      <a href="customer_list_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 700; background: var(--os-brand-primary-fixed); color: var(--os-brand-primary-active); text-decoration: none;">
+        <svg class="os-icon os-icon-md" style="color: var(--os-brand-primary);"><use href="#os-icon-customers"></use></svg>
+        <span>Customers</span>
+      </a>
+      <a href="customer_form_view.html" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--os-text-muted); text-decoration: none;">
+        <svg class="os-icon os-icon-md"><use href="#os-icon-quotations"></use></svg>
+        <span>Quotations</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Stage: Customer List View -->
+  <main class="preview-main">
+    <!-- Breadcrumbs & Header -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px;">
+      <div>
+        <nav style="font-size: 12px; color: var(--os-text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <a href="desktop_app_launcher.html" style="color: var(--os-text-muted); text-decoration: none;">Desk</a>
+          <span>/</span>
+          <span>Selling</span>
+          <span>/</span>
+          <span style="color: var(--os-text); font-weight: 600;">Customers</span>
+        </nav>
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <h1 style="font-family: var(--os-font-display); font-size: 26px; font-weight: 700; color: var(--os-text); margin: 0; letter-spacing: -0.02em;">
+            Customers
+          </h1>
+          <span style="font-size: 12px; padding: 2px 8px; border-radius: 9999px; background: var(--os-surface-container); color: var(--os-text-muted); font-weight: 600;">
+            1,428 records
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Utilities & Create -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <!-- View Switcher -->
+        <div style="display: flex; background: var(--os-surface-container); padding: 2px; border-radius: 8px;">
+          <button class="btn btn-sm" style="background: var(--os-surface); color: var(--os-brand-primary); font-weight: 700; border: none; box-shadow: var(--os-shadow-ambient);">List</button>
+          <button class="btn btn-sm" style="background: transparent; color: var(--os-text-muted); border: none;">Kanban</button>
+          <button class="btn btn-sm" style="background: transparent; color: var(--os-text-muted); border: none;">Report</button>
+        </div>
+
+        <button class="btn btn-default" style="height: 36px; padding: 0 10px;" title="Reload"><svg class="os-icon os-icon-sm"><use href="#os-icon-refresh"></use></svg></button>
+        <button class="btn btn-default" style="height: 36px;">Columns</button>
+        <button class="btn btn-default" style="height: 36px;">Actions</button>
+        <button class="btn btn-primary" style="height: 36px;">
+          <svg class="os-icon os-icon-sm" style="color: #FFF;"><use href="#os-icon-add"></use></svg>
+          <span>Add Customer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Strip -->
+    <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--os-shadow-ambient);">
+      <div style="display: flex; align-items: center; gap: 12px; flex: 1; max-width: 400px;">
+        <svg class="os-icon os-icon-sm" style="color: var(--os-text-muted);"><use href="#os-icon-search"></use></svg>
+        <input type="text" placeholder="Search by name, ID, territory, group..." style="border: none; background: transparent; font-family: var(--os-font-body); font-size: 13px; color: var(--os-text); outline: none; width: 100%;">
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; color: var(--os-text-muted);">Status:</span>
+        <span class="status-pill status-pill-success">Active</span>
+        <button class="btn btn-default btn-sm" style="font-size: 11px;">+ Filter</button>
+      </div>
+    </div>
+
+    <!-- Data Table Container -->
+    <div style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg); overflow: hidden; box-shadow: var(--os-shadow-card);">
+      <!-- Table Header -->
+      <div class="list-header" style="display: flex; align-items: center; padding: 0 16px;">
+        <div style="width: 40px;"><input type="checkbox" style="accent-color: var(--os-brand-primary);"></div>
+        <div style="width: 140px;">ID</div>
+        <div style="flex: 2;">Customer Name</div>
+        <div style="flex: 1;">Territory</div>
+        <div style="flex: 1;">Customer Group</div>
+        <div style="width: 120px; text-align: right; margin-right: 24px;">Outstanding</div>
+        <div style="width: 100px; text-align: center;">Status</div>
+      </div>
+
+      <!-- Sample Rows -->
+      <div class="list-row" style="display: flex; align-items: center; padding: 0 16px;">
+        <div style="width: 40px;"><input type="checkbox" style="accent-color: var(--os-brand-primary);"></div>
+        <div style="width: 140px; font-weight: 600; color: var(--os-brand-primary);">CUST-2026-0041</div>
+        <div style="flex: 2; font-weight: 600; color: var(--os-text);">Apex Global Logistics FZE</div>
+        <div style="flex: 1; color: var(--os-text-muted);">United Arab Emirates</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Commercial</div>
+        <div style="width: 120px; text-align: right; margin-right: 24px;" class="tabular-numbers font-semibold">$124,500.00</div>
+        <div style="width: 100px; text-align: center;"><span class="status-pill status-pill-success">Active</span></div>
+      </div>
+
+      <div class="list-row selected" style="display: flex; align-items: center; padding: 0 16px;">
+        <div style="width: 40px;"><input type="checkbox" checked style="accent-color: var(--os-brand-primary);"></div>
+        <div style="width: 140px; font-weight: 600; color: var(--os-brand-primary);">CUST-2026-0038</div>
+        <div style="flex: 2; font-weight: 600; color: var(--os-text);">Nile Delta Industrial Co.</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Egypt</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Manufacturing</div>
+        <div style="width: 120px; text-align: right; margin-right: 24px;" class="tabular-numbers font-semibold">$48,210.00</div>
+        <div style="width: 100px; text-align: center;"><span class="status-pill status-pill-warning">Pending</span></div>
+      </div>
+
+      <div class="list-row" style="display: flex; align-items: center; padding: 0 16px;">
+        <div style="width: 40px;"><input type="checkbox" style="accent-color: var(--os-brand-primary);"></div>
+        <div style="width: 140px; font-weight: 600; color: var(--os-brand-primary);">CUST-2026-0022</div>
+        <div style="flex: 2; font-weight: 600; color: var(--os-text);">Riyadh Solar Energy Systems</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Saudi Arabia</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Enterprise</div>
+        <div style="width: 120px; text-align: right; margin-right: 24px;" class="tabular-numbers font-semibold">$380,940.00</div>
+        <div style="width: 100px; text-align: center;"><span class="status-pill status-pill-success">Active</span></div>
+      </div>
+
+      <div class="list-row" style="display: flex; align-items: center; padding: 0 16px;">
+        <div style="width: 40px;"><input type="checkbox" style="accent-color: var(--os-brand-primary);"></div>
+        <div style="width: 140px; font-weight: 600; color: var(--os-brand-primary);">CUST-2026-0015</div>
+        <div style="flex: 2; font-weight: 600; color: var(--os-text);">Helwan Steel Rolling Mills</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Egypt</div>
+        <div style="flex: 1; color: var(--os-text-muted);">Industrial</div>
+        <div style="width: 120px; text-align: right; margin-right: 24px;" class="tabular-numbers font-semibold">$0.00</div>
+        <div style="width: 100px; text-align: center;"><span class="status-pill status-pill-danger">Suspended</span></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../onespace/public/js/theme_switcher.js"></script>
+  <script>
+    fetch('../onespace/public/icons/onespace-icons.svg')
+      .then(r => r.text())
+      .then(svg => document.getElementById('icon-sprite-container').innerHTML = svg);
+
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const themeLabel = document.getElementById('theme-label');
+    function sync(theme) { themeLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode'; }
+    toggleBtn.addEventListener('click', () => { OneSpace.toggleTheme(); sync(OneSpace.getTheme()); });
+    sync(OneSpace.getTheme());
+  </script>
+</body>
+</html>

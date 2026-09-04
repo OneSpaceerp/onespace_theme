@@ -1,0 +1,10 @@
+[
+  {
+    "doctype": "System Settings",
+    "name": "System Settings",
+    "app_name": "OneSpace",
+    "app_title": "OneSpace ERP Systems",
+    "disable_standard_email_footer": 1,
+    "hide_footer_in_auto_email_reports": 1
+  }
+]

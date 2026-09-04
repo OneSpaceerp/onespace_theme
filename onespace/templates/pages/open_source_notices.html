@@ -1,0 +1,40 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Open Source Notices - OneSpace ERP") }}{% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="/assets/onespace/css/tokens.css">
+{% endblock %}
+
+{% block page_content %}
+<div class="container my-5" style="max-width: 800px; font-family: var(--os-font-body);">
+  <div class="mb-4">
+    <a href="/" style="color: var(--os-brand-primary); text-decoration: none; font-weight: 600;">&larr; Return to OneSpace</a>
+  </div>
+
+  <h1 style="font-family: var(--os-font-display); font-size: 28px; font-weight: 700; color: var(--os-text);">
+    Open Source Notices &amp; Legal Attributions
+  </h1>
+  <p class="text-muted">
+    OneSpace ERP Systems is powered by open source enterprise technologies under their respective licenses.
+  </p>
+
+  <hr style="border-color: var(--os-border); margin: 24px 0;">
+
+  <div class="card p-4 mb-4" style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg);">
+    <h3 style="font-size: 18px; font-weight: 700;">Frappe Framework</h3>
+    <p style="font-size: 13px; color: var(--os-text-muted);">License: MIT License &bull; Copyright &copy; Frappe Technologies Pvt. Ltd. and contributors.</p>
+    <div style="background: var(--os-surface-low); padding: 12px; border-radius: var(--os-radius-md); font-family: monospace; font-size: 12px;">
+      Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction...
+    </div>
+  </div>
+
+  <div class="card p-4 mb-4" style="background: var(--os-surface); border: 1px solid var(--os-border); border-radius: var(--os-radius-lg);">
+    <h3 style="font-size: 18px; font-weight: 700;">ERPNext</h3>
+    <p style="font-size: 13px; color: var(--os-text-muted);">License: GNU General Public License v3.0 (GPLv3) &bull; Copyright &copy; Frappe Technologies Pvt. Ltd. and contributors.</p>
+    <div style="background: var(--os-surface-low); padding: 12px; border-radius: var(--os-radius-md); font-family: monospace; font-size: 12px;">
+      This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation...
+    </div>
+  </div>
+</div>
+{% endblock %}

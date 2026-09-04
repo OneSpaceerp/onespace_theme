@@ -1,0 +1,53 @@
+/**
+ * OneSpace ERP Systems v16 — Website & Portal Rebranding
+ */
+
+@import url('./tokens.css');
+
+body.web-page,
+.web-page-container {
+  background-color: var(--os-bg);
+  color: var(--os-text);
+  font-family: var(--os-font-body);
+}
+
+.web-page-header,
+header.web-header {
+  background-color: var(--os-surface);
+  border-bottom: 1px solid var(--os-border);
+  box-shadow: var(--os-shadow-ambient);
+}
+
+/* Remove default ERPNext/Frappe footers and replace with clean OneSpace branding */
+.web-footer,
+footer.page-footer {
+  background-color: var(--os-surface-low);
+  border-top: 1px solid var(--os-border);
+  color: var(--os-text-muted);
+  padding: var(--os-space-xl) 0;
+}
+
+.web-footer a {
+  color: var(--os-text);
+  text-decoration: none;
+}
+
+.web-footer a:hover {
+  color: var(--os-brand-primary);
+}
+
+/* Portal Cards */
+.portal-card,
+.web-card {
+  background-color: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius-lg);
+  box-shadow: var(--os-shadow-card);
+  padding: var(--os-space-lg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--os-shadow-elevated);
+}
