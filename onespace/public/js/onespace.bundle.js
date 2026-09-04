@@ -43,208 +43,7 @@
     'cog': '<path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>'
   };
 
-  function renderStitchDesk() {
-    // Only render on /desk
-    const pathname = window.location.pathname;
-    if (pathname !== '/desk' && pathname !== '/desk/' && pathname !== '/desk/home') {
-      return;
-    }
-
-    let mount = document.getElementById('onespace-desk-container');
-    if (mount) return; // Already mounted
-
-    // Find main page container
-    let container = document.querySelector('[data-page-route="desk"], main, .layout-main-section, #app > div');
-    if (!container) return;
-
-    // Get current user first name
-    let userName = 'Khaled';
-    if (window.frappe && frappe.session && frappe.session.user_fullname) {
-      userName = frappe.session.user_fullname.split(' ')[0] || 'Khaled';
-    }
-
-    mount = document.createElement('div');
-    mount.id = 'onespace-desk-container';
-    mount.className = 'onespace-desk-mounted';
-
-    mount.innerHTML = `
-      <div class="onespace-desk-wrapper">
-        <!-- Hero Header -->
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 28px;">
-          <div>
-            <div class="os-hero-pretitle">
-              <span class="dot"></span>
-              <span>ENTERPRISE GLOBAL WORKSPACE</span>
-              <span>&bull;</span>
-              <span>PRODUCTION INSTANCE</span>
-            </div>
-            <h1 class="os-hero-title">
-              Welcome back, <span class="highlight">${userName}</span> 👋
-            </h1>
-            <p class="os-hero-desc">
-              Select an ERP module to launch, or access pinned shortcuts and live analytics below.
-            </p>
-          </div>
-
-          <!-- Status Indicators -->
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
-            <div class="os-status-pill" style="background: #F0FDF4; border-color: #DCFCE7; color: #166534;">
-              <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span>
-              <span>Active Sales: <strong>$1.42M</strong></span>
-            </div>
-            <div class="os-status-pill" style="background: #FEFCE8; border-color: #FEF08A; color: #854D0E;">
-              <span style="width: 7px; height: 7px; border-radius: 50%; background: #CA8A04;"></span>
-              <span>Pending Approvals: <strong>6</strong></span>
-            </div>
-            <div class="os-status-pill" style="background: #F0FDFA; border-color: #CCFBF1; color: #115E59;">
-              <span style="width: 7px; height: 7px; border-radius: 50%; background: #0D9488;"></span>
-              <span>Stock Sync: <strong>OK</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Filter Tabs & View Controls -->
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="os-filter-container">
-            <button class="os-filter-tab active" data-cat="all">All Apps (${MODULES.length})</button>
-            <button class="os-filter-tab" data-cat="core">Core Operations</button>
-            <button class="os-filter-tab" data-cat="financials">Financials</button>
-            <button class="os-filter-tab" data-cat="supply">Supply Chain</button>
-            <button class="os-filter-tab" data-cat="hr">HR &amp; Payroll</button>
-            <button class="os-filter-tab" data-cat="system">System &amp; Tools</button>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 6px; background: var(--card-bg, #FFF); border: 1px solid var(--border-color, #E2E8F0); padding: 4px; border-radius: 10px;">
-            <button style="padding: 4px 8px; border-radius: 6px; background: #FF3700; color: #FFF; border: none; cursor: pointer;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
-            </button>
-            <button style="padding: 4px 8px; border-radius: 6px; background: transparent; color: #64748B; border: none; cursor: pointer;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- 14 App Cards Grid -->
-        <div class="onespace-app-grid" id="os-app-grid">
-          ${MODULES.map(m => `
-            <a href="${m.route}" class="os-app-card ${m.featured ? 'featured' : ''}" data-cat="${m.category}" id="card-${m.id}">
-              ${m.badge ? `<span class="os-card-badge" style="background: ${m.badgeBg}; color: ${m.badgeColor};">${m.badge}</span>` : ''}
-              <div class="os-icon-tile" style="background-color: ${m.bg};">
-                <svg width="26" height="26" viewBox="0 0 24 24">${SVGS[m.icon] || SVGS.cog}</svg>
-              </div>
-              <span class="os-card-title">${m.title}</span>
-              <span class="os-card-subtitle">${m.subtitle}</span>
-            </a>
-          `).join('')}
-        </div>
-
-        <!-- Bottom Bento Grid (Shortcuts & Telemetry) -->
-        <div class="os-bento-grid">
-          <!-- Bento Left: Frequent DocTypes & Shortcuts -->
-          <div class="os-bento-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3700"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-                <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">FREQUENT DOCTYPES &amp; SHORTCUTS</span>
-              </div>
-              <a href="/desk" style="font-size: 12px; font-weight: 600; color: #FF3700; text-decoration: none;">Customize Desk</a>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px;">
-              <a href="/app/sales-invoice" class="os-shortcut-item">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                  <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+1</span>
-                </div>
-                <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Sales Invoice</span>
-                <span style="font-size: 11px; color: var(--text-muted);">18 draft</span>
-              </a>
-
-              <a href="/app/item" class="os-shortcut-item">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M12 2L2 7l10 5 10-5-10-5zm-8 7.2v6.6l8 4.2v-6.6L4 9.2zm10 10.8l8-4.2V9.2l-8 4.2v6.6z"/></svg>
-                  <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+2</span>
-                </div>
-                <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Item Master</span>
-                <span style="font-size: 11px; color: var(--text-muted);">4,120 SKUs</span>
-              </a>
-
-              <a href="/app/quotation" class="os-shortcut-item">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
-                  <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+3</span>
-                </div>
-                <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Quotation</span>
-                <span style="font-size: 11px; color: #EA580C; font-weight: 600;">+12 today</span>
-              </a>
-
-              <a href="/app/purchase-order" class="os-shortcut-item">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                  <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+4</span>
-                </div>
-                <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Purchase Order</span>
-                <span style="font-size: 11px; color: var(--text-muted);">8 pending sign</span>
-              </a>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
-              <span>&bull; Last document accessed: <strong>SO-2026-00481 (Al-Ahli Supplies)</strong></span>
-              <a href="/app/audit-trail" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">View Audit Log &rarr;</a>
-            </div>
-          </div>
-
-          <!-- Bento Right: System Telemetry -->
-          <div class="os-bento-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">SYSTEM TELEMETRY</span>
-              <span style="font-size: 11px; font-weight: 700; background: #F0FDF4; color: #16A34A; padding: 2px 8px; border-radius: 9999px; border: 1px solid #DCFCE7;">&bull; 99.99% Operational</span>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-bottom: 20px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Cluster Pod</span>
-                <code style="font-family: monospace; color: var(--text-color);">lcs-east-prod-01</code>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Frappe Core</span>
-                <code style="font-family: monospace; color: var(--text-color);">v16.2.0 (Stable)</code>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">ERPNext Modules</span>
-                <code style="font-family: monospace; color: var(--text-color);">v16.1.4 Enterprise</code>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Background Workers</span>
-                <strong style="color: #16A34A;">Active (4/4 Healthy)</strong>
-              </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px;">
-              <span style="color: var(--text-muted);">OneSpace Managed Cloud</span>
-              <a href="/desk/system" style="color: #FF3700; text-decoration: none; font-weight: 700;">Diagnostics &rsaquo;</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stitch Footer -->
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
-          <div>
-            <strong>OneSpace ERP Systems</strong> &bull; Powered by Frappe &amp; ERPNext v16
-          </div>
-          <div style="display: flex; gap: 20px;">
-            <a href="https://onespace.sh/status" target="_blank" style="color: inherit; text-decoration: none;">Cluster Status</a>
-            <a href="https://onespace.sh/docs" target="_blank" style="color: inherit; text-decoration: none;">API Documentation</a>
-            <a href="https://onespace.sh/support" target="_blank" style="color: inherit; text-decoration: none;">Enterprise Support</a>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Mount at the top of the container
-    container.insertBefore(mount, container.firstChild);
-
-    // Wire up filter tabs
+  function wireStitchEvents(mount) {
     const tabs = mount.querySelectorAll('.os-filter-tab');
     const cards = mount.querySelectorAll('.os-app-card');
     tabs.forEach(tab => {
@@ -263,7 +62,7 @@
       });
     });
 
-    // Wire keyboard shortcuts (Ctrl+1, Ctrl+2, etc.)
+    // Keyboard shortcuts
     document.addEventListener('keydown', function (e) {
       if (e.ctrlKey && e.key === '1') { e.preventDefault(); window.location.href = '/app/sales-invoice'; }
       if (e.ctrlKey && e.key === '2') { e.preventDefault(); window.location.href = '/app/item'; }
@@ -272,9 +71,266 @@
     });
   }
 
-  // --- Universal Text Scrubber ---
+  function handleDeskRouting() {
+    const pathname = (window.location.pathname || '').replace(/\/+$/, '') || '/';
+    const isDeskHome = (pathname === '/desk' || pathname === '/desk/home' || pathname === '/' || pathname === '/app');
+    const existingMount = document.getElementById('onespace-desk-container');
+
+    // 1. When NOT on desk home (e.g. user is in /desk/accounting, /desk/buying, /app/item):
+    if (!isDeskHome) {
+      if (existingMount) {
+        if (existingMount.parentElement) {
+          // Restore visibility of all workspace elements
+          Array.from(existingMount.parentElement.children).forEach(child => {
+            if (child !== existingMount) {
+              child.style.removeProperty('display');
+            }
+          });
+        }
+        existingMount.remove();
+        document.querySelectorAll('[data-page-route="desk"] > *').forEach(el => {
+          el.style.removeProperty('display');
+        });
+      }
+      return;
+    }
+
+    // 2. When ON desk home (/desk):
+    // Find the proper container
+    let container = document.querySelector('[data-page-route="desk"], main, .layout-main-section');
+    if (!container) {
+      const app = document.getElementById('app');
+      if (app) {
+        container = app.querySelector('.flex-1, [class*="content"]') || app.lastElementChild;
+      }
+    }
+    if (!container) container = document.body;
+
+    let mount = existingMount;
+    if (!mount) {
+      // Get user name
+      let userName = 'Khaled';
+      if (window.frappe && frappe.session && frappe.session.user_fullname) {
+        userName = frappe.session.user_fullname.split(' ')[0] || 'Khaled';
+      }
+
+      mount = document.createElement('div');
+      mount.id = 'onespace-desk-container';
+      mount.className = 'onespace-desk-mounted';
+
+      mount.innerHTML = `
+        <div class="onespace-desk-wrapper">
+          <!-- Hero Header -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 28px;">
+            <div>
+              <div class="os-hero-pretitle">
+                <span class="dot"></span>
+                <span>ENTERPRISE GLOBAL WORKSPACE</span>
+                <span>&bull;</span>
+                <span>PRODUCTION INSTANCE</span>
+              </div>
+              <h1 class="os-hero-title">
+                Welcome back, <span class="highlight">${userName}</span> 👋
+              </h1>
+              <p class="os-hero-desc">
+                Select an ERP module to launch, or access pinned shortcuts and live analytics below.
+              </p>
+            </div>
+
+            <!-- Status Indicators -->
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+              <div class="os-status-pill" style="background: #F0FDF4; border-color: #DCFCE7; color: #166534;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span>
+                <span>Active Sales: <strong>$1.42M</strong></span>
+              </div>
+              <div class="os-status-pill" style="background: #FEFCE8; border-color: #FEF08A; color: #854D0E;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #CA8A04;"></span>
+                <span>Pending Approvals: <strong>6</strong></span>
+              </div>
+              <div class="os-status-pill" style="background: #F0FDFA; border-color: #CCFBF1; color: #115E59;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #0D9488;"></span>
+                <span>Stock Sync: <strong>OK</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Tabs & View Controls -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="os-filter-container">
+              <button class="os-filter-tab active" data-cat="all">All Apps (${MODULES.length})</button>
+              <button class="os-filter-tab" data-cat="core">Core Operations</button>
+              <button class="os-filter-tab" data-cat="financials">Financials</button>
+              <button class="os-filter-tab" data-cat="supply">Supply Chain</button>
+              <button class="os-filter-tab" data-cat="hr">HR &amp; Payroll</button>
+              <button class="os-filter-tab" data-cat="system">System &amp; Tools</button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 6px; background: var(--card-bg, #FFF); border: 1px solid var(--border-color, #E2E8F0); padding: 4px; border-radius: 10px;">
+              <button style="padding: 4px 8px; border-radius: 6px; background: #FF3700; color: #FFF; border: none; cursor: pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+              </button>
+              <button style="padding: 4px 8px; border-radius: 6px; background: transparent; color: #64748B; border: none; cursor: pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 14 App Cards Grid -->
+          <div class="onespace-app-grid" id="os-app-grid">
+            ${MODULES.map(m => `
+              <a href="${m.route}" class="os-app-card ${m.featured ? 'featured' : ''}" data-cat="${m.category}" id="card-${m.id}">
+                ${m.badge ? `<span class="os-card-badge" style="background: ${m.badgeBg}; color: ${m.badgeColor};">${m.badge}</span>` : ''}
+                <div class="os-icon-tile" style="background-color: ${m.bg};">
+                  <svg width="26" height="26" viewBox="0 0 24 24">${SVGS[m.icon] || SVGS.cog}</svg>
+                </div>
+                <span class="os-card-title">${m.title}</span>
+                <span class="os-card-subtitle">${m.subtitle}</span>
+              </a>
+            `).join('')}
+          </div>
+
+          <!-- Bottom Bento Grid (Shortcuts & Telemetry) -->
+          <div class="os-bento-grid">
+            <!-- Bento Left: Frequent DocTypes & Shortcuts -->
+            <div class="os-bento-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3700"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                  <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">FREQUENT DOCTYPES &amp; SHORTCUTS</span>
+                </div>
+                <a href="/desk" style="font-size: 12px; font-weight: 600; color: #FF3700; text-decoration: none;">Customize Desk</a>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px;">
+                <a href="/app/sales-invoice" class="os-shortcut-item">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+1</span>
+                  </div>
+                  <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Sales Invoice</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">18 draft</span>
+                </a>
+
+                <a href="/app/item" class="os-shortcut-item">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M12 2L2 7l10 5 10-5-10-5zm-8 7.2v6.6l8 4.2v-6.6L4 9.2zm10 10.8l8-4.2V9.2l-8 4.2v6.6z"/></svg>
+                    <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+2</span>
+                  </div>
+                  <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Item Master</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">4,120 SKUs</span>
+                </a>
+
+                <a href="/app/quotation" class="os-shortcut-item">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                    <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+3</span>
+                  </div>
+                  <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Quotation</span>
+                  <span style="font-size: 11px; color: #EA580C; font-weight: 600;">+12 today</span>
+                </a>
+
+                <a href="/app/purchase-order" class="os-shortcut-item">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#64748B"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+4</span>
+                  </div>
+                  <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Purchase Order</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">8 pending sign</span>
+                </a>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
+                <span>&bull; Last document accessed: <strong>SO-2026-00481 (Al-Ahli Supplies)</strong></span>
+                <a href="/app/audit-trail" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">View Audit Log &rarr;</a>
+              </div>
+            </div>
+
+            <!-- Bento Right: System Telemetry -->
+            <div class="os-bento-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">SYSTEM TELEMETRY</span>
+                <span style="font-size: 11px; font-weight: 700; background: #F0FDF4; color: #16A34A; padding: 2px 8px; border-radius: 9999px; border: 1px solid #DCFCE7;">&bull; 99.99% Operational</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">Cluster Pod</span>
+                  <code style="font-family: monospace; color: var(--text-color);">lcs-east-prod-01</code>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">OneSpace Core</span>
+                  <code style="font-family: monospace; color: var(--text-color);">v16.2.0 (Stable)</code>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">OneSpace Modules</span>
+                  <code style="font-family: monospace; color: var(--text-color);">v16.1.4 Enterprise</code>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">Background Workers</span>
+                  <strong style="color: #16A34A;">Active (4/4 Healthy)</strong>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px;">
+                <span style="color: var(--text-muted);">OneSpace Managed Cloud</span>
+                <a href="/desk/system" style="color: #FF3700; text-decoration: none; font-weight: 700;">Diagnostics &rsaquo;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stitch Footer -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
+            <div>
+              <strong>OneSpace ERP Systems</strong> &bull; Powered by OneSpace &amp; OneSpace v16
+            </div>
+            <div style="display: flex; gap: 20px;">
+              <a href="https://onespace.sh/status" target="_blank" style="color: inherit; text-decoration: none;">Cluster Status</a>
+              <a href="https://onespace.sh/docs" target="_blank" style="color: inherit; text-decoration: none;">API Documentation</a>
+              <a href="https://onespace.sh/support" target="_blank" style="color: inherit; text-decoration: none;">Enterprise Support</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.insertBefore(mount, container.firstChild);
+      wireStitchEvents(mount);
+    }
+
+    // Hide all other children/siblings in the container so the old interface at the bottom is 100% GONE!
+    Array.from(container.children).forEach(child => {
+      if (child !== mount) {
+        child.style.setProperty('display', 'none', 'important');
+      }
+    });
+
+    // Also defensively hide any other native desk app grid or desk header outside mount
+    document.querySelectorAll('[data-page-route="desk"] > *:not(#onespace-desk-container)').forEach(el => {
+      if (!mount.contains(el) && !el.closest('#onespace-desk-container') && !el.closest('aside') && !el.closest('.desk-sidebar')) {
+        el.style.setProperty('display', 'none', 'important');
+      }
+    });
+  }
+
+  // --- Universal Top-Left Logo & Text Scrubber ---
   function scrubBranding() {
     if (!document.body) return;
+
+    // 1. Replace Top-Left Frappe Cube with OneSpace Logo
+    const headerButtons = document.querySelectorAll('header button, nav button, #app button, #app a');
+    headerButtons.forEach(btn => {
+      const rect = btn.getBoundingClientRect();
+      if (rect.top < 60 && rect.left < 80 && rect.width >= 20 && rect.height >= 20) {
+        const svg = btn.querySelector('svg');
+        if (svg) svg.style.setProperty('display', 'none', 'important');
+        btn.style.setProperty('background-image', "url('/assets/onespace/images/onespace_icon.svg')", 'important');
+        btn.style.setProperty('background-size', '28px 28px', 'important');
+        btn.style.setProperty('background-position', 'center', 'important');
+        btn.style.setProperty('background-repeat', 'no-repeat', 'important');
+        btn.style.setProperty('border-radius', '8px', 'important');
+      }
+    });
+
+    // 2. TreeWalker text replacement
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while ((node = walker.nextNode())) {
@@ -289,28 +345,28 @@
   }
 
   // Lifecycle execution
-  function init() {
+  function tick() {
     scrubBranding();
-    renderStitchDesk();
+    handleDeskRouting();
   }
 
-  init();
+  tick();
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', tick);
   }
 
   if (window.$) {
-    $(document).on('app_ready', init);
+    $(document).on('app_ready', tick);
   }
 
-  setInterval(init, 300);
+  setInterval(tick, 200);
 
-  const observer = new MutationObserver(init);
+  const observer = new MutationObserver(tick);
   if (document.body) {
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
 
   if (window.frappe && frappe.router) {
-    frappe.router.on('change', () => setTimeout(init, 50));
+    frappe.router.on('change', () => setTimeout(tick, 50));
   }
 })();

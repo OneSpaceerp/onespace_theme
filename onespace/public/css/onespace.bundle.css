@@ -335,6 +335,10 @@ body, #app {
 }
 
 /* Native Frappe Desk Override (Hides raw grid when Stitch is active) */
+#onespace-desk-container ~ * {
+  display: none !important;
+}
+
 [data-page-route="desk"] .grid:not(.onespace-app-grid):not(.os-bento-grid),
 body[data-route="desk"] .grid:not(.onespace-app-grid):not(.os-bento-grid),
 #onespace-desk-container ~ .grid,
