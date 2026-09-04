@@ -77,13 +77,6 @@ def configure_workspaces_and_desktop_icons():
                 SET label = 'OneSpace Settings'
                 WHERE name = 'ERPNext Settings' OR label = 'ERPNext Settings'
             """)
-            # Rebrand ERPNext and Frappe app references to OneSpace
-            frappe.db.sql("""
-                UPDATE `tabDesktop Icon`
-                SET app = 'onespace'
-                WHERE app IN ('erpnext', 'frappe')
-            """)
-
         # 2. Workspaces
         if frappe.db.table_exists("Workspace"):
             # Hide Framework workspaces
@@ -99,28 +92,29 @@ def configure_workspaces_and_desktop_icons():
                 SET title = 'OneSpace Settings', label = 'OneSpace Settings'
                 WHERE name = 'ERPNext Settings' OR title = 'ERPNext Settings'
             """)
-            # Update module references from ERPNext/Frappe to OneSpace
-            frappe.db.sql("""
-                UPDATE `tabWorkspace`
-                SET module = 'OneSpace'
-                WHERE module IN ('ERPNext', 'Frappe', 'Frappe Framework')
-            """)
 
-        # 3. Workspace Sidebar (v16 persistent navigation)
+        # 3. Workspace Sidebar (v16 persistent navigation header rebranding)
         if frappe.db.table_exists("Workspace Sidebar"):
             columns = [c[0] for c in frappe.db.sql("DESC `tabWorkspace Sidebar`")]
-            if "app" in columns:
-                frappe.db.sql("""
-                    UPDATE `tabWorkspace Sidebar`
-                    SET app = 'onespace'
-                    WHERE app IN ('erpnext', 'frappe')
-                """)
             if "header" in columns:
                 frappe.db.sql("""
                     UPDATE `tabWorkspace Sidebar`
                     SET header = 'OneSpace'
                     WHERE header IN ('ERPNext', 'Frappe Framework', 'Frappe')
                 """)
+
+        # 4. Resync standard icons from apps
+        try:
+            from frappe.desk.doctype.desktop_icon.desktop_icon import sync_desktop_icons
+            sync_desktop_icons()
+        except Exception:
+            pass
+
+        try:
+            from frappe.desk.doctype.workspace_sidebar.workspace_sidebar import sync_workspace_sidebars
+            sync_workspace_sidebars()
+        except Exception:
+            pass
 
         frappe.db.commit()
     except Exception as e:

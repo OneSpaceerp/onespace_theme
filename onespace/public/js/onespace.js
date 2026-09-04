@@ -204,6 +204,9 @@
       overhaulSidebar();
       overhaulDesktopLauncher();
       injectNavbarThemeToggle();
+      if (window.OneSpace && OneSpace.autoMountLauncher) {
+        OneSpace.autoMountLauncher();
+      }
     }
 
     // Initial Execution
