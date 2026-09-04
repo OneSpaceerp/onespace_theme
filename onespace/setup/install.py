@@ -77,11 +77,11 @@ def configure_workspaces_and_desktop_icons():
                 SET label = 'OneSpace Settings'
                 WHERE name = 'ERPNext Settings' OR label = 'ERPNext Settings'
             """)
-            # Rebrand ERPNext app reference to OneSpace
+            # Rebrand ERPNext and Frappe app references to OneSpace
             frappe.db.sql("""
                 UPDATE `tabDesktop Icon`
                 SET app = 'onespace'
-                WHERE app = 'erpnext'
+                WHERE app IN ('erpnext', 'frappe')
             """)
 
         # 2. Workspaces
@@ -99,11 +99,11 @@ def configure_workspaces_and_desktop_icons():
                 SET title = 'OneSpace Settings', label = 'OneSpace Settings'
                 WHERE name = 'ERPNext Settings' OR title = 'ERPNext Settings'
             """)
-            # Update module references from ERPNext to OneSpace
+            # Update module references from ERPNext/Frappe to OneSpace
             frappe.db.sql("""
                 UPDATE `tabWorkspace`
                 SET module = 'OneSpace'
-                WHERE module = 'ERPNext'
+                WHERE module IN ('ERPNext', 'Frappe', 'Frappe Framework')
             """)
 
         # 3. Workspace Sidebar (v16 persistent navigation)
@@ -113,13 +113,13 @@ def configure_workspaces_and_desktop_icons():
                 frappe.db.sql("""
                     UPDATE `tabWorkspace Sidebar`
                     SET app = 'onespace'
-                    WHERE app = 'erpnext'
+                    WHERE app IN ('erpnext', 'frappe')
                 """)
             if "header" in columns:
                 frappe.db.sql("""
                     UPDATE `tabWorkspace Sidebar`
                     SET header = 'OneSpace'
-                    WHERE header = 'ERPNext'
+                    WHERE header IN ('ERPNext', 'Frappe Framework', 'Frappe')
                 """)
 
         frappe.db.commit()
