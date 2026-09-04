@@ -26,12 +26,45 @@ header.navbar,
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 0 20px !important;
+  padding: 0 24px !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
   backdrop-filter: blur(12px) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Container Full Width Reset */
+#onespace-desk-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+[data-page-route="desk"],
+[data-page-route="desk"] > div,
+[data-page-route="desk"] .layout-main-section,
+[data-page-route="desk"] .page-container,
+[data-page-route="desk"] .page-content,
+[data-page-route="desk"] .page-body,
+[data-page-route="desk"] .container,
+body[data-route="desk"] .page-container,
+body[data-route="desk"] .container,
+body[data-route="desk"] .layout-main-section,
+.layout-main-section:has(#onespace-desk-container),
+.page-container:has(#onespace-desk-container),
+main:has(#onespace-desk-container) {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
 /* Top-Left Logo Button in Navbar */
@@ -128,9 +161,11 @@ nav .avatar {
    2. Desk Canvas & Hero Section
    ========================================================================== */
 .onespace-desk-wrapper {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 28px 24px 60px;
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 28px 32px 60px !important;
+  box-sizing: border-box !important;
   min-height: calc(100vh - 56px);
 }
 

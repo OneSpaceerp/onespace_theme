@@ -173,6 +173,17 @@
     }
     if (!container) container = document.body;
 
+    // Reset container and all ancestor layout wrappers to 100% full-width
+    let p = container;
+    while (p && p !== document.body && p.id !== 'app') {
+      p.style.setProperty('max-width', '100%', 'important');
+      p.style.setProperty('width', '100%', 'important');
+      p.style.setProperty('padding', '0', 'important');
+      p.style.setProperty('margin', '0', 'important');
+      p.style.setProperty('box-sizing', 'border-box', 'important');
+      p = p.parentElement;
+    }
+
     let mount = existingMount;
     if (!mount) {
       // Get user name and initials
@@ -189,10 +200,11 @@
       mount = document.createElement('div');
       mount.id = 'onespace-desk-container';
       mount.className = 'onespace-desk-mounted';
+      mount.style.cssText = 'width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important;';
 
       mount.innerHTML = `
-        <!-- Stitch Minimal Top Navigation Bar -->
-        <header class="onespace-top-navbar" style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 28px; background: var(--navbar-bg, #FFFFFF); border-bottom: 1px solid var(--border-color, #E2E8F0); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; width: 100%;">
+        <!-- Stitch Minimal Top Navigation Bar (Full Width) -->
+        <header class="onespace-top-navbar" style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 28px; background: var(--navbar-bg, #FFFFFF); border-bottom: 1px solid var(--border-color, #E2E8F0); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; width: 100%; margin: 0;">
           <!-- Left: OneSpace Logo -->
           <a href="/desk" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
             <div style="width: 36px; height: 36px; border-radius: 8px; background: #0F172A; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -202,7 +214,7 @@
           </a>
 
           <!-- Center: Search Bar -->
-          <div id="onespace-topbar-search-box" style="position: relative; width: 440px; max-width: 45vw; cursor: pointer;">
+          <div id="onespace-topbar-search-box" style="position: relative; width: 500px; max-width: 50vw; cursor: pointer;">
             <div style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; color: #94A3B8; pointer-events: none;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
