@@ -43,6 +43,119 @@
     'cog': '<path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>'
   };
 
+  function applyMetrics(mount, data) {
+    if (!data) return;
+
+    // 1. Status Indicators
+    const salesEl = mount.querySelector('#os-metric-sales-val');
+    if (salesEl && data.active_sales) salesEl.textContent = data.active_sales;
+
+    const apprvEl = mount.querySelector('#os-metric-approvals-val');
+    if (apprvEl && data.pending_approvals !== undefined) apprvEl.textContent = data.pending_approvals;
+
+    const stockEl = mount.querySelector('#os-metric-stock-val');
+    if (stockEl && data.stock_sync) stockEl.textContent = data.stock_sync;
+
+    // 2. Shortcuts Counts
+    if (data.shortcuts) {
+      const si = mount.querySelector('#os-sc-sales-invoice-count');
+      if (si && data.shortcuts.sales_invoice) si.textContent = data.shortcuts.sales_invoice;
+
+      const itm = mount.querySelector('#os-sc-item-count');
+      if (itm && data.shortcuts.item_master) itm.textContent = data.shortcuts.item_master;
+
+      const qt = mount.querySelector('#os-sc-quotation-count');
+      if (qt && data.shortcuts.quotation) qt.textContent = data.shortcuts.quotation;
+
+      const po = mount.querySelector('#os-sc-po-count');
+      if (po && data.shortcuts.purchase_order) po.textContent = data.shortcuts.purchase_order;
+    }
+
+    // 3. Last Accessed Doc
+    if (data.last_accessed && data.last_accessed.label && data.last_accessed.label !== 'None') {
+      const lastDocLink = mount.querySelector('#os-last-doc-link');
+      if (lastDocLink) {
+        lastDocLink.textContent = data.last_accessed.label;
+        lastDocLink.href = data.last_accessed.route;
+      }
+    }
+
+    // 4. Telemetry
+    if (data.telemetry) {
+      const pod = mount.querySelector('#os-telem-pod');
+      if (pod && data.telemetry.cluster_pod) pod.textContent = data.telemetry.cluster_pod;
+
+      const core = mount.querySelector('#os-telem-core');
+      if (core && data.telemetry.core_version) core.textContent = data.telemetry.core_version;
+
+      const mod = mount.querySelector('#os-telem-modules');
+      if (mod && data.telemetry.modules_version) mod.textContent = data.telemetry.modules_version;
+
+      const wrk = mount.querySelector('#os-telem-workers');
+      if (wrk && data.telemetry.workers_status) {
+        wrk.textContent = data.telemetry.workers_status;
+        wrk.style.color = data.telemetry.is_healthy ? '#16A34A' : '#CA8A04';
+      }
+
+      const bdg = mount.querySelector('#os-telem-badge');
+      if (bdg && data.telemetry.operational_badge) {
+        bdg.textContent = data.telemetry.operational_badge;
+        bdg.style.background = data.telemetry.is_healthy ? '#F0FDF4' : '#FEFCE8';
+        bdg.style.color = data.telemetry.is_healthy ? '#16A34A' : '#854D0E';
+        bdg.style.borderColor = data.telemetry.is_healthy ? '#DCFCE7' : '#FEF08A';
+      }
+    }
+  }
+
+  function fetchLiveMetrics(mount) {
+    // A. Apply from boot immediately if available
+    if (window.frappe && frappe.boot && frappe.boot.onespace_metrics) {
+      applyMetrics(mount, frappe.boot.onespace_metrics);
+    }
+
+    // B. Check client-side route history for instant last accessed document
+    if (window.frappe && frappe.route_history && frappe.route_history.length) {
+      for (let i = frappe.route_history.length - 1; i >= 0; i--) {
+        const r = frappe.route_history[i];
+        if (r && r.length >= 3 && r[0] === 'Form') {
+          const dt = r[1];
+          const dn = r[2];
+          const lastDocLink = mount.querySelector('#os-last-doc-link');
+          if (lastDocLink) {
+            lastDocLink.textContent = `${dn} (${dt})`;
+            const slug = (dt || '').toLowerCase().replace(/\s+/g, '-');
+            lastDocLink.href = `/app/${slug}/${dn}`;
+          }
+          break;
+        }
+      }
+    }
+
+    // C. Make live API call for real-time fresh counts
+    if (window.frappe && typeof frappe.call === 'function') {
+      frappe.call({
+        method: 'onespace.api.get_desk_metrics',
+        callback: function (r) {
+          if (r && r.message) {
+            applyMetrics(mount, r.message);
+          }
+        }
+      });
+
+      // Notification unread count
+      frappe.call({
+        method: 'frappe.desk.doctype.notification_log.notification_log.get_unread_count',
+        callback: function (r) {
+          const count = (r && r.message) || 0;
+          const dot = mount.querySelector('#onespace-notifications-dot');
+          if (dot) {
+            dot.style.display = count > 0 ? 'block' : 'none';
+          }
+        }
+      });
+    }
+  }
+
   function wireStitchEvents(mount) {
     const tabs = mount.querySelectorAll('.os-filter-tab');
     const cards = mount.querySelectorAll('.os-app-card');
@@ -95,27 +208,49 @@
     const notifBtn = mount.querySelector('#onespace-notifications-top');
     if (notifBtn) {
       notifBtn.addEventListener('click', function () {
-        const nativeBell = document.querySelector('.navbar .notifications-icon, [title*="Notification" i], button:has(svg [d*="M12 22"])');
-        if (nativeBell) {
-          nativeBell.click();
-        } else if (window.frappe && frappe.ui && frappe.ui.notifications) {
+        if (window.frappe && frappe.ui && frappe.ui.notifications && typeof frappe.ui.notifications.show === 'function') {
           frappe.ui.notifications.show();
+        } else {
+          const nativeBell = document.querySelector('.navbar .notifications-icon, [title*="Notification" i], button:has(svg [d*="M12 22"])');
+          if (nativeBell) {
+            nativeBell.click();
+          } else {
+            window.location.href = '/app/notification-log';
+          }
         }
       });
     }
 
-    // Top Bar User Profile Click
+    // Top Bar User Profile Click & Dropdown Toggle
     const userBtn = mount.querySelector('#onespace-user-profile-top');
-    if (userBtn) {
-      userBtn.addEventListener('click', function () {
-        const nativeUser = document.querySelector('.navbar .dropdown-navbar-user, .user-avatar, [title*="User" i], button:has(.avatar)');
-        if (nativeUser) {
-          nativeUser.click();
-        } else {
-          window.location.href = '/app/user';
+    const userDropdown = mount.querySelector('#onespace-user-dropdown');
+    if (userBtn && userDropdown) {
+      userBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isOpen = userDropdown.style.display === 'block';
+        userDropdown.style.display = isOpen ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', function (e) {
+        if (userDropdown && !userDropdown.contains(e.target) && e.target !== userBtn) {
+          userDropdown.style.display = 'none';
         }
       });
     }
+
+    const reloadBtn = mount.querySelector('#os-btn-reload');
+    if (reloadBtn) {
+      reloadBtn.addEventListener('click', function () {
+        if (window.frappe && frappe.ui && frappe.ui.toolbar && frappe.ui.toolbar.clear_cache) {
+          frappe.ui.toolbar.clear_cache();
+        } else {
+          window.location.reload();
+        }
+      });
+    }
+
+    // Fetch and populate live real data across all components
+    fetchLiveMetrics(mount);
 
     // Keyboard shortcuts
     if (!window._osKeyboardBound) {
@@ -186,15 +321,27 @@
 
     let mount = existingMount;
     if (!mount) {
-      // Get user name and initials
+      // Get real user session details
       let userName = 'Khaled';
+      let userFullName = 'Khaled';
+      let userEmail = 'Administrator';
       let userInitials = 'KH';
-      if (window.frappe && frappe.session && frappe.session.user_fullname) {
-        const parts = frappe.session.user_fullname.trim().split(/\s+/);
-        userName = parts[0] || 'Khaled';
-        userInitials = parts.length > 1
-          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-          : parts[0].substring(0, 2).toUpperCase();
+      let userImg = null;
+
+      if (window.frappe && frappe.session) {
+        userEmail = frappe.session.user || 'Administrator';
+        if (frappe.session.user_fullname) {
+          userFullName = frappe.session.user_fullname;
+          const parts = frappe.session.user_fullname.trim().split(/\s+/);
+          userName = parts[0] || 'Khaled';
+          userInitials = parts.length > 1
+            ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+            : parts[0].substring(0, 2).toUpperCase();
+        }
+      }
+
+      if (window.frappe && frappe.boot && frappe.boot.user_info && frappe.session && frappe.boot.user_info[frappe.session.user]) {
+        userImg = frappe.boot.user_info[frappe.session.user].image || null;
       }
 
       mount = document.createElement('div');
@@ -225,13 +372,38 @@
           </div>
 
           <!-- Right: Notifications & User Avatar -->
-          <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 14px; position: relative;">
             <div id="onespace-notifications-top" title="Notifications" style="position: relative; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted, #64748B); cursor: pointer; transition: background 0.2s;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-              <span style="position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF;"></span>
+              <span id="onespace-notifications-dot" style="position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF; display: none;"></span>
             </div>
-            <div id="onespace-user-profile-top" title="User Menu" style="width: 36px; height: 36px; border-radius: 50%; background: #EA580C; color: #FFFFFF; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.25);">
-              ${userInitials}
+            <div id="onespace-user-profile-top" title="User Menu" style="width: 36px; height: 36px; border-radius: 50%; background: #EA580C; color: #FFFFFF; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.25); overflow: hidden;">
+              ${userImg ? `<img src="${userImg}" alt="${userName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : userInitials}
+            </div>
+
+            <!-- Sleek User Dropdown Menu -->
+            <div id="onespace-user-dropdown" style="display: none; position: absolute; top: 48px; right: 0; width: 230px; background: var(--card-bg, #FFFFFF); border: 1px solid var(--border-color, #E2E8F0); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); z-index: 1001; padding: 6px; font-family: inherit;">
+              <div style="padding: 10px 12px; border-bottom: 1px solid var(--border-color, #F1F5F9); margin-bottom: 4px;">
+                <div style="font-weight: 700; font-size: 13px; color: var(--text-color, #0F172A);">${userFullName}</div>
+                <div style="font-size: 11px; color: var(--text-muted, #64748B); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${userEmail}</div>
+              </div>
+              <a href="/app/user-profile" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: var(--text-color, #334155); text-decoration: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>My Settings</span>
+              </a>
+              <a href="/app/session-default" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: var(--text-color, #334155); text-decoration: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <span>Session Defaults</span>
+              </a>
+              <div id="os-btn-reload" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: var(--text-color, #334155); cursor: pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                <span>Reload Desk</span>
+              </div>
+              <div style="border-top: 1px solid var(--border-color, #F1F5F9); margin: 4px 0;"></div>
+              <a href="/?cmd=web_logout" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: #DC2626; text-decoration: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Log out</span>
+              </a>
             </div>
           </div>
         </header>
@@ -254,20 +426,20 @@
               </p>
             </div>
 
-            <!-- Status Indicators -->
+            <!-- Status Indicators (Real Connected Live Data) -->
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
-              <div class="os-status-pill" style="background: #F0FDF4; border-color: #DCFCE7; color: #166534;">
+              <a href="/app/sales-invoice" class="os-status-pill" style="background: #F0FDF4; border-color: #DCFCE7; color: #166534; text-decoration: none; cursor: pointer;">
                 <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span>
-                <span>Active Sales: <strong>$1.42M</strong></span>
-              </div>
-              <div class="os-status-pill" style="background: #FEFCE8; border-color: #FEF08A; color: #854D0E;">
+                <span>Active Sales: <strong id="os-metric-sales-val">$0.00</strong></span>
+              </a>
+              <a href="/app/purchase-order" class="os-status-pill" style="background: #FEFCE8; border-color: #FEF08A; color: #854D0E; text-decoration: none; cursor: pointer;">
                 <span style="width: 7px; height: 7px; border-radius: 50%; background: #CA8A04;"></span>
-                <span>Pending Approvals: <strong>6</strong></span>
-              </div>
-              <div class="os-status-pill" style="background: #F0FDFA; border-color: #CCFBF1; color: #115E59;">
+                <span>Pending Approvals: <strong id="os-metric-approvals-val">0</strong></span>
+              </a>
+              <a href="/app/stock-ledger" class="os-status-pill" style="background: #F0FDFA; border-color: #CCFBF1; color: #115E59; text-decoration: none; cursor: pointer;">
                 <span style="width: 7px; height: 7px; border-radius: 50%; background: #0D9488;"></span>
-                <span>Stock Sync: <strong>OK</strong></span>
-              </div>
+                <span>Stock Sync: <strong id="os-metric-stock-val">OK</strong></span>
+              </a>
             </div>
           </div>
 
@@ -315,7 +487,7 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3700"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
                   <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">FREQUENT DOCTYPES &amp; SHORTCUTS</span>
                 </div>
-                <a href="/desk" style="font-size: 12px; font-weight: 600; color: #FF3700; text-decoration: none;">Customize Desk</a>
+                <a href="/app/workspace" style="font-size: 12px; font-weight: 600; color: #FF3700; text-decoration: none;">Customize Desk</a>
               </div>
 
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px;">
@@ -325,7 +497,7 @@
                     <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+1</span>
                   </div>
                   <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Sales Invoice</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">18 draft</span>
+                  <span id="os-sc-sales-invoice-count" style="font-size: 11px; color: var(--text-muted);">...</span>
                 </a>
 
                 <a href="/app/item" class="os-shortcut-item">
@@ -334,7 +506,7 @@
                     <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+2</span>
                   </div>
                   <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Item Master</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">4,120 SKUs</span>
+                  <span id="os-sc-item-count" style="font-size: 11px; color: var(--text-muted);">...</span>
                 </a>
 
                 <a href="/app/quotation" class="os-shortcut-item">
@@ -343,7 +515,7 @@
                     <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+3</span>
                   </div>
                   <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Quotation</span>
-                  <span style="font-size: 11px; color: #EA580C; font-weight: 600;">+12 today</span>
+                  <span id="os-sc-quotation-count" style="font-size: 11px; color: #EA580C; font-weight: 600;">...</span>
                 </a>
 
                 <a href="/app/purchase-order" class="os-shortcut-item">
@@ -352,45 +524,45 @@
                     <span style="font-size: 10px; font-weight: 600; background: var(--border-color); padding: 1px 5px; border-radius: 4px; color: var(--text-muted);">Ctrl+4</span>
                   </div>
                   <span style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 2px;">Purchase Order</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">8 pending sign</span>
+                  <span id="os-sc-po-count" style="font-size: 11px; color: var(--text-muted);">...</span>
                 </a>
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
-                <span>&bull; Last document accessed: <strong>SO-2026-00481 (Al-Ahli Supplies)</strong></span>
-                <a href="/app/audit-trail" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">View Audit Log &rarr;</a>
+                <span id="os-last-doc-wrap">&bull; Last document accessed: <strong><a id="os-last-doc-link" href="/app" style="color: #FF3700; text-decoration: none;">Loading...</a></strong></span>
+                <a href="/app/activity-log" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">View Audit Log &rarr;</a>
               </div>
             </div>
 
-            <!-- Bento Right: System Telemetry -->
+            <!-- Bento Right: System Telemetry (Real Connected Data) -->
             <div class="os-bento-card">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">SYSTEM TELEMETRY</span>
-                <span style="font-size: 11px; font-weight: 700; background: #F0FDF4; color: #16A34A; padding: 2px 8px; border-radius: 9999px; border: 1px solid #DCFCE7;">&bull; 99.99% Operational</span>
+                <span id="os-telem-badge" style="font-size: 11px; font-weight: 700; background: #F0FDF4; color: #16A34A; padding: 2px 8px; border-radius: 9999px; border: 1px solid #DCFCE7;">&bull; 99.99% Operational</span>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">Cluster Pod</span>
-                  <code style="font-family: monospace; color: var(--text-color);">lcs-east-prod-01</code>
+                  <code id="os-telem-pod" style="font-family: monospace; color: var(--text-color);">onespace-prod-01</code>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">OneSpace Core</span>
-                  <code style="font-family: monospace; color: var(--text-color);">v16.2.0 (Stable)</code>
+                  <code id="os-telem-core" style="font-family: monospace; color: var(--text-color);">v16.0.0 (Stable)</code>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">OneSpace Modules</span>
-                  <code style="font-family: monospace; color: var(--text-color);">v16.1.4 Enterprise</code>
+                  <code id="os-telem-modules" style="font-family: monospace; color: var(--text-color);">v16.0.0 Enterprise</code>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span style="color: var(--text-muted);">Background Workers</span>
-                  <strong style="color: #16A34A;">Active (4/4 Healthy)</strong>
+                  <strong id="os-telem-workers" style="color: #16A34A;">Active (Healthy)</strong>
                 </div>
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px;">
                 <span style="color: var(--text-muted);">OneSpace Managed Cloud</span>
-                <a href="/desk/system" style="color: #FF3700; text-decoration: none; font-weight: 700;">Diagnostics &rsaquo;</a>
+                <a href="/app/system-settings" style="color: #FF3700; text-decoration: none; font-weight: 700;">Diagnostics &rsaquo;</a>
               </div>
             </div>
           </div>

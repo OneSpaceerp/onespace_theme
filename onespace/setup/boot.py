@@ -65,5 +65,12 @@ def boot_session(bootinfo):
             "custom_logo": "/assets/onespace/images/onespace_light.png"
         }
 
+        # 7. Live Desk Metrics & Telemetry
+        try:
+            from onespace.api import get_desk_metrics
+            bootinfo.onespace_metrics = get_desk_metrics()
+        except Exception as api_err:
+            frappe.log_error(f"OneSpace get_desk_metrics boot error: {api_err}")
+
     except Exception as e:
         frappe.log_error(f"OneSpace boot_session hook error: {e}")

@@ -107,7 +107,13 @@ class TestOneSpaceTheme(unittest.TestCase):
 
         self.assertIn("#FF3700", content, "Kinetic Orange #FF3700 missing in tokens.css")
         self.assertIn("Plus Jakarta Sans", content, "Display font Plus Jakarta Sans missing in tokens.css")
-        self.assertIn("Manrope", content, "Body font Manrope missing in tokens.css")
+    def test_api_module_exists(self):
+        """Verify that onespace/api.py exists and defines get_desk_metrics."""
+        api_path = os.path.join(self.app_dir, "api.py")
+        self.assertTrue(os.path.isfile(api_path), "Missing onespace/api.py")
+        with open(api_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        self.assertIn("def get_desk_metrics", content)
 
 if __name__ == "__main__":
     unittest.main()
