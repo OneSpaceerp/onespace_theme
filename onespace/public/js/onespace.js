@@ -31,39 +31,47 @@
     // --- 2. Universal DOM Text Scrubber ---
     const ignoredTags = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA', 'INPUT']);
 
-    function scrubNodeText(node) {
-      if (!node) return;
+    function universalBrandScrub() {
+      // Direct TreeWalker across the entire DOM tree
+      try {
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: function(node) {
+              if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
+              const parent = node.parentElement;
+              if (!parent || ignoredTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+              if (node.nodeValue.includes('Frappe') || node.nodeValue.includes('ERPNext')) {
+                return NodeFilter.FILTER_ACCEPT;
+              }
+              return NodeFilter.FILTER_SKIP;
+            }
+          }
+        );
 
-      if (node.nodeType === Node.TEXT_NODE) {
-        let text = node.nodeValue;
-        if (text && (text.includes('ERPNext') || text.includes('Frappe'))) {
-          node.nodeValue = text
+        let textNode;
+        while ((textNode = walker.nextNode())) {
+          textNode.nodeValue = textNode.nodeValue
+            .replace(/Frappe Framework/g, 'OneSpace')
             .replace(/ERPNext Settings/g, 'OneSpace Settings')
             .replace(/ERPNext/g, 'OneSpace')
-            .replace(/Frappe Framework/g, 'OneSpace Platform')
             .replace(/Frappe/g, 'OneSpace');
         }
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        if (ignoredTags.has(node.tagName)) return;
-
-        // Scrub user-facing attributes
-        ['title', 'placeholder', 'aria-label', 'alt'].forEach(attr => {
-          const val = node.getAttribute(attr);
-          if (val && (val.includes('ERPNext') || val.includes('Frappe'))) {
-            node.setAttribute(attr, val
-              .replace(/ERPNext Settings/g, 'OneSpace Settings')
-              .replace(/ERPNext/g, 'OneSpace')
-              .replace(/Frappe Framework/g, 'OneSpace Platform')
-              .replace(/Frappe/g, 'OneSpace')
-            );
-          }
-        });
-
-        // Recurse child nodes
-        for (let i = 0; i < node.childNodes.length; i++) {
-          scrubNodeText(node.childNodes[i]);
-        }
+      } catch (e) {
+        // Fallback
       }
+
+      // Universal sweep for exact matching text in leaf elements (e.g. sidebar headers)
+      const allLeaves = document.querySelectorAll('button, div, span, p, a, h1, h2, h3, h4');
+      allLeaves.forEach(el => {
+        if (el.children.length === 0) {
+          const trimmed = el.textContent.trim();
+          if (trimmed === 'Frappe Framework' || trimmed === 'ERPNext' || trimmed === 'Frappe') {
+            el.textContent = 'OneSpace';
+          }
+        }
+      });
     }
 
     // --- 3. Top-Left Logo Overhaul (Desk & Header) ---
@@ -81,19 +89,16 @@
         `;
       }
 
-      // Frappe v16 Vue Desk header button with Frappe logo
-      const headerLogos = document.querySelectorAll(
-        'header button:first-child, nav button:first-child, header a:first-child, nav a:first-child, [class*="app-logo"], [class*="home-button"]'
-      );
-
-      headerLogos.forEach(logoEl => {
-        const svg = logoEl.querySelector('svg');
-        if (svg && !logoEl.dataset.onespaceLogoReplaced) {
-          // Check if this is the desk home logo button
-          const isTopLeft = logoEl.getBoundingClientRect().left < 200 && logoEl.getBoundingClientRect().top < 100;
-          if (isTopLeft) {
-            logoEl.dataset.onespaceLogoReplaced = 'true';
-            logoEl.innerHTML = `
+      // Frappe v16 Vue Desk top-left icon button with Frappe cube
+      const allTopElements = document.querySelectorAll('header button, nav button, header a, nav a, #app button, #app a');
+      allTopElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        // Top-left 100px area
+        if (rect.top < 60 && rect.left < 100 && rect.width > 20 && rect.height > 20) {
+          const svg = el.querySelector('svg');
+          if (svg && !el.dataset.onespaceLogoReplaced) {
+            el.dataset.onespaceLogoReplaced = 'true';
+            el.innerHTML = `
               <img src="/assets/onespace/images/onespace_icon.svg" alt="OneSpace" style="height: 32px; width: 32px; border-radius: 8px; object-fit: contain; vertical-align: middle;">
             `;
           }
@@ -103,22 +108,21 @@
 
     // --- 4. Sidebar Header & Navigation Scrubbing ---
     function overhaulSidebar() {
-      // Look for sidebar headers with "ERPNext"
-      const sidebars = document.querySelectorAll('aside, .desk-sidebar, [class*="sidebar"]');
-      sidebars.forEach(sidebar => {
-        const textElements = sidebar.querySelectorAll('span, p, div, a, button');
+      // Find elements containing "Frappe Framework" or "ERPNext"
+      const candidates = document.querySelectorAll('[class*="sidebar"], aside, nav, div');
+      candidates.forEach(container => {
+        const textElements = container.querySelectorAll('span, p, div, a, button');
         textElements.forEach(el => {
           if (el.children.length === 0) {
             const trimmed = el.textContent.trim();
-            if (trimmed === 'ERPNext') {
-              el.textContent = 'OneSpace';
-            } else if (trimmed === 'Frappe' || trimmed === 'Frappe Framework') {
+            if (trimmed === 'Frappe Framework' || trimmed === 'ERPNext' || trimmed === 'Frappe') {
               el.textContent = 'OneSpace';
             }
           }
         });
       });
     }
+
 
     // --- 5. Desktop Launcher Grid Scrubbing (/desk) ---
     function overhaulDesktopLauncher() {
@@ -199,7 +203,7 @@
     // --- Master Pass ---
     function runAllBrandingPasses() {
       scrubTitle();
-      scrubNodeText(document.body);
+      universalBrandScrub();
       overhaulTopLogo();
       overhaulSidebar();
       overhaulDesktopLauncher();
@@ -208,6 +212,7 @@
         OneSpace.autoMountLauncher();
       }
     }
+
 
     // Initial Execution
     runAllBrandingPasses();

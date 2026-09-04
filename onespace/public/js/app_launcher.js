@@ -152,6 +152,37 @@
     }
   };
 
+  function findDeskMountTarget() {
+    // 1. Direct match for semantic containers
+    let target = document.querySelector('main, .layout-main-section, .desk-page, [data-page-route="desk"]');
+    if (target) return target;
+
+    // 2. Find by existing icon text (Accounting, Buying, Selling, Stock, OneSpace)
+    const candidates = document.querySelectorAll('span, p, div, a');
+    for (let i = 0; i < candidates.length; i++) {
+      const txt = (candidates[i].textContent || '').trim();
+      if (txt === 'Accounting' || txt === 'Selling' || txt === 'Stock' || txt === 'OneSpace' || txt === 'Organization') {
+        let parent = candidates[i].parentElement;
+        while (parent && parent !== document.body && parent !== document.documentElement) {
+          if (parent.children.length >= 2) {
+            return parent.parentElement || parent;
+          }
+          parent = parent.parentElement;
+        }
+      }
+    }
+
+    // 3. Fallback to #app inner container
+    const app = document.getElementById('app');
+    if (app) {
+      const inner = app.querySelector('.flex-1, [class*="content"]') || app.lastElementChild;
+      if (inner) return inner;
+      return app;
+    }
+
+    return document.body;
+  }
+
   // Automatically detects /desk route and mounts the Stitch Launcher
   OneSpace.autoMountLauncher = function() {
     const path = window.location.pathname;
@@ -161,17 +192,16 @@
 
     if (document.querySelector('.onespace-launcher-wrapper')) return;
 
-    // Find the main content area in Frappe v16 Desk
-    const mainTarget = document.querySelector('main, .layout-main-section, .desk-page, [data-page-route="desk"]');
+    const mainTarget = findDeskMountTarget();
     if (!mainTarget) return;
 
-    // Hide any solitary default icons
-    const existingIcons = mainTarget.querySelectorAll('a, button, [role="button"]');
-    existingIcons.forEach(el => {
-      const text = (el.textContent || '').trim();
-      if (text === 'OneSpace' || text === 'Framework' || text === 'Frappe Framework') {
-        const parent = el.closest('div:not(main):not(.desk-page):not(#app)') || el;
-        parent.style.setProperty('display', 'none', 'important');
+    // Hide any raw default icons grid
+    const rawIcons = mainTarget.querySelectorAll('a:has(svg), button:has(svg), div[role="button"]');
+    rawIcons.forEach(el => {
+      const txt = (el.textContent || '').trim();
+      if (txt === 'OneSpace' || txt === 'Framework' || txt === 'Frappe Framework' || txt === 'Accounting' || txt === 'Selling' || txt === 'Stock' || txt === 'Organization') {
+        const parentCard = el.closest('[class*="grid"], [class*="col"], div:not(main):not(#app)') || el;
+        parentCard.style.setProperty('display', 'none', 'important');
       }
     });
 
@@ -179,7 +209,8 @@
     if (!mount) {
       mount = document.createElement('div');
       mount.id = 'onespace-launcher-mount';
-      mainTarget.appendChild(mount);
+      mount.style.width = '100%';
+      mainTarget.insertBefore(mount, mainTarget.firstChild);
     }
 
     OneSpace.renderAppLauncher(mount);
@@ -192,4 +223,5 @@
     setTimeout(OneSpace.autoMountLauncher, 100);
   }
 })();
+
 

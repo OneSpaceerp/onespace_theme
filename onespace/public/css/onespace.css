@@ -485,8 +485,126 @@ select.form-control:focus {
 }
 
 /* ==========================================================================
-   16. Frappe v16 Desk & White-Label Overrides
+   16. Frappe v16 Desk Master Theme & Stitch Layer
    ========================================================================== */
+
+/* Universal Background & Surface Canvas */
+body,
+#app,
+.desk-page,
+main,
+[class*="layout-main"] {
+  background-color: #F8FAFC !important;
+  color: #09090B !important;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] #app,
+[data-theme="dark"] .desk-page,
+[data-theme="dark"] main,
+[data-theme="dark"] [class*="layout-main"] {
+  background-color: #0A0E17 !important;
+  color: #F8FAFC !important;
+}
+
+/* Global Top Navigation Bar */
+header,
+nav:has(input),
+.navbar {
+  height: 56px !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1px solid #E4E4E7 !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="dark"] header,
+[data-theme="dark"] nav:has(input),
+[data-theme="dark"] .navbar {
+  background-color: rgba(14, 20, 36, 0.94) !important;
+  border-bottom: 1px solid #273248 !important;
+}
+
+/* Sidebar Navigation Drawer */
+aside,
+[class*="sidebar"],
+nav:has(a[href*="/desk"]) {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #E4E4E7 !important;
+}
+
+[data-theme="dark"] aside,
+[data-theme="dark"] [class*="sidebar"],
+[data-theme="dark"] nav:has(a[href*="/desk"]) {
+  background-color: #0E1424 !important;
+  border-right: 1px solid #273248 !important;
+}
+
+/* Active Navigation Item (OneSpace Kinetic Orange Pill) */
+aside a.active,
+aside a[aria-current="page"],
+[class*="sidebar"] a.active,
+[class*="sidebar"] a[aria-current="page"],
+[class*="sidebar"] [class*="router-link-active"],
+[class*="sidebar"] [class*="selected"] {
+  background-color: rgba(255, 55, 0, 0.12) !important;
+  color: #FF3700 !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  border-left: 3px solid #FF3700 !important;
+}
+
+/* Cards & Widgets (Dashboard, Lists, Reports, Workspaces) */
+.card,
+.widget,
+[class*="card"],
+div:has(> .chart),
+div[class*="border"]:has(> h3),
+div[class*="rounded"]:has(> [class*="text-"]) {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E4E4E7 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .widget,
+[data-theme="dark"] [class*="card"],
+[data-theme="dark"] div:has(> .chart),
+[data-theme="dark"] div[class*="border"]:has(> h3) {
+  background-color: #151D2F !important;
+  border: 1px solid #273248 !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Desktop Icon Cards on /desk */
+a:has(> div:has(> svg)),
+button:has(> div:has(> svg)),
+div[role="button"]:has(> div:has(> svg)) {
+  padding: 16px 12px !important;
+  border-radius: 16px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E4E4E7 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+a:has(> div:has(> svg)):hover,
+button:has(> div:has(> svg)):hover,
+div[role="button"]:has(> div:has(> svg)):hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(255, 55, 0, 0.3) !important;
+  box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 55, 0, 0.15) !important;
+}
+
+[data-theme="dark"] a:has(> div:has(> svg)),
+[data-theme="dark"] button:has(> div:has(> svg)) {
+  background-color: #151D2F !important;
+  border-color: #273248 !important;
+}
 
 /* Hide Frappe Developer & Framework Desktop Icons */
 [data-name="Framework"],
@@ -500,64 +618,34 @@ div:has(> a[href*="/desk/Frappe%20Framework"]) {
   display: none !important;
 }
 
-/* v16 Desk App Launcher Surface */
-.desk-page,
-main:has([class*="grid"]) {
-  background-color: var(--os-bg) !important;
-}
-
-/* Card / Icon hover states */
-a:has(> div > svg),
-[role="button"]:has(> div > svg) {
-  transition: all var(--os-motion-fast) var(--os-ease-standard) !important;
-}
-
-a:has(> div > svg):hover,
-[role="button"]:has(> div > svg):hover {
-  transform: translateY(-3px) !important;
-}
-
-/* Modern Sidebar & Navigation Polish */
-aside,
-.desk-sidebar,
-[class*="sidebar"] {
-  background-color: var(--os-surface) !important;
-  border-right: 1px solid var(--os-border) !important;
-}
-
-/* Active Navigation Item Highlight */
-aside a.active,
-.desk-sidebar a.active,
-[class*="sidebar"] a.active,
-[class*="sidebar"] [aria-current="page"] {
-  background-color: var(--os-brand-primary-tint) !important;
-  color: var(--os-brand-primary) !important;
-  font-weight: 600 !important;
-  border-left: 3px solid var(--os-brand-primary) !important;
-}
-
-/* Buttons */
+/* Primary OneSpace Buttons */
 .btn-primary,
 button.btn-primary,
-button[variant="solid"] {
-  background-color: var(--os-brand-primary) !important;
-  border-color: var(--os-brand-primary) !important;
+button[variant="solid"],
+button:has(> span:contains("Add")),
+button:has(> span:contains("Save")),
+button:has(> span:contains("New")) {
+  background-color: #FF3700 !important;
+  border-color: #FF3700 !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
-  border-radius: var(--os-radius-md) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), var(--os-shadow-ambient) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(255, 55, 0, 0.35) !important;
 }
 
 .btn-primary:hover,
 button.btn-primary:hover,
 button[variant="solid"]:hover {
-  background-color: var(--os-brand-primary-hover) !important;
-  border-color: var(--os-brand-primary-hover) !important;
-  box-shadow: var(--os-brand-primary-glow) !important;
+  background-color: #E03000 !important;
+  border-color: #E03000 !important;
+  box-shadow: 0 0 12px rgba(255, 55, 0, 0.5) !important;
 }
 
-/* Header Top-Left Logo Button */
-header button:first-child img,
-nav button:first-child img {
-  border-radius: var(--os-radius-md) !important;
+/* Headings Typography */
+h1, h2, h3, h4, h5, h6,
+.page-title,
+[class*="title"],
+[class*="heading"] {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  letter-spacing: -0.015em !important;
 }
