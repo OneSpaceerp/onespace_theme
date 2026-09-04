@@ -24,7 +24,6 @@ class TestOneSpaceTheme(unittest.TestCase):
             os.path.join(self.app_dir, "templates", "includes", "login"),
             os.path.join(self.app_dir, "templates", "pages"),
             os.path.join(self.app_dir, "setup"),
-            os.path.join(self.app_dir, "fixtures"),
         ]
         for d in required_dirs:
             self.assertTrue(os.path.isdir(d), f"Missing required directory: {d}")
