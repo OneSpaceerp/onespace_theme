@@ -483,3 +483,81 @@ select.form-control:focus {
 .dropdown-item:hover {
   background-color: var(--os-surface-low) !important;
 }
+
+/* ==========================================================================
+   16. Frappe v16 Desk & White-Label Overrides
+   ========================================================================== */
+
+/* Hide Frappe Developer & Framework Desktop Icons */
+[data-name="Framework"],
+[data-name="Frappe Framework"],
+[title="Framework"],
+[title="Frappe Framework"],
+a[href*="/desk/Framework"],
+a[href*="/desk/Frappe%20Framework"],
+div:has(> a[href*="/desk/Framework"]),
+div:has(> a[href*="/desk/Frappe%20Framework"]) {
+  display: none !important;
+}
+
+/* v16 Desk App Launcher Surface */
+.desk-page,
+main:has([class*="grid"]) {
+  background-color: var(--os-bg) !important;
+}
+
+/* Card / Icon hover states */
+a:has(> div > svg),
+[role="button"]:has(> div > svg) {
+  transition: all var(--os-motion-fast) var(--os-ease-standard) !important;
+}
+
+a:has(> div > svg):hover,
+[role="button"]:has(> div > svg):hover {
+  transform: translateY(-3px) !important;
+}
+
+/* Modern Sidebar & Navigation Polish */
+aside,
+.desk-sidebar,
+[class*="sidebar"] {
+  background-color: var(--os-surface) !important;
+  border-right: 1px solid var(--os-border) !important;
+}
+
+/* Active Navigation Item Highlight */
+aside a.active,
+.desk-sidebar a.active,
+[class*="sidebar"] a.active,
+[class*="sidebar"] [aria-current="page"] {
+  background-color: var(--os-brand-primary-tint) !important;
+  color: var(--os-brand-primary) !important;
+  font-weight: 600 !important;
+  border-left: 3px solid var(--os-brand-primary) !important;
+}
+
+/* Buttons */
+.btn-primary,
+button.btn-primary,
+button[variant="solid"] {
+  background-color: var(--os-brand-primary) !important;
+  border-color: var(--os-brand-primary) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: var(--os-radius-md) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), var(--os-shadow-ambient) !important;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover,
+button[variant="solid"]:hover {
+  background-color: var(--os-brand-primary-hover) !important;
+  border-color: var(--os-brand-primary-hover) !important;
+  box-shadow: var(--os-brand-primary-glow) !important;
+}
+
+/* Header Top-Left Logo Button */
+header button:first-child img,
+nav button:first-child img {
+  border-radius: var(--os-radius-md) !important;
+}

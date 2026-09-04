@@ -128,13 +128,18 @@
   --os-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
   --os-shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
 
-  /* --- 7. Native Frappe Framework v16 Variable Mappings (Light) --- */
+  /* --- 7. Native Frappe Framework v16 & Tailwind Variable Mappings (Light) --- */
   --primary: var(--os-brand-primary);
   --primary-color: var(--os-brand-primary);
   --primary-hover: var(--os-brand-primary-hover);
   --primary-active: var(--os-brand-primary-active);
   --primary-light: var(--os-brand-primary-fixed);
   --primary-tint: var(--os-brand-primary-tint);
+  --color-primary: var(--os-brand-primary);
+  --color-primary-500: var(--os-brand-primary);
+  --color-primary-600: var(--os-brand-primary-hover);
+  --color-primary-700: var(--os-brand-primary-active);
+  --brand-color: var(--os-brand-primary);
 
   --bg-color: var(--os-bg);
   --fg-color: var(--os-surface);
@@ -230,13 +235,18 @@ body.dark,
   --os-shadow-elevated: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
   --os-shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 
-  /* Native Frappe v16 Mappings (Dark) */
+  /* Native Frappe v16 & Tailwind Mappings (Dark) */
   --primary: var(--os-brand-primary);
   --primary-color: var(--os-brand-primary);
   --primary-hover: var(--os-brand-primary-hover);
   --primary-active: var(--os-brand-primary-active);
   --primary-light: var(--os-brand-primary-fixed);
   --primary-tint: var(--os-brand-primary-tint);
+  --color-primary: var(--os-brand-primary);
+  --color-primary-500: var(--os-brand-primary);
+  --color-primary-600: var(--os-brand-primary-hover);
+  --color-primary-700: var(--os-brand-primary-active);
+  --brand-color: var(--os-brand-primary);
 
   --bg-color: var(--os-bg);
   --fg-color: var(--os-surface);

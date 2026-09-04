@@ -10,6 +10,7 @@ def after_install():
     configure_system_settings()
     configure_website_settings()
     configure_print_settings()
+    configure_workspaces_and_desktop_icons()
     frappe.clear_cache()
 
 def after_migrate():
@@ -17,6 +18,7 @@ def after_migrate():
     configure_system_settings()
     configure_website_settings()
     configure_print_settings()
+    configure_workspaces_and_desktop_icons()
     frappe.clear_cache()
 
 def configure_system_settings():
@@ -51,3 +53,76 @@ def configure_print_settings():
             print_settings.save()
     except Exception as e:
         frappe.log_error(f"Failed to update Print Settings for OneSpace: {e}")
+
+def configure_workspaces_and_desktop_icons():
+    """
+    White-labels Frappe v16 Desktop Icons, Workspaces, and Workspace Sidebars:
+    - Hides developer/framework icons (Framework, Frappe Framework)
+    - Renames 'ERPNext Settings' to 'OneSpace Settings'
+    - Relabels ERPNext module references to OneSpace
+    """
+    try:
+        # 1. Desktop Icons (v16 Launcher)
+        if frappe.db.table_exists("Desktop Icon"):
+            # Hide Framework & Frappe Framework icons
+            frappe.db.sql("""
+                UPDATE `tabDesktop Icon`
+                SET hidden = 1
+                WHERE name IN ('Framework', 'Frappe Framework') 
+                   OR label IN ('Framework', 'Frappe Framework')
+            """)
+            # Rename ERPNext Settings
+            frappe.db.sql("""
+                UPDATE `tabDesktop Icon`
+                SET label = 'OneSpace Settings'
+                WHERE name = 'ERPNext Settings' OR label = 'ERPNext Settings'
+            """)
+            # Rebrand ERPNext app reference to OneSpace
+            frappe.db.sql("""
+                UPDATE `tabDesktop Icon`
+                SET app = 'onespace'
+                WHERE app = 'erpnext'
+            """)
+
+        # 2. Workspaces
+        if frappe.db.table_exists("Workspace"):
+            # Hide Framework workspaces
+            frappe.db.sql("""
+                UPDATE `tabWorkspace`
+                SET is_hidden = 1, public = 0
+                WHERE name IN ('Framework', 'Frappe Framework')
+                   OR title IN ('Framework', 'Frappe Framework')
+            """)
+            # Rename ERPNext Settings workspace
+            frappe.db.sql("""
+                UPDATE `tabWorkspace`
+                SET title = 'OneSpace Settings', label = 'OneSpace Settings'
+                WHERE name = 'ERPNext Settings' OR title = 'ERPNext Settings'
+            """)
+            # Update module references from ERPNext to OneSpace
+            frappe.db.sql("""
+                UPDATE `tabWorkspace`
+                SET module = 'OneSpace'
+                WHERE module = 'ERPNext'
+            """)
+
+        # 3. Workspace Sidebar (v16 persistent navigation)
+        if frappe.db.table_exists("Workspace Sidebar"):
+            columns = [c[0] for c in frappe.db.sql("DESC `tabWorkspace Sidebar`")]
+            if "app" in columns:
+                frappe.db.sql("""
+                    UPDATE `tabWorkspace Sidebar`
+                    SET app = 'onespace'
+                    WHERE app = 'erpnext'
+                """)
+            if "header" in columns:
+                frappe.db.sql("""
+                    UPDATE `tabWorkspace Sidebar`
+                    SET header = 'OneSpace'
+                    WHERE header = 'ERPNext'
+                """)
+
+        frappe.db.commit()
+    except Exception as e:
+        frappe.log_error(f"Failed to white-label workspaces/desktop icons for OneSpace: {e}")
+

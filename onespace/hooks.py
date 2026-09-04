@@ -27,6 +27,18 @@ app_include_js = [
     "/assets/onespace/js/onespace.js",
 ]
 
+app_include_icons = "/assets/onespace/icons/onespace-icons.svg"
+
+# --- Frappe v16 Apps Screen Registration ---
+add_to_apps_screen = [
+    {
+        "name": "onespace",
+        "logo": "/assets/onespace/images/onespace_icon.svg",
+        "title": "OneSpace",
+        "route": "/desk",
+    }
+]
+
 # --- Includes in <head> for Web / Portal Pages ---
 web_include_css = [
     "/assets/onespace/css/tokens.css",
