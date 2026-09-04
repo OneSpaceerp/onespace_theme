@@ -62,13 +62,80 @@
       });
     });
 
+    // Top Bar Search Click & Keyboard
+    const searchBox = mount.querySelector('#onespace-topbar-search-box');
+    const searchInput = mount.querySelector('#onespace-topbar-search-input');
+    function triggerFrappeSearch(query) {
+      if (window.frappe && frappe.search && typeof frappe.search.show === 'function') {
+        frappe.search.show(query || undefined);
+      } else if (window.frappe && frappe.ui && frappe.ui.toolbar && frappe.ui.toolbar.search) {
+        frappe.ui.toolbar.search.show();
+      } else {
+        const nativeInput = document.querySelector('header input, nav input, input#navbar-search, input[placeholder*="Search"]');
+        if (nativeInput && nativeInput !== searchInput) {
+          nativeInput.focus();
+          nativeInput.click();
+        }
+      }
+    }
+
+    if (searchBox && searchInput) {
+      searchBox.addEventListener('click', function () {
+        searchInput.focus();
+      });
+      searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          triggerFrappeSearch(this.value.trim());
+        }
+      });
+    }
+
+    // Top Bar Notifications Click
+    const notifBtn = mount.querySelector('#onespace-notifications-top');
+    if (notifBtn) {
+      notifBtn.addEventListener('click', function () {
+        const nativeBell = document.querySelector('.navbar .notifications-icon, [title*="Notification" i], button:has(svg [d*="M12 22"])');
+        if (nativeBell) {
+          nativeBell.click();
+        } else if (window.frappe && frappe.ui && frappe.ui.notifications) {
+          frappe.ui.notifications.show();
+        }
+      });
+    }
+
+    // Top Bar User Profile Click
+    const userBtn = mount.querySelector('#onespace-user-profile-top');
+    if (userBtn) {
+      userBtn.addEventListener('click', function () {
+        const nativeUser = document.querySelector('.navbar .dropdown-navbar-user, .user-avatar, [title*="User" i], button:has(.avatar)');
+        if (nativeUser) {
+          nativeUser.click();
+        } else {
+          window.location.href = '/app/user';
+        }
+      });
+    }
+
     // Keyboard shortcuts
-    document.addEventListener('keydown', function (e) {
-      if (e.ctrlKey && e.key === '1') { e.preventDefault(); window.location.href = '/app/sales-invoice'; }
-      if (e.ctrlKey && e.key === '2') { e.preventDefault(); window.location.href = '/app/item'; }
-      if (e.ctrlKey && e.key === '3') { e.preventDefault(); window.location.href = '/app/quotation'; }
-      if (e.ctrlKey && e.key === '4') { e.preventDefault(); window.location.href = '/app/purchase-order'; }
-    });
+    if (!window._osKeyboardBound) {
+      window._osKeyboardBound = true;
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+          e.preventDefault();
+          const sInput = document.getElementById('onespace-topbar-search-input');
+          if (sInput) {
+            sInput.focus();
+            sInput.select();
+          }
+          triggerFrappeSearch();
+        }
+        if (e.ctrlKey && e.key === '1') { e.preventDefault(); window.location.href = '/app/sales-invoice'; }
+        if (e.ctrlKey && e.key === '2') { e.preventDefault(); window.location.href = '/app/item'; }
+        if (e.ctrlKey && e.key === '3') { e.preventDefault(); window.location.href = '/app/quotation'; }
+        if (e.ctrlKey && e.key === '4') { e.preventDefault(); window.location.href = '/app/purchase-order'; }
+      });
+    }
   }
 
   function handleDeskRouting() {
@@ -108,10 +175,15 @@
 
     let mount = existingMount;
     if (!mount) {
-      // Get user name
+      // Get user name and initials
       let userName = 'Khaled';
+      let userInitials = 'KH';
       if (window.frappe && frappe.session && frappe.session.user_fullname) {
-        userName = frappe.session.user_fullname.split(' ')[0] || 'Khaled';
+        const parts = frappe.session.user_fullname.trim().split(/\s+/);
+        userName = parts[0] || 'Khaled';
+        userInitials = parts.length > 1
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : parts[0].substring(0, 2).toUpperCase();
       }
 
       mount = document.createElement('div');
@@ -119,6 +191,39 @@
       mount.className = 'onespace-desk-mounted';
 
       mount.innerHTML = `
+        <!-- Stitch Minimal Top Navigation Bar -->
+        <header class="onespace-top-navbar" style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 28px; background: var(--navbar-bg, #FFFFFF); border-bottom: 1px solid var(--border-color, #E2E8F0); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; width: 100%;">
+          <!-- Left: OneSpace Logo -->
+          <a href="/desk" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: #0F172A; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <img src="/assets/onespace/images/onespace_icon.svg" alt="OneSpace" style="width: 26px; height: 26px; object-fit: contain;">
+            </div>
+            <span style="font-family: var(--theme-font-display, inherit); font-size: 17px; font-weight: 800; color: var(--text-color, #0F172A); letter-spacing: -0.02em;">One<span style="color: #FF3700;">Space</span></span>
+          </a>
+
+          <!-- Center: Search Bar -->
+          <div id="onespace-topbar-search-box" style="position: relative; width: 440px; max-width: 45vw; cursor: pointer;">
+            <div style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; color: #94A3B8; pointer-events: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <input type="text" id="onespace-topbar-search-input" placeholder="Search (Ctrl + K)..." autocomplete="off" style="width: 100%; height: 38px; padding: 0 62px 0 38px; border-radius: 10px; border: 1px solid var(--border-color, #E2E8F0); background: var(--control-bg, #F8FAFC); color: var(--text-color, #0F172A); font-size: 13px; font-family: inherit; outline: none; box-sizing: border-box; transition: all 0.2s;">
+            <div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; gap: 3px; pointer-events: none;">
+              <kbd style="font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: #FFFFFF; color: #64748B; border: 1px solid #CBD5E1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Ctrl+K</kbd>
+            </div>
+          </div>
+
+          <!-- Right: Notifications & User Avatar -->
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div id="onespace-notifications-top" title="Notifications" style="position: relative; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted, #64748B); cursor: pointer; transition: background 0.2s;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+              <span style="position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF;"></span>
+            </div>
+            <div id="onespace-user-profile-top" title="User Menu" style="width: 36px; height: 36px; border-radius: 50%; background: #EA580C; color: #FFFFFF; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.25);">
+              ${userInitials}
+            </div>
+          </div>
+        </header>
+
         <div class="onespace-desk-wrapper">
           <!-- Hero Header -->
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 28px;">
@@ -311,14 +416,14 @@
     });
   }
 
-  // --- Stitch Top Navigation Bar Controller ---
+  // --- Stitch Top Navigation Bar Controller (for inner workspace pages) ---
   function enhanceTopNavbar() {
-    const navbar = document.querySelector('header, nav, #app header, .navbar, .page-head');
+    const navbar = document.querySelector('header:not(.onespace-top-navbar), nav:not(.onespace-top-navbar), #app header:not(.onespace-top-navbar), .navbar:not(.onespace-top-navbar)');
     if (!navbar) return;
 
     navbar.classList.add('onespace-top-navbar');
 
-    // 1. Top-Left Logo Button & Brand Badges
+    // 1. Top-Left Logo Button
     const headerButtons = Array.from(navbar.querySelectorAll('button, a'));
     const logoBtn = headerButtons.find(b => {
       const r = b.getBoundingClientRect();
@@ -329,7 +434,7 @@
       const svg = logoBtn.querySelector('svg');
       if (svg) svg.style.setProperty('display', 'none', 'important');
       logoBtn.style.setProperty('background-image', "url('/assets/onespace/images/onespace_icon.svg')", 'important');
-      logoBtn.style.setProperty('background-size', '30px 30px', 'important');
+      logoBtn.style.setProperty('background-size', '28px 28px', 'important');
       logoBtn.style.setProperty('background-position', 'center', 'important');
       logoBtn.style.setProperty('background-repeat', 'no-repeat', 'important');
       logoBtn.style.setProperty('width', '36px', 'important');
@@ -346,32 +451,12 @@
           }
         });
       }
-
-      // Inject Brand Badges (v16 Enterprise & Company Pill)
-      if (!navbar.querySelector('.onespace-topbar-brand-addons')) {
-        const brandGroup = document.createElement('div');
-        brandGroup.className = 'onespace-topbar-brand-addons';
-        brandGroup.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; vertical-align: middle;';
-        brandGroup.innerHTML = `
-          <span class="os-v16-badge" style="background: #FFF1EE; color: #E03E1A; border: 1px solid #FFDCD5; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap;">v16 Enterprise</span>
-          <div class="os-company-pill" style="display: inline-flex; align-items: center; gap: 6px; background: var(--control-bg, #F8FAFC); border: 1px solid var(--border-color, #E2E8F0); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-color, #334155); white-space: nowrap;">
-            <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span>
-            <span>OneSpace Holding Ltd</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
-          </div>
-        `;
-        if (logoBtn.nextSibling) {
-          logoBtn.parentNode.insertBefore(brandGroup, logoBtn.nextSibling);
-        } else {
-          logoBtn.parentNode.appendChild(brandGroup);
-        }
-      }
     }
 
     // 2. Search Bar Enhancement
     const searchInput = navbar.querySelector('input[type="text"], input[type="search"], input');
     if (searchInput) {
-      searchInput.setAttribute('placeholder', 'Search modules, DocTypes, transactions... (Ctrl + K)');
+      searchInput.setAttribute('placeholder', 'Search (Ctrl + K)...');
     }
 
     // 3. Notification Bell (Add active red dot)
@@ -382,57 +467,6 @@
       dot.style.cssText = 'position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF; pointer-events: none;';
       bellBtn.style.position = 'relative';
       bellBtn.appendChild(dot);
-    }
-
-    // 4. User Profile & Role Metadata
-    let userFullName = 'Administrator';
-    if (window.frappe && frappe.session && frappe.session.user_fullname) {
-      userFullName = frappe.session.user_fullname;
-    }
-    const avatarEl = navbar.querySelector('.avatar, [class*="avatar"], button:has(img[src*="avatar"]), button:has(div.avatar)');
-    if (avatarEl && !navbar.querySelector('.os-user-profile-meta')) {
-      const meta = document.createElement('div');
-      meta.className = 'os-user-profile-meta';
-      meta.style.cssText = 'display: inline-flex; flex-direction: column; text-align: left; line-height: 1.2; margin-left: 8px; vertical-align: middle; cursor: pointer;';
-      meta.innerHTML = `
-        <span style="font-size: 12px; font-weight: 700; color: var(--text-color, #0F172A); white-space: nowrap;">${userFullName}</span>
-        <span style="font-size: 10px; color: var(--text-muted, #64748B); display: flex; align-items: center; gap: 3px; white-space: nowrap;">
-          System Manager
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
-        </span>
-      `;
-      meta.addEventListener('click', () => avatarEl.click());
-      if (avatarEl.nextSibling) {
-        avatarEl.parentNode.insertBefore(meta, avatarEl.nextSibling);
-      } else {
-        avatarEl.parentNode.appendChild(meta);
-      }
-    }
-
-    // 5. + New Button
-    if (!navbar.querySelector('#onespace-btn-create')) {
-      const rightArea = navbar.querySelector('.navbar-collapse, .nav-right, header > div:last-child, nav > div:last-child') || navbar;
-      const newBtn = document.createElement('button');
-      newBtn.id = 'onespace-btn-create';
-      newBtn.type = 'button';
-      newBtn.style.cssText = 'background: #FF3700; color: #FFFFFF; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 8px; border: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin-right: 12px; transition: all 0.2s; white-space: nowrap;';
-      newBtn.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        <span>+ New</span>
-      `;
-      newBtn.addEventListener('click', () => {
-        if (window.frappe && frappe.search) {
-          frappe.search.show();
-        } else {
-          const input = navbar.querySelector('input');
-          if (input) input.focus();
-        }
-      });
-      if (rightArea.firstChild) {
-        rightArea.insertBefore(newBtn, rightArea.firstChild);
-      } else {
-        rightArea.appendChild(newBtn);
-      }
     }
   }
 

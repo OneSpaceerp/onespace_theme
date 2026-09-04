@@ -86,6 +86,12 @@ nav input:focus {
   box-shadow: 0 0 0 3px rgba(255, 55, 0, 0.12) !important;
 }
 
+#onespace-topbar-search-input {
+  padding: 0 62px 0 38px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 /* Notification Bell & Dot */
 .os-bell-dot {
   position: absolute;
