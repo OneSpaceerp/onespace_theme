@@ -11,18 +11,111 @@ body, #app {
 /* ==========================================================================
    1. Stitch Top Navigation Bar
    ========================================================================== */
-.onespace-top-navbar {
-  height: 56px;
-  background: var(--navbar-bg);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  backdrop-filter: blur(12px);
+header,
+nav.navbar,
+header.navbar,
+.navbar,
+.onespace-top-navbar,
+#app > div > header,
+#app header {
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  background: var(--navbar-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 20px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Top-Left Logo Button in Navbar */
+header a[href="/desk"],
+header button:first-of-type,
+header .flex:first-child button:first-child,
+nav a[href="/desk"],
+.os-topbar-logo {
+  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
+  background-size: 30px 30px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+header a[href="/desk"] svg,
+header button:first-of-type svg,
+header .flex:first-child button:first-child svg,
+nav a[href="/desk"] svg {
+  display: none !important;
+}
+
+/* Top Bar Search Input */
+header input[type="text"],
+header input[type="search"],
+header [role="search"] input,
+header input,
+nav input {
+  height: 38px !important;
+  min-width: 320px !important;
+  border-radius: 10px !important;
+  background-color: var(--control-bg, #F1F5F9) !important;
+  border: 1px solid var(--border-color, #E2E8F0) !important;
+  padding: 0 16px !important;
+  font-size: 12px !important;
+  font-family: var(--theme-font-stack) !important;
+  color: var(--text-color, #0F172A) !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+
+header input:focus,
+nav input:focus {
+  border-color: #FF3700 !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(255, 55, 0, 0.12) !important;
+}
+
+/* Notification Bell & Dot */
+.os-bell-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #FF3700;
+  border: 1.5px solid #FFFFFF;
+}
+
+/* User Avatar in Header */
+header .avatar,
+header [class*="avatar"],
+nav .avatar {
+  background-color: #EA580C !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border-radius: 50% !important;
+  border: 2px solid #FFFFFF !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+@media (max-width: 768px) {
+  .onespace-topbar-brand-addons,
+  .os-user-profile-meta {
+    display: none !important;
+  }
 }
 
 /* ==========================================================================

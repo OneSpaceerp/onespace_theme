@@ -311,26 +311,136 @@
     });
   }
 
+  // --- Stitch Top Navigation Bar Controller ---
+  function enhanceTopNavbar() {
+    const navbar = document.querySelector('header, nav, #app header, .navbar, .page-head');
+    if (!navbar) return;
+
+    navbar.classList.add('onespace-top-navbar');
+
+    // 1. Top-Left Logo Button & Brand Badges
+    const headerButtons = Array.from(navbar.querySelectorAll('button, a'));
+    const logoBtn = headerButtons.find(b => {
+      const r = b.getBoundingClientRect();
+      return r.top < 60 && r.left < 200 && r.width >= 20 && r.height >= 20;
+    }) || navbar.querySelector('a[href="/desk"], button:first-child, a:first-child');
+
+    if (logoBtn) {
+      const svg = logoBtn.querySelector('svg');
+      if (svg) svg.style.setProperty('display', 'none', 'important');
+      logoBtn.style.setProperty('background-image', "url('/assets/onespace/images/onespace_icon.svg')", 'important');
+      logoBtn.style.setProperty('background-size', '30px 30px', 'important');
+      logoBtn.style.setProperty('background-position', 'center', 'important');
+      logoBtn.style.setProperty('background-repeat', 'no-repeat', 'important');
+      logoBtn.style.setProperty('width', '36px', 'important');
+      logoBtn.style.setProperty('height', '36px', 'important');
+      logoBtn.style.setProperty('min-width', '36px', 'important');
+      logoBtn.style.setProperty('border-radius', '8px', 'important');
+      logoBtn.style.setProperty('cursor', 'pointer', 'important');
+
+      if (!logoBtn.dataset.osBound) {
+        logoBtn.dataset.osBound = 'true';
+        logoBtn.addEventListener('click', (e) => {
+          if (window.location.pathname !== '/desk') {
+            window.location.href = '/desk';
+          }
+        });
+      }
+
+      // Inject Brand Badges (v16 Enterprise & Company Pill)
+      if (!navbar.querySelector('.onespace-topbar-brand-addons')) {
+        const brandGroup = document.createElement('div');
+        brandGroup.className = 'onespace-topbar-brand-addons';
+        brandGroup.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; vertical-align: middle;';
+        brandGroup.innerHTML = `
+          <span class="os-v16-badge" style="background: #FFF1EE; color: #E03E1A; border: 1px solid #FFDCD5; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap;">v16 Enterprise</span>
+          <div class="os-company-pill" style="display: inline-flex; align-items: center; gap: 6px; background: var(--control-bg, #F8FAFC); border: 1px solid var(--border-color, #E2E8F0); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-color, #334155); white-space: nowrap;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span>
+            <span>OneSpace Holding Ltd</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+        `;
+        if (logoBtn.nextSibling) {
+          logoBtn.parentNode.insertBefore(brandGroup, logoBtn.nextSibling);
+        } else {
+          logoBtn.parentNode.appendChild(brandGroup);
+        }
+      }
+    }
+
+    // 2. Search Bar Enhancement
+    const searchInput = navbar.querySelector('input[type="text"], input[type="search"], input');
+    if (searchInput) {
+      searchInput.setAttribute('placeholder', 'Search modules, DocTypes, transactions... (Ctrl + K)');
+    }
+
+    // 3. Notification Bell (Add active red dot)
+    const bellBtn = navbar.querySelector('button:has(svg [d*="M12 22"]), button:has(svg path), [title*="Notification" i]');
+    if (bellBtn && !bellBtn.querySelector('.os-bell-dot')) {
+      const dot = document.createElement('span');
+      dot.className = 'os-bell-dot';
+      dot.style.cssText = 'position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF; pointer-events: none;';
+      bellBtn.style.position = 'relative';
+      bellBtn.appendChild(dot);
+    }
+
+    // 4. User Profile & Role Metadata
+    let userFullName = 'Administrator';
+    if (window.frappe && frappe.session && frappe.session.user_fullname) {
+      userFullName = frappe.session.user_fullname;
+    }
+    const avatarEl = navbar.querySelector('.avatar, [class*="avatar"], button:has(img[src*="avatar"]), button:has(div.avatar)');
+    if (avatarEl && !navbar.querySelector('.os-user-profile-meta')) {
+      const meta = document.createElement('div');
+      meta.className = 'os-user-profile-meta';
+      meta.style.cssText = 'display: inline-flex; flex-direction: column; text-align: left; line-height: 1.2; margin-left: 8px; vertical-align: middle; cursor: pointer;';
+      meta.innerHTML = `
+        <span style="font-size: 12px; font-weight: 700; color: var(--text-color, #0F172A); white-space: nowrap;">${userFullName}</span>
+        <span style="font-size: 10px; color: var(--text-muted, #64748B); display: flex; align-items: center; gap: 3px; white-space: nowrap;">
+          System Manager
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+        </span>
+      `;
+      meta.addEventListener('click', () => avatarEl.click());
+      if (avatarEl.nextSibling) {
+        avatarEl.parentNode.insertBefore(meta, avatarEl.nextSibling);
+      } else {
+        avatarEl.parentNode.appendChild(meta);
+      }
+    }
+
+    // 5. + New Button
+    if (!navbar.querySelector('#onespace-btn-create')) {
+      const rightArea = navbar.querySelector('.navbar-collapse, .nav-right, header > div:last-child, nav > div:last-child') || navbar;
+      const newBtn = document.createElement('button');
+      newBtn.id = 'onespace-btn-create';
+      newBtn.type = 'button';
+      newBtn.style.cssText = 'background: #FF3700; color: #FFFFFF; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 8px; border: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin-right: 12px; transition: all 0.2s; white-space: nowrap;';
+      newBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <span>+ New</span>
+      `;
+      newBtn.addEventListener('click', () => {
+        if (window.frappe && frappe.search) {
+          frappe.search.show();
+        } else {
+          const input = navbar.querySelector('input');
+          if (input) input.focus();
+        }
+      });
+      if (rightArea.firstChild) {
+        rightArea.insertBefore(newBtn, rightArea.firstChild);
+      } else {
+        rightArea.appendChild(newBtn);
+      }
+    }
+  }
+
   // --- Universal Top-Left Logo & Text Scrubber ---
   function scrubBranding() {
     if (!document.body) return;
 
-    // 1. Replace Top-Left Frappe Cube with OneSpace Logo
-    const headerButtons = document.querySelectorAll('header button, nav button, #app button, #app a');
-    headerButtons.forEach(btn => {
-      const rect = btn.getBoundingClientRect();
-      if (rect.top < 60 && rect.left < 80 && rect.width >= 20 && rect.height >= 20) {
-        const svg = btn.querySelector('svg');
-        if (svg) svg.style.setProperty('display', 'none', 'important');
-        btn.style.setProperty('background-image', "url('/assets/onespace/images/onespace_icon.svg')", 'important');
-        btn.style.setProperty('background-size', '28px 28px', 'important');
-        btn.style.setProperty('background-position', 'center', 'important');
-        btn.style.setProperty('background-repeat', 'no-repeat', 'important');
-        btn.style.setProperty('border-radius', '8px', 'important');
-      }
-    });
-
-    // 2. TreeWalker text replacement
+    // TreeWalker text replacement
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while ((node = walker.nextNode())) {
@@ -346,6 +456,7 @@
 
   // Lifecycle execution
   function tick() {
+    enhanceTopNavbar();
     scrubBranding();
     handleDeskRouting();
   }
