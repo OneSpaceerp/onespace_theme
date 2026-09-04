@@ -62,7 +62,20 @@ def configure_workspaces_and_desktop_icons():
     - Relabels ERPNext module references to OneSpace
     """
     try:
-        # 1. Desktop Icons (v16 Launcher)
+        # 1. Resync first so our updates are applied ON TOP of standard definitions
+        try:
+            from frappe.desk.doctype.desktop_icon.desktop_icon import sync_desktop_icons
+            sync_desktop_icons()
+        except Exception:
+            pass
+
+        try:
+            from frappe.desk.doctype.workspace_sidebar.workspace_sidebar import sync_workspace_sidebars
+            sync_workspace_sidebars()
+        except Exception:
+            pass
+
+        # 2. Desktop Icons (v16 Launcher)
         if frappe.db.table_exists("Desktop Icon"):
             # Hide Framework & Frappe Framework icons
             frappe.db.sql("""
@@ -77,7 +90,8 @@ def configure_workspaces_and_desktop_icons():
                 SET label = 'OneSpace Settings'
                 WHERE name = 'ERPNext Settings' OR label = 'ERPNext Settings'
             """)
-        # 2. Workspaces
+
+        # 3. Workspaces
         if frappe.db.table_exists("Workspace"):
             # Hide Framework workspaces
             frappe.db.sql("""
@@ -93,30 +107,30 @@ def configure_workspaces_and_desktop_icons():
                 WHERE name = 'ERPNext Settings' OR title = 'ERPNext Settings'
             """)
 
-        # 3. Workspace Sidebar (v16 persistent navigation header rebranding)
+        # 4. Workspace Sidebar (v16 persistent navigation header rebranding)
         if frappe.db.table_exists("Workspace Sidebar"):
             columns = [c[0] for c in frappe.db.sql("DESC `tabWorkspace Sidebar`")]
-            if "header" in columns:
-                frappe.db.sql("""
-                    UPDATE `tabWorkspace Sidebar`
-                    SET header = 'OneSpace'
-                    WHERE header IN ('ERPNext', 'Frappe Framework', 'Frappe')
-                """)
+            for col in ("header", "title", "label"):
+                if col in columns:
+                    frappe.db.sql(f"""
+                        UPDATE `tabWorkspace Sidebar`
+                        SET `{col}` = 'OneSpace'
+                        WHERE `{col}` IN ('ERPNext', 'Frappe Framework', 'Frappe')
+                    """)
 
-        # 4. Resync standard icons from apps
-        try:
-            from frappe.desk.doctype.desktop_icon.desktop_icon import sync_desktop_icons
-            sync_desktop_icons()
-        except Exception:
-            pass
-
-        try:
-            from frappe.desk.doctype.workspace_sidebar.workspace_sidebar import sync_workspace_sidebars
-            sync_workspace_sidebars()
-        except Exception:
-            pass
+        # 5. Workspace Sidebar Item (child table items)
+        if frappe.db.table_exists("Workspace Sidebar Item"):
+            columns = [c[0] for c in frappe.db.sql("DESC `tabWorkspace Sidebar Item`")]
+            for col in ("header", "title", "label"):
+                if col in columns:
+                    frappe.db.sql(f"""
+                        UPDATE `tabWorkspace Sidebar Item`
+                        SET `{col}` = 'OneSpace'
+                        WHERE `{col}` IN ('ERPNext', 'Frappe Framework', 'Frappe')
+                    """)
 
         frappe.db.commit()
     except Exception as e:
         frappe.log_error(f"Failed to white-label workspaces/desktop icons for OneSpace: {e}")
+
 

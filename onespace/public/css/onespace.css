@@ -618,13 +618,39 @@ div:has(> a[href*="/desk/Frappe%20Framework"]) {
   display: none !important;
 }
 
+/* Replace top-left Frappe 3D Cube with OneSpace Logo */
+header button:first-child svg,
+header a[href="/desk"] svg,
+nav button:first-child svg,
+nav a[href="/desk"] svg,
+#app header button:first-child svg,
+#app nav button:first-child svg,
+[data-page-route="desk"] button:first-child svg {
+  display: none !important;
+}
+
+header button:first-child,
+header a[href="/desk"],
+nav button:first-child,
+nav a[href="/desk"],
+#app header button:first-child,
+#app nav button:first-child,
+[data-page-route="desk"] button:first-child {
+  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
+  background-size: 28px 28px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: 8px !important;
+}
+
 /* Primary OneSpace Buttons */
 .btn-primary,
 button.btn-primary,
 button[variant="solid"],
-button:has(> span:contains("Add")),
-button:has(> span:contains("Save")),
-button:has(> span:contains("New")) {
+button[data-variant="solid"],
+.btn-primary-action {
   background-color: #FF3700 !important;
   border-color: #FF3700 !important;
   color: #FFFFFF !important;
@@ -635,10 +661,108 @@ button:has(> span:contains("New")) {
 
 .btn-primary:hover,
 button.btn-primary:hover,
-button[variant="solid"]:hover {
+button[variant="solid"]:hover,
+button[data-variant="solid"]:hover {
   background-color: #E03000 !important;
   border-color: #E03000 !important;
   box-shadow: 0 0 12px rgba(255, 55, 0, 0.5) !important;
+}
+
+/* The Desk Page Canvas & Modern Icon Cards */
+body,
+#app,
+[data-page-route="desk"],
+body[data-route="desk"] {
+  background-color: var(--os-bg, #FBF8FF) !important;
+  font-family: var(--os-font-body, 'Manrope', sans-serif) !important;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] #app,
+.dark body,
+.dark #app {
+  background-color: #0A0E17 !important;
+}
+
+[class*="desktop-icon"],
+.grid > a,
+.grid > div[role="button"] {
+  border-radius: 16px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid var(--os-border, #E4E4E7) !important;
+  background: var(--os-surface, #FFFFFF) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  padding: 16px 12px !important;
+}
+
+[class*="desktop-icon"]:hover,
+.grid > a:hover,
+.grid > div[role="button"]:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--os-brand-primary-tint, rgba(255, 55, 0, 0.15)) !important;
+  border-color: var(--os-brand-primary, #FF3700) !important;
+}
+
+[data-theme="dark"] [class*="desktop-icon"],
+[data-theme="dark"] .grid > a,
+[data-theme="dark"] .grid > div[role="button"],
+.dark [class*="desktop-icon"],
+.dark .grid > a,
+.dark .grid > div[role="button"] {
+  background: #151D2F !important;
+  border-color: #273248 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] [class*="desktop-icon"]:hover,
+[data-theme="dark"] .grid > a:hover,
+[data-theme="dark"] .grid > div[role="button"]:hover,
+.dark [class*="desktop-icon"]:hover,
+.dark .grid > a:hover,
+.dark .grid > div[role="button"]:hover {
+  background: #1B2438 !important;
+  border-color: #FF3700 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 55, 0, 0.25) !important;
+}
+
+[class*="desktop-icon"] span,
+.grid > a span,
+.grid > div[role="button"] span {
+  font-family: var(--os-font-display, 'Plus Jakarta Sans', sans-serif) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: var(--os-text, #1A1B22) !important;
+}
+
+[data-theme="dark"] [class*="desktop-icon"] span,
+[data-theme="dark"] .grid > a span,
+[data-theme="dark"] .grid > div[role="button"] span,
+.dark [class*="desktop-icon"] span,
+.dark .grid > a span,
+.dark .grid > div[role="button"] span {
+  color: #F8FAFC !important;
+}
+
+/* OneSpace Specific Icon Highlight */
+a[href*="/desk/onespace"],
+a[href*="/desk/OneSpace"] {
+  border: 1.5px solid rgba(255, 55, 0, 0.4) !important;
+  background: linear-gradient(135deg, rgba(255, 55, 0, 0.06) 0%, rgba(255, 55, 0, 0.12) 100%) !important;
+}
+
+/* Sidebar & Navigation Styling */
+aside,
+[class*="sidebar"] {
+  background-color: var(--os-surface, #FFFFFF) !important;
+  border-right: 1px solid var(--os-border, #E4E4E7) !important;
+}
+
+[data-theme="dark"] aside,
+[data-theme="dark"] [class*="sidebar"],
+.dark aside,
+.dark [class*="sidebar"] {
+  background-color: #0E1424 !important;
+  border-right-color: #273248 !important;
 }
 
 /* Headings Typography */
@@ -649,3 +773,4 @@ h1, h2, h3, h4, h5, h6,
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   letter-spacing: -0.015em !important;
 }
+

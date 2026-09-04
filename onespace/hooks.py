@@ -67,6 +67,9 @@ default_mail_footer = """
 </div>
 """
 
+# --- Boot & Session Hooks ---
+extend_bootinfo = "onespace.setup.boot.boot_session"
+
 # --- Lifecycle Hooks ---
 after_install = "onespace.setup.install.after_install"
 after_migrate = "onespace.setup.install.after_migrate"
@@ -75,3 +78,4 @@ after_migrate = "onespace.setup.install.after_migrate"
 website_route_rules = [
     {"from_route": "/open-source-notices", "to_route": "open_source_notices"},
 ]
+
