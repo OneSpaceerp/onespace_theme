@@ -55,24 +55,25 @@ body, #app {
   box-sizing: border-box !important;
 }
 
-[data-page-route="desk"],
-[data-page-route="desk"] > div,
-[data-page-route="desk"] .layout-main-section,
-[data-page-route="desk"] .page-container,
-[data-page-route="desk"] .page-content,
-[data-page-route="desk"] .page-body,
-[data-page-route="desk"] .container,
-body[data-route="desk"] .page-container,
-body[data-route="desk"] .container,
-body[data-route="desk"] .layout-main-section,
-.layout-main-section:has(#onespace-desk-container),
-.page-container:has(#onespace-desk-container),
-main:has(#onespace-desk-container) {
-  width: 100% !important;
-  max-width: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
+/* Full-bleed the desk home.
+ *
+ * `:has()` matches every ancestor that contains our mount, so the whole wrapper
+ * chain is reset regardless of how Frappe nests it — and, unlike the JS ancestor
+ * walk this replaces, it re-applies automatically every time Frappe re-renders
+ * the page. The inline !important styles the JS used to write survived exactly
+ * until the next client-side navigation, which is why the desk came out
+ * "divided" with dead space on the right after clicking through to a workspace
+ * and back.
+ *
+ * Scoped by the presence of #onespace-desk-container, so it is inert on every
+ * route where OneSpace has not mounted. */
+#app :has(#onespace-desk-container),
+#onespace-desk-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 /* Top-left logo button */

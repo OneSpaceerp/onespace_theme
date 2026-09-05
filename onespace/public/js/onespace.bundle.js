@@ -330,16 +330,12 @@
     }
     if (!container) container = document.body;
 
-    // Reset container and all ancestor layout wrappers to 100% full-width
-    let p = container;
-    while (p && p !== document.body && p.id !== 'app') {
-      p.style.setProperty('max-width', '100%', 'important');
-      p.style.setProperty('width', '100%', 'important');
-      p.style.setProperty('padding', '0', 'important');
-      p.style.setProperty('margin', '0', 'important');
-      p.style.setProperty('box-sizing', 'border-box', 'important');
-      p = p.parentElement;
-    }
+    // Ancestor width reset is CSS's job now — see the `:has(#onespace-desk-container)`
+    // rule in _desk_components.scss. The previous version walked the ancestor
+    // chain here writing inline !important styles, which only held until Frappe
+    // re-rendered the page wrappers on the next client-side navigation. That is
+    // why the desk appeared "divided" with dead space on the right: the reset
+    // was applied once and then silently lost. CSS re-applies on every render.
 
     let mount = existingMount;
     if (!mount) {
@@ -687,6 +683,50 @@
     enhanceTopNavbar();
   }
 
+  /**
+   * Render once Frappe has actually built the desk page.
+   *
+   * router:change fires when the route changes, which is BEFORE the new page
+   * exists in the DOM. Rendering there is a race: sometimes we mounted into a
+   * container Frappe was about to replace (the desk came out "divided"), and
+   * sometimes the container was not there at all so nothing mounted and the
+   * native desktop showed through.
+   *
+   * The old code hid this behind setInterval(200ms) — it simply retried five
+   * times a second forever until it happened to win. That is not a fix, it is a
+   * permanent busy-wait.
+   *
+   * Instead: render immediately, and if the desk container is not ready yet,
+   * watch for it with an observer that is scoped to #app, ignores attributes and
+   * character data, and disconnects the moment it succeeds or after 3 seconds.
+   * Bounded work, no polling.
+   */
+  function renderWhenReady() {
+    render();
+
+    const onDeskHome = /^\/(desk|app)?\/?(home)?$/.test(window.location.pathname);
+    if (!onDeskHome || document.getElementById('onespace-desk-container')) return;
+
+    const root = document.getElementById('app') || document.body;
+    if (!root || typeof MutationObserver !== 'function') return;
+
+    let settled = false;
+    const stop = function () {
+      if (settled) return;
+      settled = true;
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+
+    const observer = new MutationObserver(function () {
+      render();
+      if (document.getElementById('onespace-desk-container')) stop();
+    });
+
+    observer.observe(root, { childList: true, subtree: true });
+    const timer = setTimeout(stop, 3000);
+  }
+
   function onReady(fn) {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', fn, { once: true });
@@ -695,17 +735,17 @@
     }
   }
 
-  onReady(render);
+  onReady(renderWhenReady);
 
   if (window.$) {
-    $(document).on('app_ready', render);
+    // page-change fires after frappe.container swaps the page in — the earliest
+    // point at which the new DOM is real.
+    $(document).on('app_ready page-change', renderWhenReady);
   }
 
-  // Frappe's router fires after the view swaps; one frame later the new DOM is
-  // laid out. No polling, no observer.
   if (window.frappe && frappe.router && typeof frappe.router.on === 'function') {
     frappe.router.on('change', function () {
-      window.requestAnimationFrame(render);
+      window.requestAnimationFrame(renderWhenReady);
     });
   }
 })();
