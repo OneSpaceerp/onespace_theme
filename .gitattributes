@@ -1,0 +1,40 @@
+# Normalise line endings.
+#
+# Without this, editing on Windows and building on the Linux bench rewrites
+# every line of every file: `onespace.bundle.js` showed 701 insertions and 701
+# deletions with no real change, and boot.py 76/76. That makes diffs unreadable
+# and turns every merge into a conflict.
+#
+# Text is stored LF in the repo and checked out LF everywhere. Frappe runs on
+# Linux; shell scripts and Python must not carry CRLF.
+
+* text=auto eol=lf
+
+*.py     text eol=lf
+*.js     text eol=lf
+*.json   text eol=lf
+*.scss   text eol=lf
+*.css    text eol=lf
+*.html   text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.toml   text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.sh     text eol=lf
+
+# Binary — never touch these.
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.otf    binary
+*.eot    binary
+*.pdf    binary
+
+# SVG is text but is often exported with mixed endings; keep it stable.
+*.svg    text eol=lf
