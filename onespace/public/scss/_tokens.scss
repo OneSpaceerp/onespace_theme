@@ -1,0 +1,155 @@
+/* ============================================================================
+   OneSpace ERP Systems — Design Tokens (single source of truth)
+   Derived from Stitch project 11292459283275273462, prose "Brand & Style" spec.
+
+   RULE: no hex literal may appear anywhere in this app outside this file and
+   _dark.scss. Every other partial consumes --os-* only.
+
+   Neutral ramp is ZINC, not slate. The Stitch spec names #18181B / #71717A /
+   #E4E4E7 / #F4F4F5 / #FAFAFA explicitly. Slate is blue-tinted and fights the
+   orange accent.
+   ========================================================================= */
+
+:root {
+  /* --- Brand ------------------------------------------------------------ */
+  --os-primary: #FF3700;
+  --os-primary-hover: #FF4500;          /* spec: brightness lift on hover */
+  --os-primary-active: #E03000;         /* press */
+  --os-primary-contrast: #FFFFFF;
+  --os-primary-tint: rgba(255, 55, 0, 0.08);
+  --os-primary-tint-strong: rgba(255, 55, 0, 0.15);
+  --os-primary-row: rgba(255, 55, 0, 0.04);   /* selected table row */
+  --os-focus-ring: 0 0 0 2px rgba(255, 55, 0, 0.15);
+
+  /* --- Neutral ramp (zinc) ---------------------------------------------- */
+  --os-zinc-50:  #FAFAFA;
+  --os-zinc-100: #F4F4F5;
+  --os-zinc-200: #E4E4E7;
+  --os-zinc-300: #D4D4D8;
+  --os-zinc-400: #A1A1AA;
+  --os-zinc-500: #71717A;
+  --os-zinc-600: #52525B;
+  --os-zinc-700: #3F3F46;
+  --os-zinc-800: #27272A;
+  --os-zinc-900: #18181B;
+  --os-zinc-950: #09090B;
+
+  /* --- Surfaces (light) -------------------------------------------------- */
+  --os-bg: var(--os-zinc-50);           /* L0 app stage */
+  --os-surface: #FFFFFF;                /* L1 cards, forms, canvas panels */
+  --os-surface-subtle: var(--os-zinc-100);  /* table headers, disabled fills */
+  --os-surface-elevated: #FFFFFF;       /* L2 popovers, dropdowns */
+  --os-surface-overlay: #FFFFFF;        /* L3 modals */
+  --os-rail-bg: var(--os-zinc-900);     /* 72px global rail — deep carbon */
+  --os-rail-fg: var(--os-zinc-400);
+  --os-rail-fg-active: #FFFFFF;
+  --os-sidebar-bg: #FFFFFF;
+  --os-header-bg: #FFFFFF;
+  --os-scrim: rgba(24, 24, 27, 0.4);
+
+  /* --- Text -------------------------------------------------------------- */
+  --os-text: var(--os-zinc-900);
+  --os-text-secondary: var(--os-zinc-600);
+  --os-text-muted: var(--os-zinc-500);
+  --os-text-label: var(--os-zinc-800);  /* field labels, 12/600 */
+  --os-text-inverse: #FFFFFF;
+  --os-text-on-primary: #FFFFFF;
+
+  /* --- Borders ----------------------------------------------------------- */
+  --os-border: var(--os-zinc-200);      /* default hairline + gridlines */
+  --os-border-subtle: var(--os-zinc-100);
+  --os-border-strong: var(--os-zinc-300);
+  --os-border-focus: var(--os-primary);
+
+  /* --- Status ------------------------------------------------------------
+     Paired bg/fg so badges, banners and indicators stay consistent. */
+  --os-success-bg: #ECFDF5;
+  --os-success-fg: #047857;
+  --os-success-border: #A7F3D0;
+
+  --os-danger-bg: #FEF2F2;
+  --os-danger-fg: #B91C1C;
+  --os-danger-border: #FECACA;
+
+  --os-warning-bg: #FFFBEB;
+  --os-warning-fg: #B45309;
+  --os-warning-border: #FDE68A;
+
+  --os-info-bg: #EFF6FF;
+  --os-info-fg: #1D4ED8;
+  --os-info-border: #BFDBFE;
+
+  --os-draft-bg: var(--os-zinc-100);
+  --os-draft-fg: var(--os-zinc-600);
+  --os-draft-border: var(--os-zinc-200);
+
+  /* Pending / action-required reuses the brand tint per spec */
+  --os-pending-bg: var(--os-primary-tint);
+  --os-pending-fg: var(--os-primary);
+  --os-pending-border: rgba(255, 55, 0, 0.2);
+
+  /* --- Radius ------------------------------------------------------------ */
+  --os-radius-sm: 0.25rem;   /* 4px  */
+  --os-radius: 0.5rem;       /* 8px  — buttons, inputs, badges */
+  --os-radius-md: 0.75rem;   /* 12px */
+  --os-radius-lg: 1rem;      /* 16px — cards, modals, flyouts */
+  --os-radius-xl: 1.5rem;    /* 24px — launcher cards, hero panels */
+  --os-radius-full: 9999px;  /* pills, avatars, status chips */
+
+  /* --- Spacing ----------------------------------------------------------- */
+  --os-space-xxs: 0.125rem;
+  --os-space-xs: 0.25rem;
+  --os-space-sm: 0.5rem;
+  --os-space-md: 0.75rem;
+  --os-space-base: 1rem;
+  --os-space-lg: 1.5rem;
+  --os-space-xl: 2rem;
+  --os-space-2xl: 3rem;
+
+  /* --- Layout geometry --------------------------------------------------- */
+  --os-rail-width: 4.5rem;      /* 72px  global domain rail */
+  --os-sidebar-width: 16rem;    /* 256px contextual module sidebar */
+  --os-header-height: 3.5rem;   /* 56px  command bar */
+  --os-page-margin: 1.5rem;
+  --os-gutter-sm: 0.75rem;      /* between fields */
+  --os-gutter-md: 1.25rem;      /* between card sections */
+  --os-control-height: 38px;    /* inputs, selects, buttons */
+  --os-row-height: 44px;        /* table rows, rail icon buttons */
+
+  /* --- Elevation ---------------------------------------------------------- */
+  --os-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04),
+                  0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --os-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+                  0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --os-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.12),
+                  0 8px 10px -6px rgba(0, 0, 0, 0.06);
+
+  /* --- Motion -------------------------------------------------------------
+     Short and functional. ERP users repeat actions hundreds of times a day;
+     anything slower than 200ms reads as lag, not polish. */
+  --os-duration-instant: 80ms;
+  --os-duration-fast: 120ms;
+  --os-duration: 160ms;
+  --os-duration-slow: 240ms;
+  --os-ease: cubic-bezier(0.2, 0, 0.2, 1);
+  --os-ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* --- Z-index scale ------------------------------------------------------ */
+  --os-z-rail: 30;
+  --os-z-sidebar: 20;
+  --os-z-header: 40;
+  --os-z-dropdown: 60;
+  --os-z-drawer: 70;
+  --os-z-modal: 80;
+  --os-z-toast: 90;
+}
+
+/* Honour the OS motion preference everywhere the tokens are consumed. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --os-duration-instant: 0ms;
+    --os-duration-fast: 0ms;
+    --os-duration: 0ms;
+    --os-duration-slow: 0ms;
+  }
+}

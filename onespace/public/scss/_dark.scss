@@ -1,64 +1,194 @@
-/* OneSpace ERP Systems v16 — Dark Theme Tokens */
-:root[data-theme="dark"],
-[data-theme="dark"],
-.dark {
-  /* Frappe Core System Tokens */
-  --primary: #FF3700;
-  --primary-color: #FF3700;
-  --primary-hover: #E03000;
-  --primary-active: #B22400;
-  --primary-light: #381812;
-  --primary-tint: rgba(255, 55, 0, 0.18);
-  --color-primary: #FF3700;
-  --color-primary-500: #FF3700;
-  --color-primary-600: #E03000;
-  --color-primary-700: #B22400;
-  --brand-color: #FF3700;
+/* ============================================================================
+   OneSpace ERP Systems — Dark theme
 
-  /* Desk Surface Architecture (Stitch Dark) */
-  --bg-color: #0A0E17;
-  --fg-color: #151D2F;
-  --card-bg: #151D2F;
-  --navbar-bg: rgba(14, 20, 36, 0.95);
-  --sidebar-bg: #0E1424;
-  --sidebar-select-color: rgba(255, 55, 0, 0.18);
+   Not an inversion. The light theme layers white cards on a near-white stage;
+   dark reverses the *relationship* — a true-black stage with progressively
+   lighter surfaces — so elevation still reads without shadows, which are
+   nearly invisible on dark grounds.
 
-  /* Text & Contrast */
-  --text-color: #F8FAFC;
-  --text-muted: #94A3B8;
-  --text-light: #64748B;
-  --heading-color: #F8FAFC;
+   Frappe's User.desk_theme field only accepts Light / Dark / Automatic. We
+   apply tokens on top of those three states and never add a fourth option;
+   injecting one breaks backend validation when the User doc is saved.
 
-  /* Borders & Separators */
-  --border-color: #273248;
-  --light-border-color: #1E293B;
-  --subtle-border: #1E293B;
+   NOTE: dark values are derived from the Stitch light spec's zinc ramp. Pending
+   pixel verification against the Stitch dark screens (Desk Launcher / Customers
+   List / Sales Quotation, all Dark Mode) — tracked in VISUAL_QA_CHECKLIST.md.
+   ========================================================================= */
 
-  /* Controls & Buttons */
-  --control-bg: #1B2438;
-  --input-bg: #1B2438;
-  --modal-bg: #151D2F;
-  --popover-bg: #1B2438;
-  --btn-default-bg: #1B2438;
-  --btn-default-hover-bg: #273647;
-  --btn-primary-bg: #FF3700;
-  --btn-primary-hover-bg: #E03000;
+/* Token overrides. Everything downstream re-resolves automatically. */
+@mixin os-dark-tokens {
+  /* Brand — the fill stays true; text and links lift for contrast on dark. */
+  --os-primary: #FF3700;
+  --os-primary-hover: #FF5C2B;
+  --os-primary-active: #E03000;
+  --os-primary-contrast: #FFFFFF;
+  --os-primary-tint: rgba(255, 55, 0, 0.16);
+  --os-primary-tint-strong: rgba(255, 55, 0, 0.24);
+  --os-primary-row: rgba(255, 55, 0, 0.10);
+  --os-focus-ring: 0 0 0 2px rgba(255, 92, 43, 0.30);
+
+  /* Surfaces — stage, card, elevated, overlay */
+  --os-bg: var(--os-zinc-950);
+  --os-surface: var(--os-zinc-900);
+  --os-surface-subtle: #1C1C1F;
+  --os-surface-elevated: var(--os-zinc-800);
+  --os-surface-overlay: var(--os-zinc-800);
+  --os-rail-bg: #000000;
+  --os-rail-fg: var(--os-zinc-500);
+  --os-rail-fg-active: #FFFFFF;
+  --os-sidebar-bg: var(--os-zinc-900);
+  --os-header-bg: var(--os-zinc-900);
+  --os-scrim: rgba(0, 0, 0, 0.6);
+
+  /* Text — never pure white on pure black; #FAFAFA avoids halation. */
+  --os-text: var(--os-zinc-50);
+  --os-text-secondary: var(--os-zinc-400);
+  --os-text-muted: var(--os-zinc-500);
+  --os-text-label: var(--os-zinc-300);
+  --os-text-inverse: var(--os-zinc-900);
+
+  /* Borders carry the hierarchy that shadows carry in light mode. */
+  --os-border: var(--os-zinc-800);
+  --os-border-subtle: #1C1C1F;
+  --os-border-strong: var(--os-zinc-700);
+
+  /* Status — desaturated grounds, lifted foregrounds. */
+  --os-success-bg: #06251C;
+  --os-success-fg: #6EE7B7;
+  --os-success-border: #0B3B2C;
+
+  --os-danger-bg: #2A1210;
+  --os-danger-fg: #FCA5A5;
+  --os-danger-border: #4C1D1A;
+
+  --os-warning-bg: #2A1F06;
+  --os-warning-fg: #FCD34D;
+  --os-warning-border: #4A360C;
+
+  --os-info-bg: #0C1B33;
+  --os-info-fg: #93C5FD;
+  --os-info-border: #1A2E52;
+
+  --os-draft-bg: var(--os-zinc-800);
+  --os-draft-fg: var(--os-zinc-400);
+  --os-draft-border: var(--os-zinc-700);
+
+  --os-pending-bg: var(--os-primary-tint);
+  --os-pending-fg: #FF7A50;
+  --os-pending-border: rgba(255, 92, 43, 0.35);
+
+  /* Elevation — deeper and tighter; dark surfaces swallow soft shadows. */
+  --os-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --os-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.6),
+                  0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --os-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.7),
+                  0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
-/* OS Preference Synchronization */
+/* Frappe variable bridge for dark. Mirrors _light.scss; only the values that
+   genuinely differ in dark are restated — the rest already point at --os-*
+   tokens that this file has redefined. */
+@mixin os-dark-bridge {
+  --primary: var(--os-primary);
+  --primary-color: var(--os-primary);
+  --primary-hover: var(--os-primary-hover);
+  --primary-light: var(--os-primary-tint);
+  --brand-color: var(--os-primary);
+
+  /* The neutral ramp inverts in dark so core components that reach for
+     --gray-100 as a "light fill" get a dark fill instead of a white flash. */
+  --gray-50:  var(--os-zinc-950);
+  --gray-100: var(--os-zinc-900);
+  --gray-200: var(--os-zinc-800);
+  --gray-300: var(--os-zinc-700);
+  --gray-400: var(--os-zinc-600);
+  --gray-500: var(--os-zinc-500);
+  --gray-600: var(--os-zinc-400);
+  --gray-700: var(--os-zinc-300);
+  --gray-800: var(--os-zinc-200);
+  --gray-900: var(--os-zinc-50);
+
+  --bg-color: var(--os-bg);
+  --fg-color: var(--os-surface);
+  --card-bg: var(--os-surface);
+  --navbar-bg: var(--os-header-bg);
+  --sidebar-bg: var(--os-sidebar-bg);
+  --fg-hover-color: var(--os-surface-subtle);
+  --disabled-control-bg: var(--os-surface-subtle);
+  --sidebar-select-color: var(--os-primary-tint);
+  --highlight-color: var(--os-primary-tint);
+
+  --text-color: var(--os-text);
+  --heading-color: var(--os-text);
+  --text-muted: var(--os-text-muted);
+  --text-light: var(--os-zinc-600);
+  --placeholder-color: var(--os-zinc-600);
+
+  --border-color: var(--os-border);
+  --dark-border-color: var(--os-border-strong);
+  --light-border-color: var(--os-border-subtle);
+  --subtle-border: var(--os-border-subtle);
+  --table-border-color: var(--os-border);
+
+  --control-bg: var(--os-surface-subtle);
+  --control-bg-on-gray: var(--os-surface-elevated);
+  --input-bg: var(--os-surface-subtle);
+  --input-disabled-bg: var(--os-surface);
+  --modal-bg: var(--os-surface-overlay);
+  --popover-bg: var(--os-surface-elevated);
+  --awesomplete-hover-bg: var(--os-surface-elevated);
+
+  --btn-default-bg: var(--os-surface-elevated);
+  --btn-default-hover-bg: var(--os-zinc-700);
+  --btn-primary-bg: var(--os-primary);
+  --btn-primary-hover-bg: var(--os-primary-hover);
+
+  --shadow-sm: var(--os-shadow-sm);
+  --shadow-base: var(--os-shadow-sm);
+  --shadow-md: var(--os-shadow-md);
+  --shadow-lg: var(--os-shadow-lg);
+  --card-shadow: var(--os-shadow-sm);
+  --modal-shadow: var(--os-shadow-lg);
+
+  --green-50: var(--os-success-bg);
+  --green-600: var(--os-success-fg);
+  --red-50: var(--os-danger-bg);
+  --red-600: var(--os-danger-fg);
+  --yellow-50: var(--os-warning-bg);
+  --yellow-600: var(--os-warning-fg);
+  --blue-50: var(--os-info-bg);
+  --blue-600: var(--os-info-fg);
+  --orange-50: var(--os-primary-tint);
+  --orange-600: var(--os-primary);
+}
+
+/* Explicit user choice — wins in both directions. */
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  @include os-dark-tokens;
+  @include os-dark-bridge;
+}
+
+/* Automatic: follow the OS. Guarded so an explicit Light choice always beats a
+   dark OS preference. */
 @media (prefers-color-scheme: dark) {
-  :root[data-theme="automatic"],
+  :root[data-theme="automatic"]:not([data-theme="light"]),
   :root:not([data-theme]) {
-    --primary: #FF3700;
-    --primary-hover: #E03000;
-    --bg-color: #0A0E17;
-    --fg-color: #151D2F;
-    --card-bg: #151D2F;
-    --navbar-bg: rgba(14, 20, 36, 0.95);
-    --sidebar-bg: #0E1424;
-    --sidebar-select-color: rgba(255, 55, 0, 0.18);
-    --text-color: #F8FAFC;
-    --text-muted: #94A3B8;
-    --border-color: #273248;
+    @include os-dark-tokens;
+    @include os-dark-bridge;
+  }
+}
+
+/* Native form controls (date pickers, scrollbars, autofill) need to be told
+   the surface is dark or the browser paints light chrome on top of it. */
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="automatic"]:not([data-theme="light"]),
+  :root:not([data-theme]) {
+    color-scheme: dark;
   }
 }

@@ -1,7 +1,19 @@
-/* OneSpace ERP Systems v16 — Master SCSS Bundle Entry
-   Compiled via Frappe esbuild asset bundler into dist/css/onespace.bundle.[hash].css */
+/* ============================================================================
+   OneSpace ERP Systems — Desk + Portal stylesheet entry point
 
-@import "variables";
+   esbuild resolves this to /assets/onespace/dist/css/onespace.bundle.[hash].css
+   and hooks.py references it as "onespace.bundle.css".
+
+   Import order is load-bearing:
+     1. tokens      — every --os-* value, light as the base state
+     2. typography  — @font-face and the type scale
+     3. light       — maps --os-* onto Frappe's own variables
+     4. dark        — redefines --os-* and re-bridges for the dark states
+     5. components  — the only layer allowed to use selectors, all scoped
+   ========================================================================= */
+
+@import "tokens";
+@import "typography";
 @import "light";
 @import "dark";
 @import "desk_components";

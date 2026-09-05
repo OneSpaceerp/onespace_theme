@@ -1,0 +1,160 @@
+/* ============================================================================
+   OneSpace ERP Systems — Typography
+   Plus Jakarta Sans for headings and navigation, Manrope for body/forms/tables.
+
+   Fonts are SELF-HOSTED. The previous implementation used
+   `@import url('https://fonts.googleapis.com/...')` inside SCSS, which is
+   render-blocking on every Desk load and fails outright on air-gapped or
+   egress-restricted deployments — a real scenario for ERP customers.
+
+   Run `scripts/fetch_fonts.sh` once on the bench to populate public/fonts/.
+   Until then the stack degrades cleanly to system fonts; nothing breaks.
+   ========================================================================= */
+
+$os-font-path: "/assets/onespace/fonts";
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600 800;                 /* variable range */
+  font-display: swap;
+  src: url("#{$os-font-path}/plus-jakarta-sans-variable.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("#{$os-font-path}/manrope-variable.woff2") format("woff2-variations");
+}
+
+:root {
+  --os-font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, "Helvetica Neue", Arial, sans-serif;
+  --os-font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+                     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --os-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                  "Liberation Mono", monospace;
+
+  /* Type scale — the ten roles defined in the Stitch design system.
+     Body baseline is 13px: this is a dense operational UI, which the
+     ui-design skill explicitly permits for productivity surfaces. */
+  --os-display-lg-size: 32px;
+  --os-display-lg-line: 40px;
+  --os-display-lg-weight: 700;
+  --os-display-lg-tracking: -0.02em;
+
+  --os-headline-lg-size: 24px;
+  --os-headline-lg-line: 32px;
+  --os-headline-lg-weight: 700;
+  --os-headline-lg-tracking: -0.015em;
+
+  --os-headline-md-size: 20px;
+  --os-headline-md-line: 28px;
+  --os-headline-md-weight: 600;
+  --os-headline-md-tracking: -0.01em;
+
+  --os-headline-sm-size: 16px;
+  --os-headline-sm-line: 24px;
+  --os-headline-sm-weight: 600;
+  --os-headline-sm-tracking: -0.005em;
+
+  --os-body-lg-size: 15px;
+  --os-body-lg-line: 24px;
+
+  --os-body-md-size: 13px;              /* default form + table text */
+  --os-body-md-line: 20px;
+
+  --os-body-sm-size: 12px;
+  --os-body-sm-line: 18px;
+
+  --os-label-lg-size: 13px;
+  --os-label-lg-line: 18px;
+  --os-label-lg-weight: 600;
+
+  --os-label-md-size: 12px;             /* field labels */
+  --os-label-md-line: 16px;
+  --os-label-md-weight: 600;
+  --os-label-md-tracking: 0.02em;
+
+  --os-label-sm-size: 11px;             /* table headers, all-caps chips */
+  --os-label-sm-line: 14px;
+  --os-label-sm-weight: 700;
+  --os-label-sm-tracking: 0.04em;
+}
+
+/* --- Role classes --------------------------------------------------------
+   Used by OneSpace-authored markup. Frappe's own elements inherit through
+   the variable mapping in _light.scss / _dark.scss instead. */
+
+.os-display-lg {
+  font-family: var(--os-font-display);
+  font-size: var(--os-display-lg-size);
+  line-height: var(--os-display-lg-line);
+  font-weight: var(--os-display-lg-weight);
+  letter-spacing: var(--os-display-lg-tracking);
+  text-wrap: balance;
+}
+
+.os-headline-lg {
+  font-family: var(--os-font-display);
+  font-size: var(--os-headline-lg-size);
+  line-height: var(--os-headline-lg-line);
+  font-weight: var(--os-headline-lg-weight);
+  letter-spacing: var(--os-headline-lg-tracking);
+  text-wrap: balance;
+}
+
+.os-headline-md {
+  font-family: var(--os-font-display);
+  font-size: var(--os-headline-md-size);
+  line-height: var(--os-headline-md-line);
+  font-weight: var(--os-headline-md-weight);
+  letter-spacing: var(--os-headline-md-tracking);
+}
+
+.os-headline-sm {
+  font-family: var(--os-font-display);
+  font-size: var(--os-headline-sm-size);
+  line-height: var(--os-headline-sm-line);
+  font-weight: var(--os-headline-sm-weight);
+  letter-spacing: var(--os-headline-sm-tracking);
+}
+
+.os-body-lg { font-size: var(--os-body-lg-size); line-height: var(--os-body-lg-line); }
+.os-body-md { font-size: var(--os-body-md-size); line-height: var(--os-body-md-line); }
+.os-body-sm { font-size: var(--os-body-sm-size); line-height: var(--os-body-sm-line); }
+
+.os-label-lg {
+  font-size: var(--os-label-lg-size);
+  line-height: var(--os-label-lg-line);
+  font-weight: var(--os-label-lg-weight);
+}
+
+.os-label-md {
+  font-size: var(--os-label-md-size);
+  line-height: var(--os-label-md-line);
+  font-weight: var(--os-label-md-weight);
+  letter-spacing: var(--os-label-md-tracking);
+}
+
+.os-label-sm {
+  font-size: var(--os-label-sm-size);
+  line-height: var(--os-label-sm-line);
+  font-weight: var(--os-label-sm-weight);
+  letter-spacing: var(--os-label-sm-tracking);
+  text-transform: uppercase;
+}
+
+/* --- Tabular numerals ----------------------------------------------------
+   Mandatory on every ledger balance, quantity and currency value so columns
+   align vertically. Applied to Frappe's own numeric cells in _controls.scss. */
+.os-tnum,
+[data-fieldtype="Currency"] .control-value,
+[data-fieldtype="Float"] .control-value,
+[data-fieldtype="Int"] .control-value,
+[data-fieldtype="Percent"] .control-value {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
