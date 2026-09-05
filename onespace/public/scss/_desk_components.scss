@@ -2,40 +2,48 @@
    Pixel-perfect match to Stitch Project 11292459283275273462 */
 
 body, #app {
-  font-family: var(--theme-font-stack);
-  background-color: var(--bg-color) !important;
+  font-family: var(--os-font-body);
   color: var(--text-color);
   -webkit-font-smoothing: antialiased;
 }
 
 /* ==========================================================================
-   1. Stitch Top Navigation Bar
+   1. OneSpace Top Navigation Bar
+
+   SCOPING RULE — read before editing this section.
+
+   Every selector here must be a descendant of .onespace-top-navbar, which is
+   the element OneSpace mounts and therefore owns. Bare `header`, `nav` and
+   `.navbar` are forbidden.
+
+   This is not style preference. The previous version styled bare `header`,
+   `header input`, `header button:first-of-type` and `header [class*="avatar"]`,
+   which matched Frappe's own list-view and form-view header regions. On
+   /desk/user that forced a 320px-wide 38px-tall input into the list filter
+   row and pinned the region to 56px, producing the duplicated, misaligned
+   column header and the floating empty input box.
+
+   The v16 theming guide calls this out directly: an unscoped .sidebar-toggle-btn
+   in core leaked into mobile layouts and hid the navigation button. Scope to a
+   container you own, or it will collide with a layout you have never seen.
    ========================================================================== */
-header,
-nav.navbar,
-header.navbar,
-.navbar,
-.onespace-top-navbar,
-#app > div > header,
-#app header {
-  height: 56px !important;
-  min-height: 56px !important;
-  max-height: 56px !important;
-  background: var(--navbar-bg) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 0 24px !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
-  backdrop-filter: blur(12px) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  margin: 0 !important;
+.onespace-top-navbar {
+  height: var(--os-header-height);
+  background: var(--navbar-bg);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--os-space-base);
+  padding: 0 var(--os-page-margin);
+  position: sticky;
+  top: 0;
+  z-index: var(--os-z-header);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--os-shadow-sm);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 /* Container Full Width Reset */
@@ -67,87 +75,75 @@ main:has(#onespace-desk-container) {
   box-sizing: border-box !important;
 }
 
-/* Top-Left Logo Button in Navbar */
-header a[href="/desk"],
-header button:first-of-type,
-header .flex:first-child button:first-child,
-nav a[href="/desk"],
-.os-topbar-logo {
-  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
-  background-size: 30px 30px !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  width: 36px !important;
-  height: 36px !important;
-  min-width: 36px !important;
-  min-height: 36px !important;
-  border-radius: 8px !important;
-  border: none !important;
-  cursor: pointer !important;
+/* Top-left logo button */
+.onespace-top-navbar .os-topbar-logo {
+  background-image: url('/assets/onespace/images/onespace_icon.svg');
+  background-size: 30px 30px;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--os-radius);
+  border: none;
+  cursor: pointer;
 }
 
-header a[href="/desk"] svg,
-header button:first-of-type svg,
-header .flex:first-child button:first-child svg,
-nav a[href="/desk"] svg {
-  display: none !important;
+.onespace-top-navbar .os-topbar-logo svg {
+  display: none;
 }
 
-/* Top Bar Search Input */
-header input[type="text"],
-header input[type="search"],
-header [role="search"] input,
-header input,
-nav input {
-  height: 38px !important;
-  min-width: 320px !important;
-  border-radius: 10px !important;
-  background-color: var(--control-bg, #F1F5F9) !important;
-  border: 1px solid var(--border-color, #E2E8F0) !important;
-  padding: 0 16px !important;
-  font-size: 12px !important;
-  font-family: var(--theme-font-stack) !important;
-  color: var(--text-color, #0F172A) !important;
-  transition: all 0.2s ease !important;
-  outline: none !important;
+/* Search field */
+.onespace-top-navbar input[type="text"],
+.onespace-top-navbar input[type="search"] {
+  height: var(--os-control-height);
+  border-radius: var(--os-radius);
+  background-color: var(--control-bg);
+  border: 1px solid var(--border-color);
+  padding: 0 var(--os-space-base);
+  font-size: var(--os-body-md-size);
+  font-family: var(--os-font-body);
+  color: var(--text-color);
+  transition: border-color var(--os-duration) var(--os-ease),
+              box-shadow var(--os-duration) var(--os-ease);
+  outline: none;
 }
 
-header input:focus,
-nav input:focus {
-  border-color: #FF3700 !important;
-  background-color: #FFFFFF !important;
-  box-shadow: 0 0 0 3px rgba(255, 55, 0, 0.12) !important;
+.onespace-top-navbar input[type="text"]:focus,
+.onespace-top-navbar input[type="search"]:focus {
+  border-color: var(--os-border-focus);
+  box-shadow: var(--os-focus-ring);
 }
 
 #onespace-topbar-search-input {
-  padding: 0 62px 0 38px !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
+  padding: 0 62px 0 38px;
+  width: 100%;
+  min-width: 320px;
+  box-sizing: border-box;
 }
 
-/* Notification Bell & Dot */
-.os-bell-dot {
+/* Notification bell dot */
+.onespace-top-navbar .os-bell-dot {
   position: absolute;
   top: 6px;
   right: 6px;
   width: 7px;
   height: 7px;
-  border-radius: 50%;
-  background: #FF3700;
-  border: 1.5px solid #FFFFFF;
+  border-radius: var(--os-radius-full);
+  background: var(--os-primary);
+  border: 1.5px solid var(--os-surface);
 }
 
-/* User Avatar in Header */
-header .avatar,
-header [class*="avatar"],
-nav .avatar {
-  background-color: #EA580C !important;
-  color: #FFFFFF !important;
-  font-weight: 700 !important;
-  font-size: 12px !important;
-  border-radius: 50% !important;
-  border: 2px solid #FFFFFF !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+/* User avatar */
+.onespace-top-navbar .avatar,
+.onespace-top-navbar [class*="avatar"] {
+  background-color: var(--os-primary);
+  color: var(--os-text-on-primary);
+  font-weight: 700;
+  font-size: var(--os-body-sm-size);
+  border-radius: var(--os-radius-full);
+  border: 2px solid var(--os-surface);
+  box-shadow: var(--os-shadow-sm);
 }
 
 @media (max-width: 768px) {
@@ -402,23 +398,9 @@ body[data-route="desk"] .grid:not(.onespace-app-grid):not(.os-bento-grid),
   display: none !important;
 }
 
-/* Top-Left Logo in Navbar */
-header button:first-child svg,
-header a[href="/desk"] svg,
-nav button:first-child svg,
-nav a[href="/desk"] svg {
-  display: none !important;
-}
-
-header button:first-child,
-header a[href="/desk"],
-nav button:first-child,
-nav a[href="/desk"] {
-  background-image: url('/assets/onespace/images/onespace_icon.svg') !important;
-  background-size: 28px 28px !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  min-width: 36px !important;
-  min-height: 36px !important;
-  border-radius: var(--theme-border-radius) !important;
-}
+/* The second, unscoped copy of the logo rules that used to live here has been
+   removed. It targeted `header button:first-child` and `nav button:first-child`
+   globally, so it stamped the OneSpace icon onto the first button of every
+   header on every page — including Frappe's list and form views. The scoped
+   version at the top of this file (.onespace-top-navbar .os-topbar-logo) is
+   the only one. */

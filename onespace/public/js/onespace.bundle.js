@@ -142,18 +142,40 @@
         }
       });
 
-      // Notification unread count
-      frappe.call({
-        method: 'frappe.desk.doctype.notification_log.notification_log.get_unread_count',
-        callback: function (r) {
-          const count = (r && r.message) || 0;
-          const dot = mount.querySelector('#onespace-notifications-dot');
-          if (dot) {
-            dot.style.display = count > 0 ? 'block' : 'none';
-          }
-        }
-      });
+      showUnreadNotificationDot(mount);
     }
+  }
+
+  /**
+   * Unread-notification dot.
+   *
+   * The previous implementation called
+   * frappe.desk.doctype.notification_log.notification_log.get_unread_count,
+   * which does not exist in Frappe v16.31.0 — every Desk load threw a
+   * ValidationError dialog in the user's face:
+   *
+   *   Failed to get method for command ... has no attribute 'get_unread_count'
+   *
+   * Never call a framework internal by dotted path from the client. Use the
+   * public data API, and fail silently: a missing dot is a cosmetic loss, a
+   * modal error dialog is not.
+   */
+  function showUnreadNotificationDot(mount) {
+    const dot = mount.querySelector('#onespace-notifications-dot');
+    if (!dot || !window.frappe || !frappe.db || !frappe.session) return;
+
+    Promise.resolve(
+      frappe.db.get_count('Notification Log', {
+        for_user: frappe.session.user,
+        read: 0
+      })
+    )
+      .then(function (count) {
+        dot.style.display = Number(count) > 0 ? 'block' : 'none';
+      })
+      .catch(function () {
+        dot.style.display = 'none';
+      });
   }
 
   function wireStitchEvents(mount) {
@@ -600,102 +622,90 @@
     });
   }
 
-  // --- Stitch Top Navigation Bar Controller (for inner workspace pages) ---
+  /**
+   * Wire up the OneSpace navbar.
+   *
+   * Only ever touches the navbar OneSpace itself rendered. The previous version
+   * did `document.querySelector('header, nav, .navbar')` and then ADDED the
+   * .onespace-top-navbar class to whatever came first in document order. On
+   * /desk/user that was Frappe's own list-view header — which is why the column
+   * headers duplicated, a 320px search input appeared inside the filter row,
+   * and the OneSpace logo got stamped onto a list control via
+   * getBoundingClientRect() position guessing.
+   *
+   * If OneSpace has not rendered a navbar on this route, we do nothing. Frappe's
+   * own chrome is Frappe's to style, through CSS variables, not through JS.
+   */
   function enhanceTopNavbar() {
-    const navbar = document.querySelector('header:not(.onespace-top-navbar), nav:not(.onespace-top-navbar), #app header:not(.onespace-top-navbar), .navbar:not(.onespace-top-navbar)');
+    const navbar = document.querySelector('header.onespace-top-navbar');
     if (!navbar) return;
 
-    navbar.classList.add('onespace-top-navbar');
-
-    // 1. Top-Left Logo Button
-    const headerButtons = Array.from(navbar.querySelectorAll('button, a'));
-    const logoBtn = headerButtons.find(b => {
-      const r = b.getBoundingClientRect();
-      return r.top < 60 && r.left < 200 && r.width >= 20 && r.height >= 20;
-    }) || navbar.querySelector('a[href="/desk"], button:first-child, a:first-child');
-
-    if (logoBtn) {
-      const svg = logoBtn.querySelector('svg');
-      if (svg) svg.style.setProperty('display', 'none', 'important');
-      logoBtn.style.setProperty('background-image', "url('/assets/onespace/images/onespace_icon.svg')", 'important');
-      logoBtn.style.setProperty('background-size', '28px 28px', 'important');
-      logoBtn.style.setProperty('background-position', 'center', 'important');
-      logoBtn.style.setProperty('background-repeat', 'no-repeat', 'important');
-      logoBtn.style.setProperty('width', '36px', 'important');
-      logoBtn.style.setProperty('height', '36px', 'important');
-      logoBtn.style.setProperty('min-width', '36px', 'important');
-      logoBtn.style.setProperty('border-radius', '8px', 'important');
-      logoBtn.style.setProperty('cursor', 'pointer', 'important');
-
-      if (!logoBtn.dataset.osBound) {
-        logoBtn.dataset.osBound = 'true';
-        logoBtn.addEventListener('click', (e) => {
-          if (window.location.pathname !== '/desk') {
-            window.location.href = '/desk';
-          }
-        });
-      }
+    // Appearance is CSS's job (.onespace-top-navbar .os-topbar-logo). This only
+    // binds behaviour, once.
+    const logoBtn = navbar.querySelector('.os-topbar-logo');
+    if (logoBtn && !logoBtn.dataset.osBound) {
+      logoBtn.dataset.osBound = 'true';
+      logoBtn.addEventListener('click', function () {
+        if (window.location.pathname !== '/desk') {
+          window.location.href = '/desk';
+        }
+      });
     }
 
-    // 2. Search Bar Enhancement
-    const searchInput = navbar.querySelector('input[type="text"], input[type="search"], input');
-    if (searchInput) {
-      searchInput.setAttribute('placeholder', 'Search (Ctrl + K)...');
-    }
-
-    // 3. Notification Bell (Add active red dot)
-    const bellBtn = navbar.querySelector('button:has(svg [d*="M12 22"]), button:has(svg path), [title*="Notification" i]');
-    if (bellBtn && !bellBtn.querySelector('.os-bell-dot')) {
-      const dot = document.createElement('span');
-      dot.className = 'os-bell-dot';
-      dot.style.cssText = 'position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #FF3700; border: 1.5px solid #FFFFFF; pointer-events: none;';
-      bellBtn.style.position = 'relative';
-      bellBtn.appendChild(dot);
+    const searchInput = navbar.querySelector('#onespace-topbar-search-input');
+    if (searchInput && !searchInput.getAttribute('placeholder')) {
+      searchInput.setAttribute('placeholder', 'Search (Ctrl + K)…');
     }
   }
 
-  // --- Universal Top-Left Logo & Text Scrubber ---
-  function scrubBranding() {
-    if (!document.body) return;
+  /* --------------------------------------------------------------------------
+     Lifecycle
 
-    // TreeWalker text replacement
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-    let node;
-    while ((node = walker.nextNode())) {
-      if (node.nodeValue && (node.nodeValue.includes('ERPNext') || node.nodeValue.includes('Frappe'))) {
-        node.nodeValue = node.nodeValue
-          .replace(/Frappe Framework/g, 'OneSpace')
-          .replace(/ERPNext Settings/g, 'OneSpace Settings')
-          .replace(/ERPNext/g, 'OneSpace')
-          .replace(/Frappe/g, 'OneSpace');
-      }
-    }
-  }
+     The DOM text scrubber that used to live here has been removed. It walked
+     every text node in <body> with no tag filter and replaced /Frappe/g and
+     /ERPNext/g, on setInterval(200ms), plus a MutationObserver watching
+     characterData whose own callback wrote characterData — a self-feeding loop.
 
-  // Lifecycle execution
-  function tick() {
-    enhanceTopNavbar();
-    scrubBranding();
+     Two things were wrong with it:
+
+       1. It rewrote customer data on screen. A Customer named "Frappe
+          Technologies" rendered as "OneSpace Technologies"; so did item
+          descriptions, comments, email bodies and text a user had just typed
+          into a textarea. The screen stopped agreeing with the database.
+
+       2. It never stopped. A 5 Hz full-tree walk on a 500-row list view, in
+          every open tab, forever — with getBoundingClientRect() calls inside
+          the same tick forcing synchronous layout.
+
+     Branding now lives where the framework supports it: extend_bootinfo on the
+     server (setup/boot.py), the OneSpace translation layer, and CSS. This file
+     is only responsible for mounting and wiring OneSpace's own UI, and it runs
+     on navigation rather than on a timer.
+     ----------------------------------------------------------------------- */
+  function render() {
     handleDeskRouting();
+    enhanceTopNavbar();
   }
 
-  tick();
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tick);
+  function onReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
   }
+
+  onReady(render);
 
   if (window.$) {
-    $(document).on('app_ready', tick);
+    $(document).on('app_ready', render);
   }
 
-  setInterval(tick, 200);
-
-  const observer = new MutationObserver(tick);
-  if (document.body) {
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-  }
-
-  if (window.frappe && frappe.router) {
-    frappe.router.on('change', () => setTimeout(tick, 50));
+  // Frappe's router fires after the view swaps; one frame later the new DOM is
+  // laid out. No polling, no observer.
+  if (window.frappe && frappe.router && typeof frappe.router.on === 'function') {
+    frappe.router.on('change', function () {
+      window.requestAnimationFrame(render);
+    });
   }
 })();
