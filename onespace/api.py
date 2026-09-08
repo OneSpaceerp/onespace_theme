@@ -228,6 +228,92 @@ def get_telemetry_data():
         }
 
 
+# Which OneSpace filter chip a workspace belongs to. Anything unmapped falls
+# through to "core" rather than being dropped — a newly installed app should
+# appear in the launcher, not vanish from it.
+LAUNCHER_CATEGORIES = {
+    "accounting": "financials",
+    "assets": "financials",
+    "payables": "financials",
+    "receivables": "financials",
+    "buying": "supply",
+    "stock": "supply",
+    "subcontracting": "supply",
+    "quality": "supply",
+    "selling": "core",
+    "crm": "core",
+    "projects": "core",
+    "manufacturing": "core",
+    "support": "core",
+    "hr": "hr",
+    "payroll": "hr",
+    "settings": "system",
+    "integrations": "system",
+    "build": "system",
+    "tools": "system",
+    "users": "system",
+    "website": "system",
+}
+
+
+def get_launcher_modules():
+    """Workspaces the current user may actually open, for the OneSpace launcher.
+
+    Replaces a hardcoded array of fourteen cards with invented routes
+    (/desk/build, /desk/organization, /desk/system). Those were guesses: they
+    ignored which apps are installed, ignored permissions — so a user with no
+    Accounting access still saw an Accounting card — and included a "Framework"
+    card that install.py hides in the database but the array put back on screen.
+
+    Deriving from Frappe's own registry means routes are correct by
+    construction, permissions are honoured, and a newly installed app shows up
+    without a code change.
+    """
+    pages = []
+
+    # Preferred: Frappe's own sidebar builder already applies permission and
+    # hidden-flag rules. Wrapped because helper locations move between releases,
+    # and this file has been bitten by that twice already.
+    try:
+        from frappe.desk.desktop import get_workspace_sidebar_items
+
+        pages = (get_workspace_sidebar_items() or {}).get("pages") or []
+    except Exception:
+        pages = []
+
+    if not pages:
+        try:
+            pages = frappe.get_all(
+                "Workspace",
+                filters={"public": 1, "is_hidden": 0},
+                fields=["name", "title", "label", "icon", "module"],
+                order_by="sequence_id asc, name asc",
+            )
+        except Exception:
+            return []
+
+    modules = []
+    for page in pages:
+        name = page.get("name") or page.get("title")
+        if not name:
+            continue
+
+        title = page.get("title") or page.get("label") or name
+        key = frappe.scrub(name)
+
+        modules.append(
+            {
+                "name": name,
+                "title": title,
+                "route": "/desk/" + key.replace("_", "-"),
+                "icon": page.get("icon") or "",
+                "category": LAUNCHER_CATEGORIES.get(key, "core"),
+            }
+        )
+
+    return modules
+
+
 def get_unread_notification_count():
     """Unread Notification Logs for the current user.
 
@@ -260,4 +346,5 @@ def get_desk_metrics():
         "last_accessed": get_last_accessed_document(),
         "telemetry": get_telemetry_data(),
         "unread_notifications": get_unread_notification_count(),
+        "modules": get_launcher_modules(),
     }
