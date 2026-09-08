@@ -15,74 +15,81 @@
    List / Sales Quotation, all Dark Mode) — tracked in VISUAL_QA_CHECKLIST.md.
    ========================================================================= */
 
-/* Token overrides. Everything downstream re-resolves automatically. */
+/* Token overrides, taken verbatim from the "OneSpace Dark Slate" design system
+   in the Stitch project (assets/4aea87749f6f48319b64c7dd2a634e41).
+   Everything downstream re-resolves automatically.
+
+   Note the deliberate family switch: LIGHT is zinc (a true neutral), DARK is
+   cold-tinted slate/carbon. That is not an inconsistency — Stitch specifies
+   both — and it is a good call. A neutral grey goes muddy at low luminance,
+   where a slight cool cast keeps the tiers separable. */
 @mixin os-dark-tokens {
-  /* Brand — the fill stays true; text and links lift for contrast on dark. */
+  /* Brand — the fill stays true; hover lifts rather than darkens on dark. */
   --os-primary: #FF3700;
-  --os-primary-hover: #FF5C2B;
+  --os-primary-hover: #FF4500;
   --os-primary-active: #E03000;
   --os-primary-contrast: #FFFFFF;
-  --os-primary-tint: rgba(255, 55, 0, 0.16);
-  --os-primary-tint-strong: rgba(255, 55, 0, 0.24);
-  --os-primary-row: rgba(255, 55, 0, 0.10);
-  --os-focus-ring: 0 0 0 2px rgba(255, 92, 43, 0.30);
+  --os-primary-tint: rgba(255, 55, 0, 0.15);
+  --os-primary-tint-strong: rgba(255, 55, 0, 0.30);
+  --os-primary-row: rgba(255, 55, 0, 0.08);
+  --os-focus-ring: 0 0 0 2px rgba(255, 55, 0, 0.15);
 
-  /* Surfaces — stage, card, elevated, overlay */
-  --os-bg: var(--os-zinc-950);
-  --os-surface: var(--os-zinc-900);
-  --os-surface-subtle: #1C1C1F;
-  --os-surface-elevated: var(--os-zinc-800);
-  --os-surface-overlay: var(--os-zinc-800);
-  --os-rail-bg: #000000;
-  --os-rail-fg: var(--os-zinc-500);
+  /* Surfaces — the four tiers named in the Stitch elevation model. */
+  --os-bg: #0F1117;              /* L0 stage canvas   */
+  --os-surface: #181B24;         /* L1 cards, tables  */
+  --os-surface-subtle: #212530;  /* hover fill        */
+  --os-surface-elevated: #212530;/* L2 dropdowns      */
+  --os-surface-overlay: #2B3040; /* L3 modals         */
+  --os-rail-bg: #141720;         /* obsidian spine    */
+  --os-rail-fg: #94A3B8;
   --os-rail-fg-active: #FFFFFF;
-  --os-sidebar-bg: var(--os-zinc-900);
-  --os-header-bg: var(--os-zinc-900);
-  --os-scrim: rgba(0, 0, 0, 0.6);
+  --os-sidebar-bg: #181B24;
+  --os-header-bg: #141720;
+  --os-scrim: rgba(15, 17, 23, 0.75);
 
-  /* Text — never pure white on pure black; #FAFAFA avoids halation. */
-  --os-text: var(--os-zinc-50);
-  --os-text-secondary: var(--os-zinc-400);
-  --os-text-muted: var(--os-zinc-500);
-  --os-text-label: var(--os-zinc-300);
-  --os-text-inverse: var(--os-zinc-900);
+  /* Text — three tiers, never pure white (halation on dark grounds). */
+  --os-text: #F1F5F9;
+  --os-text-secondary: #CBD5E1;
+  --os-text-muted: #94A3B8;
+  --os-text-label: #CBD5E1;
+  --os-text-inverse: #0F1117;
 
   /* Borders carry the hierarchy that shadows carry in light mode. */
-  --os-border: var(--os-zinc-800);
-  --os-border-subtle: #1C1C1F;
-  --os-border-strong: var(--os-zinc-700);
+  --os-border-subtle: #232836;
+  --os-border: #2D3343;
+  --os-border-strong: #3A4154;
 
-  /* Status — desaturated grounds, lifted foregrounds. */
-  --os-success-bg: #06251C;
-  --os-success-fg: #6EE7B7;
-  --os-success-border: #0B3B2C;
+  /* Status — Stitch names the foregrounds; grounds are their 15% tints, which
+     is what the badge spec calls for. */
+  --os-success-fg: #10B981;
+  --os-success-bg: rgba(16, 185, 129, 0.15);
+  --os-success-border: rgba(16, 185, 129, 0.30);
 
-  --os-danger-bg: #2A1210;
-  --os-danger-fg: #FCA5A5;
-  --os-danger-border: #4C1D1A;
+  --os-danger-fg: #EF4444;
+  --os-danger-bg: rgba(239, 68, 68, 0.15);
+  --os-danger-border: rgba(239, 68, 68, 0.30);
 
-  --os-warning-bg: #2A1F06;
-  --os-warning-fg: #FCD34D;
-  --os-warning-border: #4A360C;
+  --os-warning-fg: #F59E0B;
+  --os-warning-bg: rgba(245, 158, 11, 0.15);
+  --os-warning-border: rgba(245, 158, 11, 0.30);
 
-  --os-info-bg: #0C1B33;
-  --os-info-fg: #93C5FD;
-  --os-info-border: #1A2E52;
+  --os-info-fg: #3B82F6;
+  --os-info-bg: rgba(59, 130, 246, 0.15);
+  --os-info-border: rgba(59, 130, 246, 0.30);
 
-  --os-draft-bg: var(--os-zinc-800);
-  --os-draft-fg: var(--os-zinc-400);
-  --os-draft-border: var(--os-zinc-700);
+  --os-draft-bg: #212530;
+  --os-draft-fg: #94A3B8;
+  --os-draft-border: #2D3343;
 
-  --os-pending-bg: var(--os-primary-tint);
-  --os-pending-fg: #FF7A50;
-  --os-pending-border: rgba(255, 92, 43, 0.35);
+  --os-pending-bg: rgba(255, 55, 0, 0.15);
+  --os-pending-fg: #FF3700;
+  --os-pending-border: rgba(255, 55, 0, 0.30);
 
-  /* Elevation — deeper and tighter; dark surfaces swallow soft shadows. */
-  --os-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-  --os-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.6),
-                  0 4px 6px -4px rgba(0, 0, 0, 0.4);
-  --os-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.7),
-                  0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  /* Elevation — Stitch leads with tonal layering and outlines here, using
+     shadow only from L2 upward. Dark surfaces swallow soft shadows. */
+  --os-shadow-sm: none;
+  --os-shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.5);
+  --os-shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.7);
 }
 
 /* Frappe variable bridge for dark. Mirrors _light.scss; only the values that
