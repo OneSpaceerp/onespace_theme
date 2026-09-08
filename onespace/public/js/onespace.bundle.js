@@ -9,22 +9,29 @@
 
   window.OneSpace = window.OneSpace || {};
 
-  const MODULES = [
-    { id: 'build', category: 'system', title: 'Framework', subtitle: 'DocTypes & Core', icon: 'cube', bg: '#334155', route: '/desk/build', badge: null },
-    { id: 'organization', category: 'core', title: 'Organization', subtitle: 'Branches & Units', icon: 'building', bg: '#0284C7', route: '/desk/organization', badge: null },
-    { id: 'accounting', category: 'financials', title: 'Accounting', subtitle: 'GL, Invoices & Tax', icon: 'calculator', bg: '#059669', route: '/desk/accounting', badge: '2 audit', badgeBg: '#FEF3C7', badgeColor: '#92400E' },
-    { id: 'assets', category: 'financials', title: 'Assets', subtitle: 'Maintenance & Logs', icon: 'archive', bg: '#4F46E5', route: '/desk/assets', badge: null },
-    { id: 'buying', category: 'supply', title: 'Buying', subtitle: 'Supplier PO & RFQ', icon: 'shopping-bag', bg: '#0284C7', route: '/desk/buying', badge: null },
-    { id: 'manufacturing', category: 'core', title: 'Manufacturing', subtitle: 'BOM & Work Orders', icon: 'flask', bg: '#0D9488', route: '/desk/manufacturing', badge: null },
-    { id: 'selling', category: 'core', title: 'Selling', subtitle: 'CRM & Quotations', icon: 'chart-bar', bg: '#EA580C', route: '/desk/selling', badge: '4 new', badgeBg: '#FF3700', badgeColor: '#FFFFFF', featured: true },
-    { id: 'projects', category: 'core', title: 'Projects', subtitle: 'Tasks & Timesheet', icon: 'clipboard-check', bg: '#7C3AED', route: '/desk/projects', badge: null },
-    { id: 'quality', category: 'core', title: 'Quality', subtitle: 'Inspection & Goals', icon: 'shield-check', bg: '#059669', route: '/desk/quality', badge: null },
-    { id: 'stock', category: 'supply', title: 'Stock', subtitle: 'Items & Warehouses', icon: 'inbox', bg: '#2563EB', route: '/desk/stock', badge: null },
-    { id: 'subcontracting', category: 'supply', title: 'Subcontracting', subtitle: 'Vendor Jobs', icon: 'refresh', bg: '#0891B2', route: '/desk/subcontracting', badge: null },
-    { id: 'users', category: 'hr', title: 'HR & Payroll', subtitle: 'Staff, Leaves & Salary', icon: 'user-group', bg: '#DB2777', route: '/desk/users', badge: null },
-    { id: 'crm', category: 'core', title: 'CRM Leads', subtitle: 'Opportunities', icon: 'pie-chart', bg: '#D97706', route: '/desk/selling', badge: null },
-    { id: 'system', category: 'system', title: 'OneSpace Settings', subtitle: 'Integrations & API', icon: 'cog', bg: '#334155', route: '/desk/system', badge: null },
-  ];
+  /**
+   * Launcher cards, from the server.
+   *
+   * This was a hardcoded array of fourteen entries with invented routes
+   * (/desk/build, /desk/organization, /desk/users, /desk/system), invented
+   * badges ("2 audit", "4 new") that counted nothing, and a per-module colour
+   * palette of nine hues. It ignored which apps were installed and ignored
+   * permissions, so a user with no Accounting access still saw an Accounting
+   * card that led nowhere they were allowed to go.
+   *
+   * The list now comes from onespace.api.get_launcher_modules, which reads
+   * Frappe's own workspace registry with its permission rules applied. Every
+   * card therefore points at a route that exists and that this user can open.
+   */
+  function slug(v) {
+    return String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function getModules() {
+    const boot = (window.frappe && frappe.boot) || {};
+    const metrics = boot.onespace_metrics || {};
+    return Array.isArray(metrics.modules) ? metrics.modules : [];
+  }
 
   const SVGS = {
     'cube': '<path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zm-8 7.2v6.6l8 4.2v-6.6L4 9.2zm10 10.8l8-4.2V9.2l-8 4.2v6.6z"/>',
@@ -82,29 +89,27 @@
       }
     }
 
-    // 4. Telemetry
-    if (data.telemetry) {
-      const pod = mount.querySelector('#os-telem-pod');
-      if (pod && data.telemetry.cluster_pod) pod.textContent = data.telemetry.cluster_pod;
+    // 4. System status — only what the server could actually measure.
+    //    The old block rendered "99.99% Operational" and "v16.1.4 Enterprise",
+    //    neither of which was measured or true. Fields the server omits are
+    //    left as-is rather than filled with a plausible-looking default.
+    const sys = data.system;
+    if (sys) {
+      const site = mount.querySelector('#os-telem-pod');
+      if (site && sys.site) site.textContent = sys.site;
 
       const core = mount.querySelector('#os-telem-core');
-      if (core && data.telemetry.core_version) core.textContent = data.telemetry.core_version;
+      if (core && sys.framework_version) core.textContent = 'v' + sys.framework_version;
 
       const mod = mount.querySelector('#os-telem-modules');
-      if (mod && data.telemetry.modules_version) mod.textContent = data.telemetry.modules_version;
+      if (mod && sys.erp_version) mod.textContent = 'v' + sys.erp_version;
 
       const wrk = mount.querySelector('#os-telem-workers');
-      if (wrk && data.telemetry.workers_status) {
-        wrk.textContent = data.telemetry.workers_status;
-        wrk.style.color = data.telemetry.is_healthy ? '#16A34A' : '#CA8A04';
-      }
-
-      const bdg = mount.querySelector('#os-telem-badge');
-      if (bdg && data.telemetry.operational_badge) {
-        bdg.textContent = data.telemetry.operational_badge;
-        bdg.style.background = data.telemetry.is_healthy ? '#F0FDF4' : '#FEFCE8';
-        bdg.style.color = data.telemetry.is_healthy ? '#16A34A' : '#854D0E';
-        bdg.style.borderColor = data.telemetry.is_healthy ? '#DCFCE7' : '#FEF08A';
+      if (wrk && sys.scheduler) {
+        wrk.textContent = sys.scheduler;
+        wrk.style.color = sys.healthy === true ? 'var(--os-success-fg)'
+                        : sys.healthy === false ? 'var(--os-warning-fg)'
+                        : 'var(--os-text-muted)';
       }
     }
   }
@@ -334,18 +339,18 @@
     let mount = existingMount;
     if (!mount) {
       // Get real user session details
-      let userName = 'Khaled';
-      let userFullName = 'Khaled';
-      let userEmail = 'Administrator';
-      let userInitials = 'KH';
+      let userName = '';
+      let userFullName = '';
+      let userEmail = '';
+      let userInitials = '';
       let userImg = null;
 
       if (window.frappe && frappe.session) {
-        userEmail = frappe.session.user || 'Administrator';
+        userEmail = frappe.session.user || '';
         if (frappe.session.user_fullname) {
           userFullName = frappe.session.user_fullname;
           const parts = frappe.session.user_fullname.trim().split(/\s+/);
-          userName = parts[0] || 'Khaled';
+          userName = parts[0] || '';
           userInitials = parts.length > 1
             ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
             : parts[0].substring(0, 2).toUpperCase();
@@ -426,9 +431,7 @@
             <div>
               <div class="os-hero-pretitle">
                 <span class="dot"></span>
-                <span>ENTERPRISE GLOBAL WORKSPACE</span>
                 <span>&bull;</span>
-                <span>PRODUCTION INSTANCE</span>
               </div>
               <h1 class="os-hero-title">
                 Welcome back, <span class="highlight">${userName}</span> 👋
@@ -458,7 +461,7 @@
           <!-- Filter Tabs & View Controls -->
           <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;">
             <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="os-filter-container">
-              <button class="os-filter-tab active" data-cat="all">All Apps (${MODULES.length})</button>
+              <button class="os-filter-tab active" data-cat="all">All Apps (${getModules().length})</button>
               <button class="os-filter-tab" data-cat="core">Core Operations</button>
               <button class="os-filter-tab" data-cat="financials">Financials</button>
               <button class="os-filter-tab" data-cat="supply">Supply Chain</button>
@@ -478,14 +481,12 @@
 
           <!-- 14 App Cards Grid -->
           <div class="onespace-app-grid" id="os-app-grid">
-            ${MODULES.map(m => `
-              <a href="${m.route}" class="os-app-card ${m.featured ? 'featured' : ''}" data-cat="${m.category}" id="card-${m.id}">
-                ${m.badge ? `<span class="os-card-badge" style="background: ${m.badgeBg}; color: ${m.badgeColor};">${m.badge}</span>` : ''}
-                <div class="os-icon-tile" style="background-color: ${m.bg};">
+            ${getModules().map(m => `
+              <a href="${m.route}" class="os-app-card" data-cat="${m.category}" id="card-${slug(m.name)}">
+                <div class="os-icon-tile">
                   <svg width="26" height="26" viewBox="0 0 24 24">${SVGS[m.icon] || SVGS.cog}</svg>
                 </div>
                 <span class="os-card-title">${m.title}</span>
-                <span class="os-card-subtitle">${m.subtitle}</span>
               </a>
             `).join('')}
           </div>
@@ -550,7 +551,6 @@
             <div class="os-bento-card">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color);">SYSTEM TELEMETRY</span>
-                <span id="os-telem-badge" style="font-size: 11px; font-weight: 700; background: #F0FDF4; color: #16A34A; padding: 2px 8px; border-radius: 9999px; border: 1px solid #DCFCE7;">&bull; 99.99% Operational</span>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; margin-bottom: 20px;">
@@ -642,10 +642,147 @@
       });
     }
 
+    mountLanguageSwitcher(navbar);
+
     const searchInput = navbar.querySelector('#onespace-topbar-search-input');
     if (searchInput && !searchInput.getAttribute('placeholder')) {
       searchInput.setAttribute('placeholder', 'Search (Ctrl + K)…');
     }
+  }
+
+
+  /* ==========================================================================
+     Theme configuration (OneSpace Theme Settings)
+     ========================================================================== */
+
+  function themeConfig() {
+    return ((window.frappe && frappe.boot && frappe.boot.onespace_theme) || {});
+  }
+
+  /**
+   * Apply the few values an administrator can change from the settings page.
+   *
+   * Only tokens are written, into one style element that is replaced wholesale
+   * on each call. The SCSS bundle remains the design system; this is the small
+   * per-site override on top of it, which is why a colour change needs no
+   * rebuild. Values are written as CSS custom property values only — never
+   * interpolated into a selector or into markup.
+   */
+  function applyThemeConfig(cfg) {
+    cfg = cfg || themeConfig();
+    if (!cfg || !cfg.primary_color) return;
+
+    // Reject anything that is not a plain hex colour before it reaches CSS.
+    const hex = /^#[0-9a-fA-F]{3,8}$/.test(cfg.primary_color) ? cfg.primary_color : null;
+    const radius = /^\d+px$/.test(cfg.border_radius || '') ? cfg.border_radius : null;
+    if (!hex && !radius) return;
+
+    let tag = document.getElementById('onespace-runtime-tokens');
+    if (!tag) {
+      tag = document.createElement('style');
+      tag.id = 'onespace-runtime-tokens';
+      document.head.appendChild(tag);
+    }
+
+    tag.textContent = ':root{' +
+      (hex ? '--os-primary:' + hex + ';' : '') +
+      (radius ? '--os-radius:' + radius + ';' : '') +
+      '}';
+  }
+
+  /* ==========================================================================
+     Language switcher
+     ========================================================================== */
+
+  /**
+   * Offers only languages the site actually has — the list is built server-side
+   * from the Language table, filtered by the settings page. A switcher that
+   * lists a language the site cannot render is worse than no switcher.
+   */
+  function mountLanguageSwitcher(navbar) {
+    const cfg = themeConfig();
+    if (!cfg.enable_language_switcher) return;
+
+    const langs = Array.isArray(cfg.languages) ? cfg.languages : [];
+    if (langs.length < 2) return;   // nothing to switch between
+
+    if (navbar.querySelector('#onespace-language-switcher')) return;
+
+    const current = (window.frappe && frappe.boot && frappe.boot.lang) ||
+                    cfg.default_language || langs[0].code;
+    const currentLabel = (langs.find(function (l) { return l.code === current; }) || langs[0]).label;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'onespace-language-switcher';
+    wrap.className = 'os-lang';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'os-lang-btn';
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.title = 'Language';
+    btn.textContent = currentLabel;
+
+    const menu = document.createElement('div');
+    menu.className = 'os-lang-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+
+    langs.forEach(function (l) {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'os-lang-item' + (l.code === current ? ' is-current' : '');
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', l.code === current ? 'true' : 'false');
+      item.textContent = l.label;          // textContent, never innerHTML
+      item.addEventListener('click', function () {
+        if (l.code === current) { close(); return; }
+        setLanguage(l.code, item);
+      });
+      menu.appendChild(item);
+    });
+
+    function close() {
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      menu.hidden = !menu.hidden;
+      btn.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) close();
+    });
+
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { close(); btn.focus(); }
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+    navbar.appendChild(wrap);
+  }
+
+  function setLanguage(code, item) {
+    if (!window.frappe || !frappe.call) return;
+
+    item.disabled = true;
+    frappe.call({
+      method: 'onespace.api.set_user_language',
+      args: { language: code },
+      callback: function () {
+        // A language change alters every translated string already rendered,
+        // so a reload is the honest way to apply it.
+        window.location.reload();
+      },
+      error: function () {
+        item.disabled = false;
+      }
+    });
   }
 
   /* --------------------------------------------------------------------------
@@ -691,6 +828,7 @@
   }
 
   function render() {
+    safely('theme config', applyThemeConfig);
     safely('desk routing', handleDeskRouting);
     safely('top navbar', enhanceTopNavbar);
   }
@@ -753,6 +891,13 @@
     // page-change fires after frappe.container swaps the page in — the earliest
     // point at which the new DOM is real.
     $(document).on('app_ready page-change', renderWhenReady);
+  }
+
+  if (window.frappe && frappe.realtime && typeof frappe.realtime.on === 'function') {
+    frappe.realtime.on('onespace_theme_settings_changed', function (cfg) {
+      if (window.frappe.boot) frappe.boot.onespace_theme = cfg;
+      safely('theme config', function () { applyThemeConfig(cfg); });
+    });
   }
 
   if (window.frappe && frappe.router && typeof frappe.router.on === 'function') {

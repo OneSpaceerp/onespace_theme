@@ -191,41 +191,50 @@ def get_last_accessed_document():
     return {"label": "None", "route": "/app"}
 
 
-def get_telemetry_data():
-    """Returns real system telemetry, versions, and cluster metadata."""
+def get_system_status():
+    """Report only what the site can actually measure about itself.
+
+    What this used to return was not telemetry, it was set dressing:
+
+      "• 99.99% Operational"   no uptime is measured anywhere; the figure was
+                               a literal, shown regardless of reality
+      "v16.1.4 Enterprise"     a hardcoded version that did not match the
+                               installed 16.32.3, with "Enterprise" appended
+                               to a build that has no such edition
+      "onespace-cloud-01"      a fabricated cluster identifier for a single VPS
+      "Active (Healthy)"       asserted from the scheduler flag alone
+
+    An ERP is bought on trust in its numbers. A dashboard that invents its own
+    is the worst possible first impression, and a customer who catches one
+    invented figure will reasonably assume the ledger figures are invented too.
+
+    Everything below is read from the running system, and anything unavailable
+    is omitted rather than guessed.
+    """
+    status = {"site": frappe.local.site}
+
     try:
-        frappe_ver = getattr(frappe, "__version__", "16.0.0")
-        cluster_pod = frappe.local.site or "onespace-cloud-01"
-
-        modules_ver = "v16.1.4 Enterprise"
-        try:
-            import erpnext
-
-            modules_ver = f"v{getattr(erpnext, '__version__', '16.0.0')} Enterprise"
-        except ImportError:
-            modules_ver = f"v{frappe_ver} Core"
-
-        scheduler_inactive = frappe.utils.scheduler.is_scheduler_inactive()
-        workers_status = "Active (Healthy)" if not scheduler_inactive else "Paused"
-        operational_badge = "• 99.99% Operational" if not scheduler_inactive else "• Degraded"
-
-        return {
-            "cluster_pod": cluster_pod,
-            "core_version": f"v{frappe_ver} (Stable)",
-            "modules_version": modules_ver,
-            "workers_status": workers_status,
-            "operational_badge": operational_badge,
-            "is_healthy": not scheduler_inactive,
-        }
+        status["framework_version"] = getattr(frappe, "__version__", None)
     except Exception:
-        return {
-            "cluster_pod": frappe.local.site or "onespace-prod-01",
-            "core_version": "v16.0.0 (Stable)",
-            "modules_version": "v16.0.0 Enterprise",
-            "workers_status": "Active",
-            "operational_badge": "• Operational",
-            "is_healthy": True,
-        }
+        pass
+
+    try:
+        import erpnext
+
+        status["erp_version"] = getattr(erpnext, "__version__", None)
+    except Exception:
+        pass
+
+    try:
+        inactive = frappe.utils.scheduler.is_scheduler_inactive()
+        status["scheduler"] = "Paused" if inactive else "Running"
+        status["healthy"] = not inactive
+    except Exception:
+        # Unknown is an honest answer. "Active" would not be.
+        status["scheduler"] = "Unknown"
+        status["healthy"] = None
+
+    return status
 
 
 # Which OneSpace filter chip a workspace belongs to. Anything unmapped falls
@@ -314,6 +323,45 @@ def get_launcher_modules():
     return modules
 
 
+@frappe.whitelist()
+def set_user_language(language: str):
+    """Switch the signed-in user's Desk language.
+
+    Scoped to frappe.session.user and nothing else — the caller cannot name a
+    user, so this endpoint can never be used to change someone else's profile.
+    The language is validated against the Language table, so an arbitrary
+    string cannot be written into the User document.
+    """
+    language = (language or "").strip()
+
+    if not language:
+        frappe.throw(frappe._("No language given."))
+
+    if frappe.session.user == "Guest":
+        frappe.throw(frappe._("Sign in to change language."), frappe.PermissionError)
+
+    if not frappe.db.exists("Language", language):
+        frappe.throw(frappe._("Unknown language: {0}").format(language))
+
+    allowed = {row["code"] for row in get_offered_languages_for_switcher()}
+    if allowed and language not in allowed:
+        frappe.throw(frappe._("That language is not offered on this site."))
+
+    frappe.db.set_value("User", frappe.session.user, "language", language,
+                        update_modified=False)
+    frappe.clear_cache(user=frappe.session.user)
+
+    return {"language": language}
+
+
+def get_offered_languages_for_switcher():
+    from onespace.onespace.doctype.onespace_theme_settings.onespace_theme_settings import (
+        get_theme_config,
+    )
+
+    return get_theme_config().get("languages") or []
+
+
 def get_unread_notification_count():
     """Unread Notification Logs for the current user.
 
@@ -344,7 +392,7 @@ def get_desk_metrics():
         "stock_sync": get_stock_sync_status(),
         "shortcuts": get_shortcut_counts(),
         "last_accessed": get_last_accessed_document(),
-        "telemetry": get_telemetry_data(),
+        "system": get_system_status(),
         "unread_notifications": get_unread_notification_count(),
         "modules": get_launcher_modules(),
     }

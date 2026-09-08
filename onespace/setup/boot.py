@@ -54,16 +54,17 @@ def boot_session(bootinfo):
         if hasattr(bootinfo, "navbar_settings") and isinstance(bootinfo.navbar_settings, dict):
             bootinfo.navbar_settings["app_logo"] = "/assets/onespace/images/onespace_light.png"
 
-        # 6. Custom Theme Configuration (Grounded in v16 Theming Guide)
-        bootinfo.custom_theme_config = {
-            "primary_color": "#FF3700",
-            "secondary_color": "#475569",
-            "dark_primary_color": "#FF3700",
-            "bg_color": "#F8FAFC",
-            "dark_bg_color": "#0A0E17",
-            "border_radius": "Rounded",
-            "custom_logo": "/assets/onespace/images/onespace_light.png"
-        }
+        # 6. Theme configuration, read from the OneSpace Theme Settings Single.
+        #    Previously a hardcoded dict here, which meant the settings page
+        #    could not actually change anything and the values drifted from the
+        #    SCSS token layer (it still carried the old slate #0A0E17 dark
+        #    background long after the tokens moved on).
+        from onespace.onespace.doctype.onespace_theme_settings.onespace_theme_settings import (
+            get_theme_config,
+        )
+
+        bootinfo.onespace_theme = get_theme_config()
+        bootinfo.app_logo_url = bootinfo.onespace_theme.get("logo_light") or bootinfo.app_logo_url
 
         # 7. Live Desk Metrics & Telemetry
         try:

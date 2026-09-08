@@ -405,3 +405,99 @@ body[data-route="desk"] .grid:not(.onespace-app-grid):not(.os-bento-grid),
    header on every page — including Frappe's list and form views. The scoped
    version at the top of this file (.onespace-top-navbar .os-topbar-logo) is
    the only one. */
+
+/* ==========================================================================
+   Language switcher (Desk header)
+   Rendered by OneSpace, scoped to the navbar OneSpace owns.
+   ========================================================================== */
+.onespace-top-navbar .os-lang {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.onespace-top-navbar .os-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--os-space-xs);
+  height: 32px;
+  padding: 0 var(--os-space-md);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  background: var(--os-surface);
+  color: var(--os-text-secondary);
+  font-family: var(--os-font-body);
+  font-size: var(--os-label-md-size);
+  font-weight: var(--os-label-md-weight);
+  cursor: pointer;
+  transition: background-color var(--os-duration) var(--os-ease),
+              border-color var(--os-duration) var(--os-ease);
+}
+
+.onespace-top-navbar .os-lang-btn:hover {
+  background: var(--os-surface-subtle);
+  color: var(--os-text);
+}
+
+.onespace-top-navbar .os-lang-btn:focus-visible,
+.onespace-top-navbar .os-lang-item:focus-visible {
+  outline: none;
+  border-color: var(--os-border-focus);
+  box-shadow: var(--os-focus-ring);
+}
+
+.onespace-top-navbar .os-lang-menu {
+  position: absolute;
+  top: calc(100% + var(--os-space-xs));
+  right: 0;
+  z-index: var(--os-z-dropdown);
+  min-width: 180px;
+  padding: var(--os-space-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--os-surface-elevated);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius-md);
+  box-shadow: var(--os-shadow-md);
+}
+
+.onespace-top-navbar .os-lang-item {
+  /* Fixed leading lane so the tick on the current row does not shift the
+     labels of the others out of alignment. */
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  align-items: center;
+  gap: var(--os-space-sm);
+  width: 100%;
+  padding: var(--os-space-sm) var(--os-space-md);
+  border: 1px solid transparent;
+  border-radius: var(--os-radius-sm);
+  background: transparent;
+  color: var(--os-text);
+  font-family: var(--os-font-body);
+  font-size: var(--os-body-md-size);
+  text-align: start;
+  cursor: pointer;
+}
+
+.onespace-top-navbar .os-lang-item::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--os-radius-full);
+  background: transparent;
+  justify-self: center;
+}
+
+.onespace-top-navbar .os-lang-item.is-current::before {
+  background: var(--os-primary);
+}
+
+.onespace-top-navbar .os-lang-item:hover {
+  background: var(--os-surface-subtle);
+}
+
+.onespace-top-navbar .os-lang-item[disabled] {
+  opacity: 0.6;
+  cursor: default;
+}
