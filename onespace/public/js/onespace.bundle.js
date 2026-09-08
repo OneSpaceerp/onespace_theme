@@ -46,6 +46,8 @@
   function applyMetrics(mount, data) {
     if (!data) return;
 
+    showUnreadNotificationDot(mount, data.unread_notifications);
+
     // 1. Status Indicators
     const salesEl = mount.querySelector('#os-metric-sales-val');
     if (salesEl && data.active_sales) salesEl.textContent = data.active_sales;
@@ -142,40 +144,32 @@
         }
       });
 
-      showUnreadNotificationDot(mount);
     }
   }
 
   /**
    * Unread-notification dot.
    *
-   * The previous implementation called
-   * frappe.desk.doctype.notification_log.notification_log.get_unread_count,
-   * which does not exist in Frappe v16.31.0 — every Desk load threw a
-   * ValidationError dialog in the user's face:
+   * The count now arrives with the rest of the desk metrics from
+   * onespace.api.get_desk_metrics — an endpoint we own. Two previous attempts
+   * to read it from the client both broke against Frappe v16.31.0:
    *
-   *   Failed to get method for command ... has no attribute 'get_unread_count'
+   *   1. frappe.desk.doctype.notification_log...get_unread_count
+   *      — no such attribute; threw a modal ValidationError on every load.
+   *   2. frappe.db.get_count(...)
+   *      — not a function on this build. Worse, the TypeError was thrown
+   *        synchronously while *constructing* the Promise, so the .catch()
+   *        never ran and the exception escaped, aborting the whole render
+   *        chain (handleDeskRouting -> render -> renderWhenReady).
    *
-   * Never call a framework internal by dotted path from the client. Use the
-   * public data API, and fail silently: a missing dot is a cosmetic loss, a
-   * modal error dialog is not.
+   * Two lessons, both encoded below: don't call framework client APIs that can
+   * be renamed between releases, and don't assume a .catch() protects you from
+   * a synchronous throw.
    */
-  function showUnreadNotificationDot(mount) {
+  function showUnreadNotificationDot(mount, count) {
     const dot = mount.querySelector('#onespace-notifications-dot');
-    if (!dot || !window.frappe || !frappe.db || !frappe.session) return;
-
-    Promise.resolve(
-      frappe.db.get_count('Notification Log', {
-        for_user: frappe.session.user,
-        read: 0
-      })
-    )
-      .then(function (count) {
-        dot.style.display = Number(count) > 0 ? 'block' : 'none';
-      })
-      .catch(function () {
-        dot.style.display = 'none';
-      });
+    if (!dot) return;
+    dot.style.display = Number(count) > 0 ? 'block' : 'none';
   }
 
   function wireStitchEvents(mount) {
@@ -678,9 +672,27 @@
      is only responsible for mounting and wiring OneSpace's own UI, and it runs
      on navigation rather than on a timer.
      ----------------------------------------------------------------------- */
+  /**
+   * A theme must never be able to break the ERP.
+   *
+   * A single TypeError inside handleDeskRouting() previously escaped all the way
+   * to renderWhenReady() and aborted the mount, leaving the user on a half-built
+   * page. Each step is isolated: if the launcher fails, the navbar still wires
+   * up, and either way Frappe's own application keeps working.
+   */
+  function safely(label, fn) {
+    try {
+      fn();
+    } catch (e) {
+      if (window.console && console.warn) {
+        console.warn('[OneSpace] ' + label + ' failed, continuing:', e);
+      }
+    }
+  }
+
   function render() {
-    handleDeskRouting();
-    enhanceTopNavbar();
+    safely('desk routing', handleDeskRouting);
+    safely('top navbar', enhanceTopNavbar);
   }
 
   /**

@@ -228,6 +228,24 @@ def get_telemetry_data():
         }
 
 
+def get_unread_notification_count():
+    """Unread Notification Logs for the current user.
+
+    Counted here rather than from the client. Two client-side attempts at this
+    both failed against Frappe v16.31.0 — first a dotted-path call to
+    notification_log.get_unread_count (no such attribute), then
+    frappe.db.get_count (not a function on this build). Framework client APIs
+    move between releases; our own whitelisted endpoint does not.
+    """
+    try:
+        return frappe.db.count(
+            "Notification Log",
+            {"for_user": frappe.session.user, "read": 0},
+        )
+    except Exception:
+        return 0
+
+
 @frappe.whitelist()
 def get_desk_metrics():
     """
@@ -241,4 +259,5 @@ def get_desk_metrics():
         "shortcuts": get_shortcut_counts(),
         "last_accessed": get_last_accessed_document(),
         "telemetry": get_telemetry_data(),
+        "unread_notifications": get_unread_notification_count(),
     }
