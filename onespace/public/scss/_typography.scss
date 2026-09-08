@@ -7,8 +7,12 @@
    render-blocking on every Desk load and fails outright on air-gapped or
    egress-restricted deployments — a real scenario for ERP customers.
 
-   Run `scripts/fetch_fonts.sh` once on the bench to populate public/fonts/.
-   Until then the stack degrades cleanly to system fonts; nothing breaks.
+   The .woff2 files are COMMITTED under public/fonts/ — nothing to run, just
+   pull and build. Self-hosting to survive an air-gapped deployment would be
+   pointless if the build itself still had to reach Google.
+
+   scripts/fetch_fonts.sh exists only to refresh them when Google publishes a
+   new version of either face. It is not part of setup.
    ========================================================================= */
 
 $os-font-path: "/assets/onespace/fonts";
