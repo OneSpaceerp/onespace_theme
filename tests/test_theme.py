@@ -31,12 +31,12 @@ class TestOneSpaceTheme(unittest.TestCase):
     def test_css_assets_exist(self):
         """Verify all stylesheet files exist and are non-empty."""
         css_files = [
+            # Only what is still served. These two are linked directly by
+            # the login template; icons.css, onespace.css, onespace-dark.css
+            # and onespace-web.css were deleted in the Phase 2 cleanup
+            # because hooks.py never loaded them.
             "tokens.css",
-            "icons.css",
-            "onespace.css",
-            "onespace-dark.css",
             "login.css",
-            "onespace-web.css",
         ]
         for f in css_files:
             path = os.path.join(self.app_dir, "public", "css", f)
@@ -46,11 +46,9 @@ class TestOneSpaceTheme(unittest.TestCase):
     def test_js_assets_exist(self):
         """Verify all JavaScript runtime files exist and are non-empty."""
         js_files = [
-            "theme_switcher.js",
-            "icons.js",
-            "about_override.js",
-            "app_launcher.js",
-            "onespace.js",
+            # onespace.bundle.js is the single esbuild entry point named in
+            # hooks.py. The standalone controllers it superseded are gone.
+            "onespace.bundle.js",
         ]
         for f in js_files:
             path = os.path.join(self.app_dir, "public", "js", f)
