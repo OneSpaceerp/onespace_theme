@@ -1,0 +1,90 @@
+/* OneSpace — lists, tables and status
+   ==========================================================================
+   The design's data grid: a tinted header row in small uppercase, roomy
+   rows with a hairline divider and a quiet hover, a selected row marked by
+   an orange edge, and status as pill-shaped badges.
+   ========================================================================== */
+
+/* ---- List view ---- */
+html:root .frappe-list .list-row-head,
+html:root .frappe-list .list-row-head .list-row {
+	background: var(--os-surface-2);
+}
+html:root .frappe-list .list-row-head :is(.list-header-subject, .list-row-col, .level-item) {
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+html:root .frappe-list .list-row-container {
+	border-bottom: 1px solid var(--os-divider);
+}
+html:root .frappe-list .list-row-container .list-row {
+	min-height: var(--os-row-h);
+	transition: background-color var(--os-dur) var(--os-ease);
+}
+html:root .frappe-list .list-row-container:hover .list-row {
+	background: color-mix(in srgb, var(--os-surface-3) 70%, transparent);
+}
+/* A ticked row: a faint orange wash and an orange edge. */
+html:root .frappe-list .list-row-container:has(.list-row-checkbox:checked) .list-row {
+	background: var(--os-tint);
+	box-shadow: inset 3px 0 0 var(--os-brand);
+}
+html:root .frappe-list .list-subject a {
+	color: var(--os-text);
+	font-weight: 600;
+}
+html:root .frappe-list .list-subject a:hover {
+	color: var(--os-link);
+}
+
+/* ---- Child tables in forms ---- */
+html:root .form-grid {
+	border-color: var(--os-border);
+	border-radius: var(--os-radius-md);
+	overflow: hidden;
+}
+html:root .form-grid .grid-heading-row {
+	background: var(--os-surface-2);
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+html:root .form-grid .grid-row {
+	border-bottom-color: var(--os-divider);
+}
+
+/* ---- Report view (Frappe DataTable) ---- */
+html:root .dt-header .dt-cell--header,
+html:root .dt-header .dt-cell__content--header-col {
+	background: var(--os-surface-2);
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+html:root .dt-row:hover .dt-cell {
+	background: color-mix(in srgb, var(--os-surface-3) 70%, transparent);
+}
+
+/* ---- Status ---- */
+html:root :is(.indicator-pill, .indicator-pill-right, .indicator-pill-round) {
+	border-radius: var(--os-radius-full);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	padding-inline: 8px;
+}
+/* Orange is the design's "pending / action required". */
+html:root :is(.indicator-pill, .indicator-pill-right).orange {
+	background: var(--os-pending-bg);
+	color: var(--os-pending-fg);
+}
+html:root :is(.indicator-pill, .indicator-pill-right).orange::before {
+	background: var(--os-brand);
+}

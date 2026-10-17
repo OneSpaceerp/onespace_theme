@@ -1,0 +1,15 @@
+/* OneSpace — desk stylesheet.
+   Order matters: tokens first (everything reads them), components after,
+   the Launcher last. One bundle so Frappe content-hashes it and a release
+   reaches every browser instead of a cached copy of the last one. */
+
+@import "./onespace/fonts";
+@import "./onespace/tokens";
+@import "./onespace/base";
+@import "./onespace/sidebar";
+@import "./onespace/page";
+@import "./onespace/controls";
+@import "./onespace/data";
+@import "./onespace/overlays";
+@import "./onespace/brand";
+@import "./onespace/launcher";

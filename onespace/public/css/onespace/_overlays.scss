@@ -1,0 +1,63 @@
+/* OneSpace — elevated layers
+   Level 2: dropdowns, popovers, the search palette. Level 3: modals.
+   Crisp borders and soft ambient shadows rather than heavy depth. */
+
+html:root :is(.dropdown-menu, .frappe-menu, .popover, .awesomplete > ul) {
+	background: var(--os-elevated);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius-md);
+	box-shadow: var(--os-shadow-2);
+}
+html:root .dropdown-menu {
+	padding: 6px;
+}
+html:root .dropdown-menu .dropdown-item {
+	border-radius: var(--os-radius-sm);
+	color: var(--os-text-body);
+	font-weight: 500;
+}
+html:root .dropdown-menu .dropdown-item:is(:hover, :focus, .active) {
+	background: var(--os-surface-3);
+	color: var(--os-text);
+}
+
+html:root .modal-backdrop.show {
+	background: var(--os-scrim);
+	opacity: 1;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+html:root .modal-content {
+	background: var(--os-elevated);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius-lg);
+	box-shadow: var(--os-shadow-3);
+}
+html:root .modal-header {
+	border-bottom-color: var(--os-divider);
+}
+html:root .modal-header .modal-title {
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	color: var(--os-text);
+}
+html:root .modal-footer {
+	border-top-color: var(--os-divider);
+}
+
+/* Toasts */
+html:root #alert-container .alert {
+	background: var(--os-elevated);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius-md);
+	box-shadow: var(--os-shadow-2);
+	color: var(--os-text);
+}
+
+/* Tooltips: the inverted surface. */
+html:root .tooltip .tooltip-inner {
+	background: var(--os-inverse);
+	color: var(--os-on-inverse);
+	border-radius: var(--os-radius-sm);
+	font-weight: 600;
+}

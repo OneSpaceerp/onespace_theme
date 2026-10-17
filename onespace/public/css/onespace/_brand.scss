@@ -1,0 +1,100 @@
+/* OneSpace — About dialog */
+
+.os-about {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	padding: 8px 4px 4px;
+	text-align: center;
+
+	img {
+		height: 64px;
+		width: auto;
+		max-width: 100%;
+	}
+}
+.os-about-text {
+	max-width: 46ch;
+	margin: 0;
+	color: var(--os-text-body);
+}
+.os-about-meta {
+	display: grid;
+	grid-template-columns: auto auto;
+	gap: 4px 14px;
+	margin: 0;
+	font-size: 13px;
+
+	dt {
+		color: var(--os-text-muted);
+		font-weight: 600;
+		text-align: right;
+	}
+	dd {
+		margin: 0;
+		color: var(--os-text);
+		text-align: left;
+	}
+}
+.os-about-links,
+.os-about-copy {
+	margin: 0;
+	font-size: 13px;
+	color: var(--os-text-muted);
+}
+
+/* OneSpace Settings — the app icon preview */
+.os-icon-preview {
+	margin-top: 8px;
+	padding: 16px;
+	background: var(--os-surface-2);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius-md);
+}
+.os-icon-preview-head {
+	margin-bottom: 12px;
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+.os-icon-preview-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 14px;
+}
+.os-icon-preview-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	min-width: 0;
+
+	img {
+		flex: none;
+		border-radius: 14px;
+		box-shadow: var(--os-shadow-1);
+	}
+	figcaption {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		line-height: 1.3;
+	}
+	strong {
+		color: var(--os-text);
+		font-size: 13px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	span {
+		color: var(--os-text-muted);
+		font-size: 11px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}

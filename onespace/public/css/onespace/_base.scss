@@ -1,0 +1,82 @@
+/* OneSpace — base: page, type, focus, selection, motion */
+
+html:root body {
+	background: var(--os-canvas);
+	color: var(--os-text);
+	font-family: var(--os-font-ui);
+	/* Ledger balances, quantities and currency line up in their columns. */
+	font-variant-numeric: tabular-nums;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Plus Jakarta Sans carries titles, headings and the names of things. */
+html:root :is(h1, h2, h3, h4, .page-title .title-text, .title-area .title-text, .modal-title, .widget-title,
+		.section-head, .form-section .section-head, .head-title, .ce-header) {
+	font-family: var(--os-font-display);
+	letter-spacing: -0.01em;
+}
+
+html:root a {
+	color: var(--os-link);
+}
+
+html:root ::selection {
+	background: var(--os-tint-strong);
+	color: var(--os-text);
+}
+
+/* A visible ring wherever the keyboard lands. Inputs draw their own ring
+   (see _controls), so they are left out here to avoid a double outline. */
+html:root :is(a, button, .btn, .es-button, [role="button"], [tabindex]):focus-visible {
+	outline: 2px solid var(--os-brand);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+/* Scrollbars: thin and quiet, coloured from the theme. */
+html:root * {
+	scrollbar-width: thin;
+	scrollbar-color: var(--os-border-strong) transparent;
+}
+html:root ::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+html:root ::-webkit-scrollbar-thumb {
+	background: var(--os-border-strong);
+	border: 3px solid transparent;
+	border-radius: 999px;
+	background-clip: content-box;
+}
+html:root ::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Two logos ship, one per background. Whichever matches the theme shows. */
+.os-logo-on-dark {
+	display: none !important;
+}
+html:root[data-theme="dark"] .os-logo-on-light {
+	display: none !important;
+}
+html:root[data-theme="dark"] .os-logo-on-dark {
+	display: block !important;
+}
+
+/* Compact density: the spec's 36px controls drop to 30px, rows to 36px. */
+html[data-os-density="compact"] {
+	--os-control-h: 30px;
+	--os-row-h: 36px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html:root *,
+	html:root *::before,
+	html:root *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

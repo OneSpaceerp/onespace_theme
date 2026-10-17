@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, version-16]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pure:
+    name: Lint and pure tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff jinja2
+      - run: ruff check . && ruff format --check .
+      - run: python -m unittest discover -s onespace/tests -p "test_pure.py" -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Stylesheets compile
+        run: |
+          npx --yes sass@1.77.8 --no-source-map onespace/public/css/onespace.bundle.scss /tmp/desk.css
+          npx --yes sass@1.77.8 --no-source-map onespace/public/css/onespace_web.bundle.scss /tmp/web.css
+
+  site:
+    name: Frappe 16 + ERPNext 16
+    runs-on: ubuntu-latest
+    services:
+      redis-cache:
+        image: redis:alpine
+        ports: ["13000:6379"]
+      redis-queue:
+        image: redis:alpine
+        ports: ["11000:6379"]
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: sudo apt-get update && sudo apt-get install -y mariadb-client
+      - name: Bench
+        run: |
+          pip install frappe-bench
+          bench init --skip-redis-config-generation --skip-assets --python "$(which python)" --frappe-branch version-16 ~/frappe-bench
+      - name: Install
+        working-directory: /home/runner/frappe-bench
+        env:
+          CI: "Yes"
+        run: |
+          bench get-app --branch version-16 erpnext
+          bench get-app onespace $GITHUB_WORKSPACE
+          bench setup requirements --dev
+          bench new-site --db-root-password root --admin-password admin test_site
+          bench --site test_site install-app erpnext onespace
+          bench build --app onespace
+      - name: Tests
+        working-directory: /home/runner/frappe-bench
+        run: |
+          bench --site test_site set-config allow_tests true
+          bench --site test_site run-tests --app onespace

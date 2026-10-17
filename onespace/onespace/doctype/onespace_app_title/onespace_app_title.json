@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "creation": "2026-10-17 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-17 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "OneSpace",
+ "name": "OneSpace App Title",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "app_name",
+  "title",
+  "glyph",
+  "hue"
+ ],
+ "fields": [
+  {
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "App",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "The app's name as bench knows it: erpnext, hrms, helpdesk."
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "in_list_view": 1,
+   "columns": 3,
+   "description": "Leave empty to keep the default title."
+  },
+  {
+   "fieldname": "glyph",
+   "fieldtype": "Select",
+   "label": "Glyph",
+   "in_list_view": 1,
+   "columns": 2,
+   "options": "\nbed\nbook\nbox\nbriefcase\ncalendar\ncar\ncard\ncart\nchart\nchat\nfactory\nfile-check\nfolder\nglobe\ngraduation\nhandshake\nheadset\nheart\nheart-pulse\nhome\nkanban\nlandmark\nlayers\nlibrary\nmail\nmessage\nmonitor\npackage\npen\nphone\nplane\nplug\nprinter\nreceipt\nshield\nsprout\nstethoscope\nstore\ntruck\nusers\nwrench",
+   "description": "Leave empty to choose automatically."
+  },
+  {
+   "fieldname": "hue",
+   "fieldtype": "Select",
+   "label": "Colour",
+   "in_list_view": 1,
+   "columns": 2,
+   "options": "\namber\nblue\ncyan\nemerald\ngold\ngreen\nindigo\norange\npink\nsky\nslate\nteal\nviolet",
+   "description": "Leave empty to choose automatically."
+  }
+ ]
+}

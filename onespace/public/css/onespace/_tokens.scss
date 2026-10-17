@@ -1,0 +1,277 @@
+/* OneSpace — design tokens
+   ==========================================================================
+   Three layers, as the design-system skill lays them out:
+
+     primitives   raw values: the orange ramp, zinc, slate          (:root)
+     semantic     what a value is for: canvas, surface, text, ring   (os-light / os-dark)
+     component    Frappe's own variables, pointed at the semantic    (os-frappe-map)
+
+   Light and dark are two sets of semantic values; the mapping onto Frappe
+   is written once and reads whichever set is active. Frappe decides which:
+   its own Light / Dark / Automatic choice sets html[data-theme], and this
+   file only follows it - OneSpace never overrides the user's choice.
+
+   Specificity: Frappe defines its tokens on :root and [data-theme="dark"]
+   (0,1,0). `html:root` is (0,1,1) and `html:root[data-theme="dark"]` is
+   (0,2,1), so both win without !important, and the stylesheet is in <head>
+   so the brand is there for the first paint.
+
+   Colour pairs are checked against WCAG AA in onespace/tests/test_tokens.py.
+   The signature orange (#FF3700) carries white text at only 3.6:1, so it is
+   used for the mark, focus rings and active markers; filled buttons use the
+   deeper #DE2F00 (4.7:1), as the Stitch light palette's primary-container.
+   ========================================================================== */
+
+:root {
+	/* Orange, from the mark */
+	--os-orange-50: #fff4f0;
+	--os-orange-100: #ffe4da;
+	--os-orange-200: #ffc4af;
+	--os-orange-300: #ff9b7a;
+	--os-orange-400: #ff6b42;
+	--os-orange-500: #ff3700;
+	--os-orange-600: #de2f00;
+	--os-orange-700: #b22400;
+	--os-orange-800: #8b1a00;
+	--os-orange-900: #3d0600;
+
+	/* Zinc — light workspace */
+	--os-zinc-0: #ffffff;
+	--os-zinc-50: #fafafa;
+	--os-zinc-100: #f4f4f5;
+	--os-zinc-200: #e4e4e7;
+	--os-zinc-300: #d4d4d8;
+	--os-zinc-400: #a1a1aa;
+	--os-zinc-500: #71717a;
+	--os-zinc-600: #52525b;
+	--os-zinc-700: #3f3f46;
+	--os-zinc-800: #27272a;
+	--os-zinc-900: #18181b;
+
+	/* Slate — dark workspace */
+	--os-slate-canvas: #0f1117;
+	--os-slate-rail: #141720;
+	--os-slate-surface: #181b24;
+	--os-slate-elevated: #212530;
+	--os-slate-highest: #2b3040;
+	--os-slate-divider: #232836;
+	--os-slate-border: #2d3343;
+	--os-slate-border-strong: #3a4154;
+	--os-slate-text: #f1f5f9;
+	--os-slate-body: #cbd5e1;
+	--os-slate-muted: #94a3b8;
+
+	/* Type */
+	--os-font-display: "Plus Jakarta Sans", "InterVariable", "Inter", -apple-system, BlinkMacSystemFont,
+		"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Arabic", sans-serif;
+	--os-font-ui: "Manrope", "InterVariable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, "Noto Sans Arabic", sans-serif;
+
+	/* Shape */
+	--os-radius-sm: 6px;
+	--os-radius: 8px;
+	--os-radius-md: 12px;
+	--os-radius-lg: 16px;
+	--os-radius-xl: 24px;
+	--os-radius-full: 9999px;
+
+	/* Rhythm */
+	--os-control-h: 36px;
+	--os-row-h: 44px;
+	--os-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--os-dur: 160ms;
+}
+
+@mixin os-light {
+	--os-canvas: var(--os-zinc-50);
+	--os-rail: var(--os-zinc-0);
+	--os-surface: var(--os-zinc-0);
+	--os-surface-2: var(--os-zinc-100);
+	--os-surface-3: var(--os-zinc-100);
+	--os-elevated: var(--os-zinc-0);
+	--os-input: var(--os-zinc-0);
+	--os-border: var(--os-zinc-200);
+	--os-border-strong: var(--os-zinc-300);
+	--os-divider: var(--os-zinc-100);
+
+	--os-text: var(--os-zinc-900);
+	--os-text-body: var(--os-zinc-700);
+	--os-text-muted: var(--os-zinc-500);
+	--os-label: var(--os-zinc-800);
+	--os-icon: var(--os-zinc-700);
+	--os-inverse: var(--os-zinc-900);
+	--os-on-inverse: var(--os-zinc-0);
+
+	--os-brand: var(--os-orange-500);
+	--os-primary: var(--os-orange-600);
+	--os-primary-hover: var(--os-orange-700);
+	--os-on-primary: #ffffff;
+	--os-link: var(--os-orange-700);
+	--os-tint: rgba(255, 55, 0, 0.08);
+	--os-tint-strong: rgba(255, 55, 0, 0.14);
+	--os-ring: rgba(255, 55, 0, 0.18);
+
+	--os-success-bg: #ecfdf5;
+	--os-success-fg: #047857;
+	--os-danger-bg: #fef2f2;
+	--os-danger-fg: #b91c1c;
+	--os-pending-bg: #fff7ed;
+	--os-pending-fg: #c2410c;
+	--os-neutral-bg: var(--os-zinc-100);
+	--os-neutral-fg: var(--os-zinc-600);
+
+	--os-shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+	--os-shadow-2: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+	--os-shadow-3: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+	--os-scrim: rgba(24, 24, 27, 0.4);
+	color-scheme: light;
+}
+
+@mixin os-dark {
+	--os-canvas: var(--os-slate-canvas);
+	--os-rail: var(--os-slate-rail);
+	--os-surface: var(--os-slate-surface);
+	--os-surface-2: var(--os-slate-rail);
+	--os-surface-3: var(--os-slate-elevated);
+	--os-elevated: var(--os-slate-elevated);
+	--os-input: var(--os-slate-rail);
+	--os-border: var(--os-slate-border);
+	--os-border-strong: var(--os-slate-border-strong);
+	--os-divider: var(--os-slate-divider);
+
+	--os-text: var(--os-slate-text);
+	--os-text-body: var(--os-slate-body);
+	--os-text-muted: var(--os-slate-muted);
+	--os-label: var(--os-slate-body);
+	--os-icon: var(--os-slate-body);
+	--os-inverse: var(--os-slate-text);
+	--os-on-inverse: var(--os-slate-canvas);
+
+	--os-brand: var(--os-orange-500);
+	--os-primary: var(--os-orange-600);
+	--os-primary-hover: #c42a00;
+	--os-on-primary: #ffffff;
+	--os-link: var(--os-orange-400);
+	--os-tint: rgba(255, 55, 0, 0.1);
+	--os-tint-strong: rgba(255, 55, 0, 0.18);
+	--os-ring: rgba(255, 55, 0, 0.22);
+
+	--os-success-bg: rgba(16, 185, 129, 0.15);
+	--os-success-fg: #34d399;
+	--os-danger-bg: rgba(239, 68, 68, 0.15);
+	--os-danger-fg: #f87171;
+	--os-pending-bg: rgba(251, 146, 60, 0.15);
+	--os-pending-fg: #fb923c;
+	--os-neutral-bg: var(--os-slate-elevated);
+	--os-neutral-fg: var(--os-slate-muted);
+
+	--os-shadow-1: 0 0 0 1px rgba(0, 0, 0, 0.2);
+	--os-shadow-2: 0 8px 16px -4px rgba(0, 0, 0, 0.5);
+	--os-shadow-3: 0 20px 30px -10px rgba(0, 0, 0, 0.7);
+	--os-scrim: rgba(15, 17, 23, 0.75);
+	color-scheme: dark;
+}
+
+/* Frappe's variables, all pointed at the semantic layer. Written once; the
+   active semantic set decides the values. */
+@mixin os-frappe-map {
+	--font-stack: var(--os-font-ui);
+
+	--bg-color: var(--os-canvas);
+	--fg-color: var(--os-surface);
+	--card-bg: var(--os-surface);
+	--modal-bg: var(--os-elevated);
+	--navbar-bg: var(--os-surface);
+	--subnavbar-bg-color: var(--os-surface);
+	--bg-light-gray: var(--os-surface-2);
+	--control-bg: var(--os-input);
+	--control-bg-on-gray: var(--os-input);
+	--disabled-control-bg: var(--os-surface-2);
+	--input-disabled-bg: var(--os-surface-2);
+	--disabled-text-color: var(--os-text-body);
+
+	--text-color: var(--os-text);
+	--heading-color: var(--os-text);
+	--text-muted: var(--os-text-muted);
+	--text-light: var(--os-text-muted);
+	--icon-stroke: var(--os-icon);
+	--icon-fill-bg: var(--os-surface);
+
+	--border-color: var(--os-border);
+	--dark-border-color: var(--os-border-strong);
+	--divider-color: var(--os-border);
+	--table-border-color: var(--os-border);
+
+	--primary: var(--os-primary);
+	--primary-color: var(--os-primary);
+	--btn-primary: var(--os-primary);
+	--link-color: var(--os-link);
+	--btn-default-bg: var(--os-surface);
+	--btn-default-hover-bg: var(--os-surface-3);
+	--btn-ghost-hover-bg: var(--os-surface-3);
+	--focus-default: var(--os-ring);
+	--awesomebar-focus-bg: var(--os-input);
+
+	--shadow-xs: var(--os-shadow-1);
+	--shadow-sm: var(--os-shadow-1);
+	--shadow-base: var(--os-shadow-1);
+	--shadow-md: var(--os-shadow-2);
+	--shadow-lg: var(--os-shadow-3);
+	--shadow-xl: var(--os-shadow-3);
+
+	/* Frappe 16 left sidebar */
+	--surface-menu-bar: var(--os-rail);
+	--sidebar-border-color: var(--os-border);
+	--sidebar-hover-color: var(--os-surface-3);
+	--sidebar-active-color: var(--os-primary);
+
+	/* Frappe 16 Espresso ramps. ink-* are foregrounds, darkest at 9;
+	   surface-* backgrounds, lightest at 1; 5-7 are the inverted surfaces
+	   used for tooltips and solid chips, so they follow the text colour. */
+	--ink-gray-9: var(--os-text);
+	--ink-gray-8: var(--os-text);
+	--ink-gray-7: var(--os-text-body);
+	--ink-gray-6: var(--os-text-body);
+	--ink-gray-5: var(--os-text-muted);
+	--ink-gray-4: var(--os-text-muted);
+	--ink-gray-3: var(--os-border-strong);
+	--ink-gray-2: var(--os-border);
+	--ink-gray-1: var(--os-surface-2);
+	--surface-white: var(--os-surface);
+	--surface-cards: var(--os-surface);
+	--surface-modal: var(--os-elevated);
+	--surface-gray-1: var(--os-canvas);
+	--surface-gray-2: var(--os-surface-2);
+	--surface-gray-3: var(--os-surface-3);
+	--surface-gray-4: var(--os-border);
+	--surface-gray-5: var(--os-inverse);
+	--surface-gray-6: var(--os-inverse);
+	--surface-gray-7: var(--os-inverse);
+	--outline-gray-1: var(--os-border);
+	--outline-gray-2: var(--os-border);
+	--outline-gray-3: var(--os-border-strong);
+	--outline-gray-4: var(--os-border-strong);
+	--outline-gray-modals: var(--os-border);
+
+	/* Frappe DataTable (report view) */
+	--dt-border-color: var(--os-border);
+	--dt-light-bg: var(--os-surface-2);
+	--dt-light-yellow: var(--os-tint);
+	--dt-orange: var(--os-brand);
+	--dt-text-color: var(--os-text);
+	--dt-text-light: var(--os-text-muted);
+	--dt-cell-bg: var(--os-surface);
+	--dt-focus-border-width: 2px;
+	--dt-selection-highlight-color: var(--os-tint);
+	--dt-toast-message-border: none;
+	--dt-header-cell-bg: var(--os-surface-2);
+}
+
+html:root {
+	@include os-light;
+	@include os-frappe-map;
+}
+
+html:root[data-theme="dark"] {
+	@include os-dark;
+}

@@ -1,0 +1,5 @@
+[pre_model_sync]
+# Patches added in this section run before DocTypes are synced.
+
+[post_model_sync]
+# Patches added in this section run after DocTypes are synced.

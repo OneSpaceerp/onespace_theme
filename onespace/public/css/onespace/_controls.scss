@@ -1,0 +1,120 @@
+/* OneSpace — buttons and form controls
+   ==========================================================================
+   Buttons: primary is the solid brand fill, secondary a bordered surface,
+   ghost text-only. Frappe 16 draws its main actions with two components -
+   the classic .btn and the Espresso .es-button - and both are covered.
+   A red (destructive) Espresso button keeps its red.
+
+   Inputs: the spec's 36px field, a 1px border, and on focus the border
+   turns orange with a soft orange halo.
+   ========================================================================== */
+
+html:root :is(.btn, .es-button) {
+	border-radius: var(--os-radius);
+	font-family: var(--os-font-ui);
+	font-weight: 600;
+	letter-spacing: 0;
+	transition: background-color var(--os-dur) var(--os-ease), border-color var(--os-dur) var(--os-ease),
+		color var(--os-dur) var(--os-ease), box-shadow var(--os-dur) var(--os-ease),
+		transform 80ms var(--os-ease);
+}
+html:root :is(.btn, .es-button):active:not(:disabled) {
+	transform: scale(0.98);
+}
+
+/* Primary */
+html:root .btn-primary,
+html:root .es-button[data-variant="solid"]:not([data-theme="red"]):not([data-theme="gray"]) {
+	background: var(--os-primary) !important;
+	border: 1px solid var(--os-primary) !important;
+	color: var(--os-on-primary) !important;
+	--icon-stroke: var(--os-on-primary);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 12px -6px rgba(222, 47, 0, 0.55);
+}
+html:root .btn-primary:hover:not(:disabled),
+html:root .es-button[data-variant="solid"]:not([data-theme="red"]):not([data-theme="gray"]):hover:not(:disabled) {
+	background: var(--os-primary-hover) !important;
+	border-color: var(--os-primary-hover) !important;
+}
+html:root .btn-primary svg,
+html:root .es-button[data-variant="solid"]:not([data-theme="red"]):not([data-theme="gray"]) svg {
+	stroke: var(--os-on-primary);
+}
+
+/* Secondary */
+html:root :is(.btn-default, .btn-secondary),
+html:root .es-button[data-variant="outline"],
+html:root .es-button[data-variant="subtle"] {
+	background: var(--os-surface);
+	border: 1px solid var(--os-border);
+	color: var(--os-text);
+}
+html:root :is(.btn-default, .btn-secondary):hover:not(:disabled),
+html:root .es-button[data-variant="outline"]:hover:not(:disabled),
+html:root .es-button[data-variant="subtle"]:hover:not(:disabled) {
+	background: var(--os-surface-3);
+	border-color: var(--os-border-strong);
+}
+
+/* Ghost */
+html:root .es-button[data-variant="ghost"],
+html:root .btn-link {
+	color: var(--os-text-body);
+}
+html:root .es-button[data-variant="ghost"]:hover:not(:disabled) {
+	background: var(--os-surface-3);
+	color: var(--os-text);
+}
+
+/* ---- Inputs ---- */
+html:root :is(.form-control, .input-with-feedback, select.form-control, .awesomplete > input) {
+	background-color: var(--os-input);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius);
+	color: var(--os-text);
+	transition: border-color var(--os-dur) var(--os-ease), box-shadow var(--os-dur) var(--os-ease);
+}
+html:root :is(input.form-control, select.form-control) {
+	min-height: var(--os-control-h);
+}
+html:root :is(.form-control, .input-with-feedback, .awesomplete > input):hover:not(:focus):not(:disabled) {
+	border-color: var(--os-border-strong);
+}
+html:root :is(.form-control, .input-with-feedback, .awesomplete > input):focus,
+html:root :is(.form-control, .input-with-feedback):focus-within {
+	border-color: var(--os-brand);
+	box-shadow: 0 0 0 3px var(--os-ring);
+	outline: none;
+}
+html:root .form-control::placeholder {
+	color: var(--os-text-muted);
+	opacity: 1;
+}
+
+/* A read-only field still reads as a field. */
+html:root .like-disabled-input {
+	background: var(--os-surface-2);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius);
+	color: var(--os-text);
+}
+
+/* Labels sit above the field: 12px semibold, as specified. */
+html:root :is(.control-label, .form-label, .frappe-control .label-area) {
+	color: var(--os-label);
+	font-size: 12px;
+	font-weight: 600;
+}
+html:root .frappe-control .help-box {
+	color: var(--os-text-muted);
+}
+
+/* Checkboxes and radios carry the brand. */
+html:root input[type="checkbox"],
+html:root input[type="radio"] {
+	accent-color: var(--os-primary);
+}
+html:root input[type="checkbox"]:checked {
+	background-color: var(--os-primary);
+	border-color: var(--os-primary);
+}

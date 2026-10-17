@@ -1,0 +1,128 @@
+/* OneSpace — the module sidebar (Frappe 16's .body-sidebar)
+   ==========================================================================
+   The OneSpace design's contextual sidebar: a clean rail with grouped items,
+   8px rounded hover tiles and the current module as a solid orange pill.
+
+   Colours come from the tokens - --surface-menu-bar, --sidebar-hover-color
+   and --sidebar-active-color are Frappe's own sidebar variables, mapped in
+   _tokens - so most of this file is shape and type. The class names are the
+   ones Frappe 16.50+ renders: .body-sidebar, .sidebar-header,
+   .standard-sidebar-item, .active-sidebar, .section-break,
+   .sidebar-user-button.
+   ========================================================================== */
+
+html:root .body-sidebar {
+	background: var(--os-rail);
+	border-right: 1px solid var(--os-border);
+	font-family: var(--os-font-ui);
+}
+
+/* ---- Brand header ---- */
+html:root .body-sidebar .sidebar-header {
+	border-radius: var(--os-radius-md);
+	transition: background-color var(--os-dur) var(--os-ease);
+}
+html:root .body-sidebar .sidebar-header :is(.header-logo img, .header-logo-container img) {
+	border-radius: var(--os-radius);
+	object-fit: contain;
+}
+html:root .body-sidebar .header-title {
+	font-family: var(--os-font-display);
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	color: var(--os-text);
+}
+html:root .body-sidebar .header-subtitle {
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+/* ---- Items ---- */
+html:root .body-sidebar .standard-sidebar-item {
+	border-radius: var(--os-radius);
+	transition: background-color var(--os-dur) var(--os-ease), color var(--os-dur) var(--os-ease),
+		box-shadow var(--os-dur) var(--os-ease);
+}
+html:root .body-sidebar .standard-sidebar-item :is(.item-anchor, .sidebar-item-label) {
+	color: var(--os-text-body);
+	font-weight: 500;
+}
+html:root .body-sidebar .standard-sidebar-item:not(.active-sidebar):hover {
+	background: var(--os-surface-3);
+}
+html:root .body-sidebar .standard-sidebar-item:not(.active-sidebar):hover :is(.item-anchor, .sidebar-item-label) {
+	color: var(--os-text);
+}
+
+/* The current module: a solid orange pill with white text and icon. */
+html:root .body-sidebar .standard-sidebar-item.active-sidebar {
+	background: var(--os-primary) !important;
+	box-shadow: 0 6px 16px -8px rgba(222, 47, 0, 0.6);
+	--icon-stroke: var(--os-on-primary);
+}
+html:root .body-sidebar .standard-sidebar-item.active-sidebar :is(.item-anchor, .sidebar-item-label, .sidebar-item-icon, .sidebar-item-suffix) {
+	color: var(--os-on-primary) !important;
+	font-weight: 600;
+}
+html:root .body-sidebar .standard-sidebar-item.active-sidebar svg {
+	stroke: var(--os-on-primary);
+	--icon-stroke: var(--os-on-primary);
+}
+
+/* Group headings: WORKSPACE, MODULES in the design. */
+html:root .body-sidebar .section-break .sidebar-item-label,
+html:root .body-sidebar .section-item > .item-anchor {
+	color: var(--os-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+/* Counts beside an item. */
+html:root .body-sidebar .sidebar-item-suffix {
+	color: var(--os-text-muted);
+	font-weight: 600;
+}
+
+html:root .body-sidebar .divider {
+	border-top-color: var(--os-border);
+}
+
+/* ---- Footer: the signed-in user ---- */
+html:root .body-sidebar .sidebar-user-button {
+	border-radius: var(--os-radius-md);
+	border: 1px solid var(--os-border);
+	background: var(--os-surface);
+}
+html:root .body-sidebar .sidebar-user-button:hover {
+	background: var(--os-surface-3);
+}
+html:root .body-sidebar .sidebar-user-button .avatar-frame {
+	border-radius: var(--os-radius-full);
+}
+
+html:root .body-sidebar .sidebar-toggle-btn {
+	background: var(--os-surface);
+	border-color: var(--os-border);
+	box-shadow: var(--os-shadow-1);
+}
+
+/* ---- Carbon: the deep charcoal rail, in light mode too ----
+   The tokens are re-scoped to the dark set inside the sidebar only, and the
+   menus that open from it are put back on the page's own palette so their
+   text stays readable. */
+html[data-os-sidebar="carbon"] .body-sidebar {
+	@include os-dark;
+	@include os-frappe-map;
+	background: var(--os-slate-rail);
+	color: var(--os-text);
+	border-right-color: var(--os-slate-border);
+}
+html[data-os-sidebar="carbon"]:not([data-theme="dark"]) .body-sidebar :is(.dropdown-menu, .notifications-list, .frappe-menu, .popover, .modal) {
+	@include os-light;
+	@include os-frappe-map;
+	color: var(--os-text);
+}

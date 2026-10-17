@@ -1,0 +1,105 @@
+/* OneSpace — page chrome, cards and workspaces
+   ==========================================================================
+   Frappe 16 has no top navbar on the desk; each page carries its own head
+   with breadcrumbs, the title and the actions. That head is drawn as the
+   design's header row: a quiet breadcrumb trail, a strong Plus Jakarta
+   title, actions on the right - on a translucent canvas so content slides
+   beneath it.
+   ========================================================================== */
+
+html:root .page-head {
+	background: color-mix(in srgb, var(--os-canvas) 88%, transparent);
+	backdrop-filter: saturate(1.4) blur(10px);
+	-webkit-backdrop-filter: saturate(1.4) blur(10px);
+	border-bottom: 1px solid var(--os-border);
+}
+
+html:root .page-head .title-text,
+html:root .page-title .title-text {
+	font-family: var(--os-font-display);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--os-text);
+}
+
+html:root :is(.navbar-breadcrumbs, .breadcrumb-container) a {
+	color: var(--os-text-muted);
+	font-weight: 500;
+	transition: color var(--os-dur) var(--os-ease);
+}
+html:root :is(.navbar-breadcrumbs, .breadcrumb-container) a:hover {
+	color: var(--os-link);
+}
+
+/* ---- Cards: Level 1 surfaces ---- */
+html:root :is(.frappe-card, .widget, .form-dashboard-section, .report-summary, .number-card) {
+	background: var(--os-surface);
+	border: 1px solid var(--os-border);
+	border-radius: var(--os-radius-lg);
+	box-shadow: var(--os-shadow-1);
+}
+
+html:root .layout-main-section {
+	border-radius: var(--os-radius-lg);
+}
+
+/* ---- Workspace widgets ---- */
+html:root .widget .widget-title {
+	font-weight: 600;
+	color: var(--os-text);
+}
+html:root .widget.shortcut-widget-box,
+html:root .widget.links-widget-box,
+html:root .widget.quick-list-widget-box {
+	transition: border-color var(--os-dur) var(--os-ease), box-shadow var(--os-dur) var(--os-ease),
+		transform var(--os-dur) var(--os-ease);
+}
+html:root .widget.shortcut-widget-box:hover {
+	border-color: color-mix(in srgb, var(--os-brand) 45%, var(--os-border));
+	box-shadow: var(--os-shadow-2);
+	transform: translateY(-1px);
+}
+html:root .widget.number-widget-box .number,
+html:root .number-card .number {
+	font-family: var(--os-font-display);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--os-text);
+}
+
+/* ---- Form sections and tabs ---- */
+html:root .form-section .section-head {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--os-text);
+}
+html:root .form-tabs-list .nav-link {
+	color: var(--os-text-muted);
+	font-weight: 600;
+	border-bottom: 2px solid transparent;
+	transition: color var(--os-dur) var(--os-ease), border-color var(--os-dur) var(--os-ease);
+}
+html:root .form-tabs-list .nav-link:hover {
+	color: var(--os-text);
+}
+html:root .form-tabs-list .nav-link.active {
+	color: var(--os-text);
+	border-bottom-color: var(--os-brand);
+}
+
+/* The document timeline's marker dots pick up the brand. */
+html:root .new-timeline .timeline-dot {
+	border-color: var(--os-border-strong);
+}
+
+/* ---- Frappe's own Apps screen (/desk/desktop) ----
+   Only shape: the tiles keep their content and their routes. */
+html:root .desktop-icon .icon-container {
+	border-radius: var(--os-radius-lg);
+	box-shadow: var(--os-shadow-1);
+	transition: transform var(--os-dur) var(--os-ease), box-shadow var(--os-dur) var(--os-ease);
+}
+html:root .desktop-icon:hover .icon-container {
+	transform: translateY(-2px);
+	box-shadow: var(--os-shadow-2);
+}

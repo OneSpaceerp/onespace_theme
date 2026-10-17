@@ -1,0 +1,353 @@
+{
+ "actions": [],
+ "creation": "2026-10-17 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "issingle": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2026-10-17 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "OneSpace",
+ "name": "OneSpace Settings",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "field_order": [
+  "brand_tab",
+  "identity_section",
+  "brand_name",
+  "brand_tagline",
+  "column_break_identity",
+  "enforce_branding",
+  "hide_vendor_help_links",
+  "assets_section",
+  "logo_light",
+  "logo_dark",
+  "column_break_assets",
+  "brand_icon",
+  "favicon",
+  "apps_section",
+  "app_icon_style",
+  "app_titles",
+  "app_icon_preview",
+  "desk_tab",
+  "look_section",
+  "sidebar_style",
+  "column_break_look",
+  "density",
+  "launcher_section",
+  "use_launcher_home",
+  "show_quick_actions",
+  "show_recent_documents",
+  "show_activity_chart",
+  "show_system_health",
+  "column_break_launcher",
+  "quick_action_doctypes",
+  "recent_doctypes",
+  "login_tab",
+  "login_section",
+  "use_onespace_login",
+  "login_headline",
+  "login_subheadline",
+  "column_break_login",
+  "login_points",
+  "login_footnote",
+  "login_background",
+  "support_tab",
+  "support_section",
+  "support_url",
+  "support_email",
+  "column_break_support",
+  "about_text"
+ ],
+ "fields": [
+  {
+   "fieldname": "brand_tab",
+   "fieldtype": "Tab Break",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
+  {
+   "fieldname": "brand_name",
+   "fieldtype": "Data",
+   "label": "Brand Name",
+   "default": "OneSpace",
+   "reqd": 1,
+   "description": "Replaces Frappe and ERPNext as the product name: the browser tab, the sign-in page, emails and the About dialog."
+  },
+  {
+   "fieldname": "brand_tagline",
+   "fieldtype": "Data",
+   "label": "Tagline",
+   "default": "Enterprise ERP",
+   "description": "Shown under the brand name in the sidebar and on the Launcher."
+  },
+  {
+   "fieldname": "column_break_identity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enforce_branding",
+   "fieldtype": "Check",
+   "label": "Apply Brand to Site Settings",
+   "default": "1",
+   "description": "Writes the brand into System Settings, Website Settings and Navbar Settings, and turns off the vendor update and change-log pop-ups. The values it replaces are kept and restored when OneSpace is uninstalled."
+  },
+  {
+   "fieldname": "hide_vendor_help_links",
+   "fieldtype": "Check",
+   "label": "Hide Frappe and ERPNext Help Links",
+   "default": "1",
+   "description": "Hides the Documentation, Forum and School entries that point at frappe.io and erpnext.com."
+  },
+  {
+   "fieldname": "assets_section",
+   "fieldtype": "Section Break",
+   "label": "Logos",
+   "description": "Leave empty to use the OneSpace artwork that ships with the app."
+  },
+  {
+   "fieldname": "logo_light",
+   "fieldtype": "Attach Image",
+   "label": "Logo for Light Backgrounds"
+  },
+  {
+   "fieldname": "logo_dark",
+   "fieldtype": "Attach Image",
+   "label": "Logo for Dark Backgrounds"
+  },
+  {
+   "fieldname": "column_break_assets",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "brand_icon",
+   "fieldtype": "Attach Image",
+   "label": "App Icon",
+   "description": "Square. Used for the sidebar, the app tiles and the splash screen."
+  },
+  {
+   "fieldname": "favicon",
+   "fieldtype": "Attach Image",
+   "label": "Favicon"
+  },
+  {
+   "fieldname": "apps_section",
+   "fieldtype": "Section Break",
+   "label": "Installed Apps"
+  },
+  {
+   "fieldname": "app_icon_style",
+   "fieldtype": "Select",
+   "label": "App Icon Style",
+   "options": "Colour Tiles\nBrand Tiles\nOneSpace Icon\nOriginal Logos",
+   "default": "Colour Tiles",
+   "description": "Every installed app - Frappe HR, Helpdesk, Healthcare, CRM and your own - gets an icon drawn in the OneSpace style. Colour Tiles match the Launcher; Brand Tiles are charcoal with the orange of the OneSpace icon. OneSpace Icon gives every app the brand icon; Original Logos keeps each vendor's own."
+  },
+  {
+   "fieldname": "app_titles",
+   "fieldtype": "Table",
+   "label": "Apps",
+   "options": "OneSpace App Title",
+   "description": "Optional. Rename an app, or choose its glyph and colour. Anything left empty is chosen automatically. Use Add Installed Apps to list them."
+  },
+  {
+   "fieldname": "app_icon_preview",
+   "fieldtype": "HTML",
+   "label": "Icon Preview"
+  },
+  {
+   "fieldname": "desk_tab",
+   "fieldtype": "Tab Break",
+   "label": "Desk"
+  },
+  {
+   "fieldname": "look_section",
+   "fieldtype": "Section Break",
+   "label": "Look"
+  },
+  {
+   "fieldname": "sidebar_style",
+   "fieldtype": "Select",
+   "label": "Sidebar Style",
+   "options": "Match Theme\nCarbon",
+   "default": "Match Theme",
+   "description": "Carbon keeps the module sidebar dark in light mode too, as the deep charcoal rail of the OneSpace design."
+  },
+  {
+   "fieldname": "column_break_look",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "density",
+   "fieldtype": "Select",
+   "label": "Density",
+   "options": "Comfortable\nCompact",
+   "default": "Comfortable"
+  },
+  {
+   "fieldname": "launcher_section",
+   "fieldtype": "Section Break",
+   "label": "Launcher"
+  },
+  {
+   "fieldname": "use_launcher_home",
+   "fieldtype": "Check",
+   "label": "Open the Desk on the OneSpace Launcher",
+   "default": "1",
+   "description": "The Launcher is the apps view: every app this user may open, quick actions, recent documents and this week's activity. Frappe's own Apps screen stays at /desk/desktop."
+  },
+  {
+   "fieldname": "show_quick_actions",
+   "fieldtype": "Check",
+   "label": "Show Quick Actions",
+   "default": "1",
+   "depends_on": "eval:doc.use_launcher_home==1"
+  },
+  {
+   "fieldname": "show_recent_documents",
+   "fieldtype": "Check",
+   "label": "Show Recent Documents",
+   "default": "1",
+   "depends_on": "eval:doc.use_launcher_home==1"
+  },
+  {
+   "fieldname": "show_activity_chart",
+   "fieldtype": "Check",
+   "label": "Show Weekly Activity",
+   "default": "1",
+   "depends_on": "eval:doc.use_launcher_home==1"
+  },
+  {
+   "fieldname": "show_system_health",
+   "fieldtype": "Check",
+   "label": "Show System Health to System Managers",
+   "default": "1",
+   "depends_on": "eval:doc.use_launcher_home==1"
+  },
+  {
+   "fieldname": "column_break_launcher",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quick_action_doctypes",
+   "fieldtype": "Small Text",
+   "label": "Quick Action DocTypes",
+   "default": "Quotation\nSales Invoice\nCustomer\nStock Entry",
+   "description": "One DocType per line. Each user only sees the ones they may create."
+  },
+  {
+   "fieldname": "recent_doctypes",
+   "fieldtype": "Small Text",
+   "label": "Recent Document DocTypes",
+   "default": "Sales Order\nSales Invoice\nPurchase Order\nQuotation\nPurchase Invoice\nDelivery Note\nPurchase Receipt\nQuality Inspection",
+   "description": "One DocType per line. Recent documents and weekly activity are read through each user's own permissions."
+  },
+  {
+   "fieldname": "login_tab",
+   "fieldtype": "Tab Break",
+   "label": "Sign-in"
+  },
+  {
+   "fieldname": "login_section",
+   "fieldtype": "Section Break",
+   "label": "Sign-in Page"
+  },
+  {
+   "fieldname": "use_onespace_login",
+   "fieldtype": "Check",
+   "label": "Use OneSpace Sign-in",
+   "default": "1",
+   "description": "Serves the OneSpace sign-in page at /login. Sign-in, sign-up, forgot password, email link, social logins, LDAP and two-factor are Frappe's own and work as before."
+  },
+  {
+   "fieldname": "login_headline",
+   "fieldtype": "Data",
+   "label": "Headline",
+   "default": "Run your whole business in one space."
+  },
+  {
+   "fieldname": "login_subheadline",
+   "fieldtype": "Small Text",
+   "label": "Sub-headline",
+   "default": "Sales, stock, accounts and people on one engine - with every number where you expect it."
+  },
+  {
+   "fieldname": "column_break_login",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_points",
+   "fieldtype": "Small Text",
+   "label": "Highlights",
+   "default": "Role-based access on every record\nAudit trail on every change\nReal-time ledgers and stock",
+   "description": "One per line, up to six."
+  },
+  {
+   "fieldname": "login_footnote",
+   "fieldtype": "Data",
+   "label": "Footnote",
+   "description": "Leave empty for a copyright line with the brand name."
+  },
+  {
+   "fieldname": "login_background",
+   "fieldtype": "Attach Image",
+   "label": "Panel Image",
+   "description": "Optional. Drawn behind the brand panel under a dark scrim."
+  },
+  {
+   "fieldname": "support_tab",
+   "fieldtype": "Tab Break",
+   "label": "Support"
+  },
+  {
+   "fieldname": "support_section",
+   "fieldtype": "Section Break",
+   "label": "Support"
+  },
+  {
+   "fieldname": "support_url",
+   "fieldtype": "Data",
+   "label": "Support Website",
+   "options": "URL",
+   "description": "Added to the help menu as Support."
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "column_break_support",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "about_text",
+   "fieldtype": "Small Text",
+   "label": "About Text",
+   "default": "OneSpace is your business platform for sales, purchasing, stock, accounting, manufacturing and people.",
+   "description": "Shown in the About dialog in place of Frappe's."
+  }
+ ],
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ]
+}

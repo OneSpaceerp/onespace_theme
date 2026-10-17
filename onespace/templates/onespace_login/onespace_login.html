@@ -1,0 +1,258 @@
+{#
+   OneSpace — sign-in page.
+
+   The sections, macros, ids and classes inside .os-login-forms are Frappe
+   16.51's own (frappe/www/login.html), because Frappe's login.js - included
+   at the bottom, unchanged - binds to exactly these. Sign-in, sign-up, forgot
+   password, the email link, social providers, LDAP and two-factor therefore
+   work because they are Frappe's code, not a re-implementation. Keep this in
+   step with frappe/www/login.html when Frappe changes it.
+
+   Everything printed from OneSpace Settings is escaped with `| e`: this page
+   is served to every visitor before they sign in.
+#}
+{% from "templates/includes/login/macros.html" import alert_banner %}
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Sign In") }} · {{ os_brand.name | e }}{% endblock %}
+
+{% block navbar %}
+{% if show_language_picker %}{{ super() }}{% endif %}
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block head_include %}
+{{ include_style('login.bundle.css') }}
+<link rel="apple-touch-icon" href="{{ os_brand.touch_icon | e }}">
+<meta name="theme-color" content="#0f1117">
+{% endblock %}
+
+{% macro email_login_body() -%}
+{% if not disable_user_pass_login or (ldap_settings and ldap_settings.enabled) %}
+<div class="page-card-body flex flex-col gap-4">
+	{{ alert_banner("error") }}
+	<div class="form-group flex flex-col items-start gap-1.5 mb-0">
+		<label class="form-label text-base w-full mb-0" for="login_email">{{ login_label or _("Email") }}</label>
+		<div class="email-field">
+			<input type="text" id="login_email" class="form-control"
+				placeholder="{% if login_name_placeholder %}{{ login_name_placeholder | e }}{% else %}{{ _('jane@example.com') }}{% endif %}"
+				required autofocus autocomplete="username">
+		</div>
+		<p class="field-error text-base mb-0"></p>
+	</div>
+
+	<div class="form-group flex flex-col items-start gap-2 mb-0">
+		<div class="flex flex-col items-start gap-1.5 w-full">
+			<label class="form-label text-base w-full mb-0" for="login_password">{{ _("Password") }}</label>
+			<div class="password-field">
+				<input type="password" id="login_password" class="form-control" placeholder="••••••••"
+					autocomplete="current-password" required>
+				<svg toggle="#login_password" class="icon icon-sm toggle-password" xmlns="http://www.w3.org/2000/svg">
+					<use href="#icon-eye"></use>
+				</svg>
+			</div>
+			<p class="field-error text-base mb-0"></p>
+		</div>
+		{% if not disable_user_pass_login %}
+		<p class="forgot-password-message text-right w-full mb-0">
+			<a href="#forgot" class="text-base">{{ _("Forgot password?") }}</a>
+		</p>
+		{% endif %}
+	</div>
+</div>
+{% endif %}
+<div class="page-card-actions flex flex-col gap-3">
+	{% if not disable_user_pass_login %}
+	<button class="es-button w-full btn-login" data-variant="solid" type="submit">{{ _("Sign In") }}</button>
+	{% endif %}
+	{% if ldap_settings and ldap_settings.enabled %}
+	<button class="es-button w-full btn-login btn-ldap-login" data-variant="solid">{{ _("Login with LDAP") }}</button>
+	{% endif %}
+	{% if login_with_email_link %}
+	<a href="#login-with-email-link" class="es-button w-full btn-login-option btn-login-with-email-link">
+		{{ _("Login with Email Link") }}</a>
+	{% endif %}
+	{% if social_login %}
+	<div class="social-logins text-center text-base">
+		<span class="os-login-divider">{{ _("or continue with") }}</span>
+		<div class="social-login-buttons">
+			{% for provider in provider_logins %}
+			<div class="login-button-wrapper">
+				<a href="{{ provider.auth_url }}" class="es-button w-full btn-login-option btn-{{ provider.name }}">
+					{% if provider.icon %}{{ provider.icon }}{% endif %}
+					{{ _("Login with {0}").format(provider.provider_name) }}</a>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endmacro %}
+
+{% macro logo_section(title=null, subtitle=null) %}
+<div class="page-card-head flex flex-col items-start gap-4 text-left">
+	<a class="os-login-logo" href="/" aria-label="{{ os_brand.name | e }}">
+		<img class="os-logo-on-light" src="{{ os_brand.logo_light | e }}" alt="{{ os_brand.name | e }}">
+		<img class="os-logo-on-dark" src="{{ os_brand.logo_dark | e }}" alt="" aria-hidden="true">
+	</a>
+	<div class="page-card-head-text flex flex-col gap-1.5 w-full">
+		<h1 class="os-login-title">{{ title or _("Sign In") }}</h1>
+		{% if subtitle %}<p class="page-card-subtitle mb-0">{{ subtitle }}</p>{% endif %}
+	</div>
+</div>
+{% endmacro %}
+
+{% block page_content %}
+<div class="os-login-shell">
+<main class="os-login-forms">
+	<noscript>
+		<div class="text-center my-5">
+			<h4>{{ _("Javascript is disabled on your browser") }}</h4>
+			<p class="text-muted">{{ _("You need to enable JavaScript for your app to work.") }}</p>
+		</div>
+	</noscript>
+
+	<section class="for-login">
+		<div class="login-content page-card flex flex-col gap-5">
+			{{ logo_section(_("Welcome back"), _("Sign in to your workspace to continue.")) }}
+			<form class="form-signin form-login flex flex-col gap-6" role="form" novalidate>
+				{{ email_login_body() }}
+			</form>
+			{%- if not disable_signup and not disable_user_pass_login -%}
+			<div class="text-center sign-up-message mt-auto mb-0">
+				{{ _("Don't have an account?") }}
+				<a href="#signup">{{ _("Sign up") }}</a>
+			</div>
+			{%- endif -%}
+		</div>
+	</section>
+
+	{%- if social_login -%}
+	<section class="for-email-login">
+		<div class="login-content page-card flex flex-col gap-5">
+			{{ logo_section(_("Welcome back"), _("Sign in to your workspace to continue.")) }}
+			<form class="form-signin form-login flex flex-col gap-6" role="form" novalidate>
+				{{ email_login_body() }}
+			</form>
+			{%- if not disable_signup and not disable_user_pass_login -%}
+			<div class="text-center sign-up-message mt-auto mb-0">
+				{{ _("Don't have an account?") }}
+				<a href="#signup">{{ _("Sign up") }}</a>
+			</div>
+			{%- endif -%}
+		</div>
+	</section>
+	{%- endif -%}
+
+	<section class="for-signup {{ 'signup-disabled' if disable_signup else '' }}">
+		<div class="login-content page-card flex flex-col gap-5">
+			{{ logo_section(_("Sign Up"), _("Let's set up your account.")) }}
+			{%- if not disable_signup -%}
+			{{ signup_form_template }}
+			{%- else -%}
+			<div class="signup-disabled-message">
+				<span class="indicator gray">{{ _("Signup Disabled") }}</span>
+				<p class="text-muted sign-up-message mt-1 mb-8">{{ _("Signups have been disabled for this website.") }}</p>
+				<div><a href="/" class="es-button" data-variant="solid">{{ _("Home") }}</a></div>
+			</div>
+			{%- endif -%}
+		</div>
+	</section>
+
+	<section class="for-forgot">
+		<div class="login-content page-card flex flex-col gap-5">
+			{{ logo_section(_("Forgot Password?"), _("Enter your email and we'll send you a reset link.")) }}
+			<form class="form-signin form-forgot hide flex flex-col gap-6" role="form" novalidate>
+				<div class="page-card-body flex flex-col gap-4">
+					{{ alert_banner("success") }}
+					{{ alert_banner("error") }}
+					<div class="form-group flex flex-col items-start gap-1.5 mb-0">
+						<label class="form-label text-base w-full mb-0" for="forgot_email">{{ _("Email") }}</label>
+						<div class="email-field">
+							<input type="email" id="forgot_email" class="form-control"
+								placeholder="{{ _('jane@example.com') }}" required autofocus autocomplete="username">
+						</div>
+						<p class="field-error text-base mb-0"></p>
+					</div>
+				</div>
+				<div class="page-card-actions flex flex-col gap-3">
+					<button class="es-button w-full btn-forgot" data-variant="solid" type="submit" disabled>{{ _("Send Link") }}</button>
+				</div>
+			</form>
+			<div class="text-center sign-up-message mt-auto mb-0">
+				<a href="#login">{{ _("Back to sign in") }}</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="for-login-with-email-link">
+		<div class="login-content page-card flex flex-col gap-5">
+			{{ logo_section(_("Welcome back"), _("We'll email you a link that signs you in.")) }}
+			<form class="form-signin form-login-with-email-link hide flex flex-col gap-6" role="form" novalidate>
+				<div class="page-card-body flex flex-col gap-4">
+					{{ alert_banner("success", _("Please check your email.")) }}
+					{{ alert_banner("error") }}
+					<div class="form-group flex flex-col items-start gap-1.5 mb-0">
+						<label class="form-label text-base w-full mb-0" for="login_with_email_link_email">{{ _("Email") }}</label>
+						<div class="email-field">
+							<input type="email" id="login_with_email_link_email" class="form-control"
+								placeholder="{{ _('jane@example.com') }}" required autofocus autocomplete="username">
+						</div>
+						<p class="field-error text-base mb-0"></p>
+					</div>
+				</div>
+				<div class="page-card-actions flex flex-col gap-3">
+					<p class="resend-link hidden flex items-center gap-2 w-full text-base mb-0">
+						{{ _("Didn't receive the link?") }} <a href="#" class="btn-resend-link">{{ _("Resend") }}</a>
+					</p>
+					<button class="es-button w-full btn-login btn-login-with-email-link" data-variant="solid" type="submit">{{ _("Send login link") }}</button>
+					<a href="#login" class="es-button w-full btn-login-option">{{ _("Login with password") }}</a>
+				</div>
+			</form>
+			{%- if not disable_signup -%}
+			<div class="text-center sign-up-message mt-auto mb-0">
+				{{ _("Don't have an account?") }}
+				<a href="#signup">{{ _("Sign up") }}</a>
+			</div>
+			{%- endif -%}
+		</div>
+	</section>
+
+	<p class="os-login-footnote">{{ os_footnote | e }}</p>
+</main>
+
+<aside class="os-login-brand" aria-label="{{ os_brand.name | e }}">
+	{%- if os_background %}
+	<img class="os-login-brand-image" src="{{ os_background | e }}" alt="">
+	{%- endif %}
+	<img class="os-login-brand-mark" src="{{ os_brand.mark | e }}" alt="">
+	<div class="os-login-brand-body">
+		<img class="os-login-brand-logo" src="{{ os_brand.logo_dark | e }}" alt="{{ os_brand.name | e }}">
+		{%- if os_headline %}
+		<h2 class="os-login-headline">{{ os_headline | e }}</h2>
+		{%- endif %}
+		{%- if os_subheadline %}
+		<p class="os-login-subheadline">{{ os_subheadline | e }}</p>
+		{%- endif %}
+		{%- if os_points %}
+		<ul class="os-login-points">
+			{%- for point in os_points %}
+			<li>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+					stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+				<span>{{ point | e }}</span>
+			</li>
+			{%- endfor %}
+		</ul>
+		{%- endif %}
+	</div>
+</aside>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>{% include "templates/includes/login/login.js" %}</script>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
