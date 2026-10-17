@@ -1,8 +1,0 @@
-Plus Jakarta Sans — Copyright (c) Tokotype
-Manrope — Copyright (c) Mikhail Sharanda
-
-Both typefaces are licensed under the SIL Open Font License, Version 1.1.
-Full licence text: https://openfontlicense.org
-
-This licence file must remain alongside the font binaries. The OneSpace
-open-source notices page (/open-source-notices) also references it.
