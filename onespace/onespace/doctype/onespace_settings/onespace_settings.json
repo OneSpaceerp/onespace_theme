@@ -23,6 +23,7 @@
   "brand_tagline",
   "column_break_identity",
   "enforce_branding",
+  "hide_vendor_names",
   "hide_vendor_help_links",
   "assets_section",
   "logo_light",
@@ -100,6 +101,13 @@
    "label": "Apply Brand to Site Settings",
    "default": "1",
    "description": "Writes the brand into System Settings, Website Settings and Navbar Settings, and turns off the vendor update and change-log pop-ups. The values it replaces are kept and restored when OneSpace is uninstalled."
+  },
+  {
+   "fieldname": "hide_vendor_names",
+   "fieldtype": "Check",
+   "label": "Replace Frappe and ERPNext in Labels",
+   "default": "1",
+   "description": "Every label, menu, title and message on the desk that names Frappe or ERPNext names the brand instead (ERPNext Settings becomes OneSpace Settings, Frappe HR becomes OneSpace HR). Links to the vendors' websites are hidden, or sent to your own Support Website when one is set. Routes and DocType names are unchanged."
   },
   {
    "fieldname": "hide_vendor_help_links",

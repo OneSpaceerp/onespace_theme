@@ -350,6 +350,9 @@ class TestAppIcons(unittest.TestCase):
 		self.assertIn(hue, self.ai.HUES)
 		self.assertEqual(self.ai.initials("Zeta X"), "ZX")
 		self.assertEqual(self.ai.initials("OneSpace HR"), "HR", "the brand word is not an initial")
+		self.assertEqual(
+			self.ai.initials("OneSpace", "onespace"), "ON", "only brand words: still letters, never ?"
+		)
 
 	def test_settings_choice_wins_and_bad_values_fall_back(self):
 		self.assertEqual(self.ai.choose("hrms", glyph="factory", hue="blue"), ("factory", "blue"))
@@ -365,3 +368,40 @@ class TestAppIcons(unittest.TestCase):
 		settings = json.loads(read("onespace", "doctype", "onespace_settings", "onespace_settings.json"))
 		style = next(f for f in settings["fields"] if f["fieldname"] == "app_icon_style")
 		self.assertEqual(style["options"].split("\n"), list(self.ai.STYLES))
+
+
+class TestVendorFilter(unittest.TestCase):
+	"""brand.js rebrands every label the desk draws; check its rules with node."""
+
+	def test_rebrand_rules(self):
+		import shutil
+		import subprocess
+
+		node = shutil.which("node")
+		if not node:
+			self.skipTest("node not installed")
+		script = (
+			"const src=require('fs').readFileSync(process.argv[1],'utf8');"
+			r"const body=src.match(/const VENDOR_WORDS[\s\S]*?(?=\nfunction install_vendor_filter)/)[0];"
+			"const config=()=>({brand:{name:'OneSpace'}});"
+			"eval(body + 'globalThis.rebrand=rebrand;');"
+			"process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(rebrand)));"
+		)
+		cases = {
+			"ERPNext Settings": "OneSpace Settings",
+			"Frappe HR": "OneSpace HR",
+			"Switch to Frappe CRM": "Switch to OneSpace CRM",
+			"Frappe Framework": "OneSpace Platform",
+			"Frappe Support": "OneSpace Support",
+			"إعدادات ERPNext": "إعدادات OneSpace",
+			"https://frappe.io/crm": "https://frappe.io/crm",
+			"Frappes": "Frappes",
+			"Accounts": "Accounts",
+		}
+		out = subprocess.run(
+			[node, "-e", script, os.path.join(PUBLIC, "js", "onespace", "brand.js"), json.dumps(list(cases))],
+			capture_output=True,
+			encoding="utf-8",
+			check=True,
+		).stdout
+		self.assertEqual(json.loads(out), list(cases.values()))

@@ -80,3 +80,14 @@ html[data-os-density="compact"] {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Frappe and ERPNext out of the chrome (OneSpace Settings -> Replace Frappe
+   and ERPNext in Labels). The sidebar's "Try Frappe CRM / Helpdesk" banners
+   and menu entries that lead to the vendors' sites are removed; any such
+   link left elsewhere is caught by brand.js and sent to the site's own
+   support. */
+html[data-os-vendor="hidden"] .promotional-banner[target="_blank"],
+html[data-os-vendor="hidden"] :is(.dropdown-menu, .frappe-menu, .body-sidebar, .page-actions, .help-box)
+	:is(a[href*="frappe.io"], a[href*="frappe.school"], a[href*="frappe.cloud"], a[href*="frappeframework.com"], a[href*="erpnext.com"]) {
+	display: none !important;
+}

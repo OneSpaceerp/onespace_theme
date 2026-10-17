@@ -463,7 +463,9 @@ $hues: (
 	width: 64px;
 	height: 64px;
 	margin-bottom: 10px;
-	border-radius: 16px;
+	/* 28%, the corner Frappe 16.50's own desktop icons are drawn with, so a
+	   OneSpace tile and an app's shipped icon sit side by side as one set. */
+	border-radius: 18px;
 	color: #fff;
 	--icon-stroke: #fff;
 	box-shadow: 0 0 0 4px var(--os-surface), 0 8px 18px -10px rgba(0, 0, 0, 0.35);
@@ -479,15 +481,15 @@ $hues: (
 		height: 40px;
 		object-fit: contain;
 	}
-	/* A generated OneSpace app icon is a whole tile already: show it edge to
-	   edge instead of framing it as a logo. */
+	/* An app's 16.50 desktop icon, or a generated OneSpace one, is a whole
+	   tile already: show it edge to edge instead of framing it as a logo. */
 	&.is-tile {
 		background: none !important;
 
 		img {
 			width: 64px;
 			height: 64px;
-			border-radius: 16px;
+			border-radius: 18px;
 		}
 	}
 	&.has-logo:not(.is-tile) {

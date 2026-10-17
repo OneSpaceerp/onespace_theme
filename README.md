@@ -28,6 +28,8 @@ Then reload the browser. Settings live at **/desk/onespace-settings**
 | Sidebar | OneSpace icon and app titles, orange active pill, optional Carbon (dark) rail |
 | Apps | ERPNext → *OneSpace ERP*, Frappe → *OneSpace Platform*, Frappe HR → *OneSpace HR*, … (editable) |
 | App icons | Every installed app — Frappe HR, Helpdesk, Healthcare, CRM, LMS, your own — gets an icon generated in the OneSpace style |
+| Labels everywhere | "ERPNext" and "Frappe" are replaced by the brand in every label, menu, title and dialog the desk draws, in every language (ERPNext Settings → OneSpace Settings, Frappe HR → OneSpace HR) |
+| Vendor links | The sidebar's "Try Frappe CRM / Helpdesk" banners and links to frappe.io / erpnext.com are removed; any left go to your own Support Website |
 | Help menu | Frappe/ERPNext docs, forum and school links hidden; your own Support link added |
 | About | A OneSpace About dialog in place of Frappe's |
 | Emails | The "Sent via ERPNext" footer is off |
@@ -110,16 +112,33 @@ it shows every app as it will look, before you save. Glyphs are from
 ## The Launcher
 
 `/desk/onespace-launcher`, and the desk's home while *Open the Desk on the
-OneSpace Launcher* is ticked. Frappe's own Apps screen stays at
-`/desk/desktop`.
+OneSpace Launcher* is ticked. Like Frappe's own Apps screen, it has no
+sidebar and no dock: the grid is the navigation. Frappe's Apps screen stays
+at `/desk/desktop`.
 
-Nothing on it decides what a user may see. The tiles are
-`frappe.boot.desktop_icons`, already filtered by Frappe for app, workspace and
-role permissions, in the user's own saved order. Quick actions are offered
-only where the user may create; recent documents and the weekly chart are
-read through `frappe.get_list`, so User Permissions apply. System Health is
-shown to System Managers only. Search, notifications, the user menu and the
-theme switch are Frappe's own.
+It follows whichever desktop mode the site runs (**Desktop Settings →
+Desktop Page**):
+
+* **Apps** (Frappe 16.50's default) — every module this user may open, from
+  Frappe's own permission-filtered module list, grouped by app in the apps
+  screen's order. A desk app's modules (Selling, Stock, Payroll, …) are
+  tiles of their own; an app with its own interface (Helpdesk, CRM,
+  Insights) is one tile into it; the framework's administration modules
+  share one folder.
+* **Desktop Icons** — the arrangeable icon grid, in the user's saved order.
+
+Each tile shows the app's own **Frappe 16.50 desktop icon** when the app
+ships one (`public/icons/desktop_icons/`), in the variant chosen under
+**Desktop Settings → Icon Style** (Solid or Subtle) — ERPNext and Frappe HR
+ship one per module. Apps that ship none get their generated OneSpace icon,
+drawn at the same corner radius so the two sit together as one set.
+
+Nothing on it decides what a user may see: the tiles are what Frappe already
+resolved for this user, quick actions are offered only where the user may
+create, and recent documents and the weekly chart are read through
+`frappe.get_list`, so User Permissions apply. System Health is for System
+Managers only. Search, notifications, the user menu and the theme switch are
+Frappe's own.
 
 ## Design system
 

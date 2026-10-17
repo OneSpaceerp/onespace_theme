@@ -73,9 +73,103 @@ function about() {
 	dialog.show();
 }
 
+/* ---- Frappe and ERPNext, out of the interface ----
+
+   Every label the desk draws - the sidebar, the apps screen, list and form
+   titles, menus, dialogs, the "Switch to Frappe CRM" banner - passes through
+   frappe._ (alias __) on its way to the screen. Rebranding the result there
+   reaches all of it at once, in every language: an Arabic or French
+   translation that keeps "ERPNext" as a product name is rebranded the same
+   way. Only what is shown changes; routes, DocType names and anything the
+   server matches on are untouched. */
+const VENDOR_WORDS = /\b(ERPNext|Frappe)\b/;
+const VENDOR_APPS =
+	"HR|CRM|Helpdesk|Insights|Drive|Builder|Wiki|LMS|Learning|Lending|Payments|Healthcare|Education|Cloud|Support|School|Books|Mail";
+
+function brand_name() {
+	const cfg = config();
+	return (cfg && cfg.brand && cfg.brand.name) || "OneSpace";
+}
+
+function rebrand(text) {
+	if (typeof text !== "string" || !VENDOR_WORDS.test(text)) return text;
+	const name = brand_name();
+	return text
+		.replace(/\bFrappe Framework\b/g, `${name} Platform`)
+		.replace(new RegExp(`\\bFrappe (${VENDOR_APPS})\\b`, "g"), `${name} $1`)
+		.replace(/\bERPNext\b/g, name)
+		.replace(/\bFrappe\b/g, name);
+}
+
+function install_vendor_filter() {
+	const cfg = config();
+	if (!cfg || !cint_(cfg.hide_vendor_names) || !frappe._ || frappe._.__onespace) return;
+	const translate = frappe._;
+	const filtered = function () {
+		return rebrand(translate.apply(this, arguments));
+	};
+	filtered.__onespace = true;
+	frappe._ = filtered;
+	window.__ = filtered;
+}
+
+/* Links to the vendors' sites - the help menu's docs, a form's help links,
+   the desktop's "Frappe Support" - go to the site's own Support Website, or
+   open the About dialog when there is none. Text a user wrote (comments,
+   text editors) is left alone. */
+const VENDOR_HOST = /(^|\.)(frappe\.io|frappe\.school|frappe\.cloud|frappeframework\.com|erpnext\.com)$/i;
+
+function is_vendor_url(url) {
+	if (!url || typeof url !== "string") return false;
+	try {
+		return VENDOR_HOST.test(new URL(url, window.location.href).hostname);
+	} catch (e) {
+		return false;
+	}
+}
+
+function send_to_support() {
+	const cfg = config() || {};
+	const url = cfg.support && cfg.support.url;
+	if (url) window.__onespace_open(url, "_blank", "noopener");
+	else about();
+}
+
+function install_vendor_links() {
+	const cfg = config();
+	if (!cfg || !cint_(cfg.hide_vendor_names) || window.__onespace_open) return;
+	window.__onespace_open = window.open.bind(window);
+	window.open = function (url) {
+		if (is_vendor_url(url)) {
+			send_to_support();
+			return null;
+		}
+		return window.__onespace_open.apply(window, arguments);
+	};
+	document.addEventListener(
+		"click",
+		(e) => {
+			const link = e.target && e.target.closest && e.target.closest("a[href]");
+			if (!link || !is_vendor_url(link.getAttribute("href"))) return;
+			if (link.closest(".ql-editor, .comment-content, .timeline-content, .markdown-preview")) return;
+			e.preventDefault();
+			e.stopPropagation();
+			send_to_support();
+		},
+		true
+	);
+	html.setAttribute("data-os-vendor", "hidden");
+}
+
+function cint_(value) {
+	return parseInt(value, 10) || 0;
+}
+
 mark_html();
 
 if (window.frappe) {
+	install_vendor_filter();
+	install_vendor_links();
 	$(document).on("app_ready", () => {
 		mark_html();
 		brand_favicon();
@@ -86,4 +180,5 @@ if (window.frappe) {
 	frappe.ui.misc.about = about;
 	frappe.provide("onespace");
 	onespace.about = about;
+	onespace.rebrand = rebrand;
 }

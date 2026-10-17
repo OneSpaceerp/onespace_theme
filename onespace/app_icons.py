@@ -213,6 +213,9 @@ def initials(title: str, app: str = "") -> str:
 	if not words:
 		words = [w for w in re.findall(r"[A-Za-z0-9]+", _norm(app)) if w.lower() not in _NOISE]
 	if not words:
+		# Nothing but brand words ("OneSpace"): its own letters beat a "?".
+		words = re.findall(r"[A-Za-z0-9]+", title or "") or re.findall(r"[A-Za-z0-9]+", _norm(app))
+	if not words:
 		return "?"
 	if len(words) == 1:
 		return words[0][:2].upper() if len(words[0]) > 1 else words[0].upper()
@@ -263,7 +266,7 @@ def svg(
 			"<defs><radialGradient id='t' cx='.5' cy='.5' r='.72'>"
 			"<stop offset='0' stop-color='#0b0b0b'/><stop offset='1' stop-color='#353333'/>"
 			"</radialGradient></defs>"
-			"<rect width='64' height='64' rx='16' fill='url(#t)'/>"
+			"<rect width='64' height='64' rx='18' fill='url(#t)'/>"
 		)
 		stroke = BRAND_ORANGE
 	else:
@@ -273,8 +276,8 @@ def svg(
 			"</linearGradient><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'>"
 			"<stop offset='0' stop-color='#fff' stop-opacity='.24'/><stop offset='.55' stop-color='#fff' stop-opacity='0'/>"
 			"</linearGradient></defs>"
-			"<rect width='64' height='64' rx='16' fill='url(#t)'/>"
-			"<rect width='64' height='64' rx='16' fill='url(#s)'/>"
+			"<rect width='64' height='64' rx='18' fill='url(#t)'/>"
+			"<rect width='64' height='64' rx='18' fill='url(#s)'/>"
 		)
 		stroke = "#ffffff"
 

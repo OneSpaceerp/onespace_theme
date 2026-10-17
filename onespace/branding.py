@@ -72,6 +72,7 @@ DEFAULTS = {
 	"brand_name": "OneSpace",
 	"brand_tagline": "Enterprise ERP",
 	"enforce_branding": 1,
+	"hide_vendor_names": 1,
 	"hide_vendor_help_links": 1,
 	"app_icon_style": "Colour Tiles",
 	"sidebar_style": "Match Theme",
@@ -167,7 +168,8 @@ def app_logo(app: str, title: str, settings: dict, marks: dict, overrides: dict 
 	style = settings.get("app_icon_style") or app_icons.STYLE_COLOUR
 	if style == app_icons.STYLE_ORIGINAL or not app:
 		return None
-	if style == app_icons.STYLE_ONESPACE:
+	# OneSpace's own entry is the brand itself.
+	if style == app_icons.STYLE_ONESPACE or app == "onespace":
 		return marks.icon
 	choice = (overrides or {}).get(app) or {}
 	return app_icons.icon_uri(
@@ -211,6 +213,7 @@ def client_config(settings: dict, marks: dict) -> dict:
 		"sidebar_style": "carbon" if settings.get("sidebar_style") == "Carbon" else "match",
 		"density": "compact" if settings.get("density") == "Compact" else "comfortable",
 		"hide_vendor_help": cint(settings.get("hide_vendor_help_links")),
+		"hide_vendor_names": cint(settings.get("hide_vendor_names")),
 		"about_text": settings.get("about_text") or "",
 		"support": {
 			"url": settings.get("support_url") or "",

@@ -145,6 +145,17 @@ class TestGeneratedIcons(IntegrationTestCase):
 
 		self.assertIn("#FF3301", unquote(boot.app_data[0]["app_logo_url"]))
 
+	def test_onespace_itself_carries_the_brand_icon(self):
+		self.assertEqual(
+			branding.app_logo("onespace", "OneSpace", branding.get_settings(), branding.brand()),
+			branding.brand().icon,
+		)
+
+	def test_vendor_names_flag_reaches_the_desk(self):
+		boot = fake_boot()
+		branding.extend_bootinfo(boot)
+		self.assertEqual(boot.onespace["hide_vendor_names"], 1)
+
 	def test_preview_lists_every_installed_app(self):
 		from onespace.api import preview_app_icons
 

@@ -21,7 +21,9 @@ frappe.pages["onespace-launcher"].on_page_load = function (wrapper) {
 		parent: wrapper,
 		title: __("Launcher"),
 		single_column: true,
-		// The grid is the navigation here; Frappe's dock would repeat it.
+		// The grid is the navigation here: the module sidebar and the dock would
+		// only repeat it. The same two switches Frappe's own Apps screen sets.
+		hide_sidebar: true,
 		hide_dock: true,
 	});
 	wrapper.onespace_launcher = new OneSpaceLauncher(page);
@@ -92,6 +94,68 @@ const OS_APP_KINDS = [
 	{ re: /website|portal|builder|blog/i, hue: "sky", sub: __("Web & Portal"), cat: "tools" },
 	{ re: /setting|setup|system|framework|platform|integration|tool|build|user|data|automation|print|email/i, hue: "slate", sub: __("System Engine"), cat: "tools" },
 ];
+/* The modules Frappe 16, ERPNext 16 and Frappe HR 16 ship, by name: what each
+   one is for, and which tab it lives under. */
+const OS_MODULES = {
+	// ERPNext
+	"accounts setup": { sub: __("Chart & Fiscal Setup"), cat: "finance", hue: "emerald" },
+	"account setup": { sub: __("Chart & Fiscal Setup"), cat: "finance", hue: "emerald" },
+	accounting: { sub: __("General Ledger"), cat: "finance", hue: "emerald" },
+	accounts: { sub: __("General Ledger"), cat: "finance", hue: "emerald" },
+	assets: { sub: __("Asset Register"), cat: "finance", hue: "emerald" },
+	banking: { sub: __("Bank & Reconciliation"), cat: "finance", hue: "emerald" },
+	budget: { sub: __("Budgets & Variance"), cat: "finance", hue: "gold" },
+	buying: { sub: __("Procurement"), cat: "supply", hue: "violet" },
+	crm: { sub: __("Deals & Leads"), cat: "sales", hue: "teal" },
+	"erpnext settings": { sub: __("System Defaults"), cat: "tools", hue: "slate" },
+	"financial reports": { sub: __("Statements & Ledgers"), cat: "finance", hue: "emerald" },
+	invoicing: { sub: __("Sales & Purchase Invoices"), cat: "finance", hue: "gold" },
+	manufacturing: { sub: __("BOM & Production"), cat: "supply", hue: "indigo" },
+	organization: { sub: __("Company & Branches"), cat: "tools", hue: "slate" },
+	payments: { sub: __("Receipts & Payments"), cat: "finance", hue: "emerald" },
+	projects: { sub: __("Tasks & Timesheets"), cat: "tools", hue: "green" },
+	quality: { sub: __("Inspections & Goals"), cat: "supply", hue: "cyan" },
+	selling: { sub: __("Orders & Quotes"), cat: "sales", hue: "orange" },
+	"share management": { sub: __("Shareholders & Transfers"), cat: "finance", hue: "gold" },
+	stock: { sub: __("Inventory & Batch"), cat: "supply", hue: "gold" },
+	subcontracting: { sub: __("Job Work"), cat: "supply", hue: "violet" },
+	subscription: { sub: __("Recurring Billing"), cat: "finance", hue: "gold" },
+	support: { sub: __("Support Queue"), cat: "sales", hue: "blue" },
+	taxes: { sub: __("Tax Rules & Templates"), cat: "finance", hue: "emerald" },
+	"point of sale": { sub: __("Retail Terminal"), cat: "sales", hue: "amber" },
+	// Frappe HR
+	expenses: { sub: __("Claims & Advances"), cat: "finance", hue: "gold" },
+	"hr setup": { sub: __("HR Defaults"), cat: "finance", hue: "pink" },
+	leaves: { sub: __("Leave Management"), cat: "finance", hue: "pink" },
+	payroll: { sub: __("Salaries & Payslips"), cat: "finance", hue: "pink" },
+	performance: { sub: __("Appraisals & Goals"), cat: "finance", hue: "pink" },
+	recruitment: { sub: __("Jobs & Hiring"), cat: "finance", hue: "pink" },
+	"shift & attendance": { sub: __("Shifts & Check-ins"), cat: "finance", hue: "pink" },
+	"tax & benefits": { sub: __("Exemptions & Benefits"), cat: "finance", hue: "pink" },
+	tenure: { sub: __("Onboarding & Exits"), cat: "finance", hue: "pink" },
+	// The framework
+	automation: { sub: __("Rules & Assignments"), cat: "tools", hue: "slate" },
+	build: { sub: __("DocTypes & Scripts"), cat: "tools", hue: "slate" },
+	data: { sub: __("Import & Export"), cat: "tools", hue: "slate" },
+	email: { sub: __("Accounts & Templates"), cat: "tools", hue: "slate" },
+	integrations: { sub: __("Connectors & APIs"), cat: "tools", hue: "slate" },
+	printing: { sub: __("Print Formats"), cat: "tools", hue: "slate" },
+	system: { sub: __("Settings & Logs"), cat: "tools", hue: "slate" },
+	users: { sub: __("Users & Roles"), cat: "tools", hue: "slate" },
+	website: { sub: __("Pages & Portal"), cat: "tools", hue: "slate" },
+};
+
+/* A tab for whatever an app's modules are not named in OS_MODULES. */
+const OS_APP_CATEGORY = {
+	frappe: "tools",
+	onespace: "tools",
+	hrms: "finance",
+	payroll: "finance",
+	lending: "finance",
+	crm: "sales",
+	helpdesk: "sales",
+};
+
 const OS_HUES = ["teal", "orange", "violet", "gold", "emerald", "pink", "indigo", "green", "amber", "cyan", "blue", "slate"];
 const OS_TABS = [
 	{ key: "all", label: __("All Apps") },
@@ -108,7 +172,7 @@ class OneSpaceLauncher {
 		this.brand = this.cfg.brand || { name: "OneSpace" };
 		this.tab = "all";
 		this.query = "";
-		this.parent_label = null;
+		this.parent_key = null;
 		this.data = {};
 		this.loaded_at = 0;
 
@@ -361,7 +425,7 @@ class OneSpaceLauncher {
 		const greet = hour < 12 ? __("Good morning") : hour < 17 ? __("Good afternoon") : __("Good evening");
 		const full = frappe.session.user_fullname || (frappe.boot.user && frappe.boot.user.full_name) || "";
 		const first = (full || frappe.session.user).split(/\s+/)[0];
-		const count = this.top_level().length;
+		const count = this.tiles().length;
 		this.$root.find(".os-hero").html(`
 			<div class="os-hero-text">
 				<div class="os-eyebrow">
@@ -396,54 +460,192 @@ class OneSpaceLauncher {
 		}
 	}
 
-	/* ---------------- apps ---------------- */
+	/* ---------------- apps ----------------
 
-	/* The saved layout is the user's own Desktop Layout - the document Frappe's
-	   apps screen edits - merged against boot: boot is the permission filter,
-	   so an entry boot no longer offers is dropped, and anything boot gained
-	   since (a newly installed app) is appended. */
-	all_icons() {
-		if (this._icons) return this._icons;
-		const boot = (frappe.boot && frappe.boot.desktop_icons) || [];
+	   The grid is built from what Frappe 16 already resolved for this user, in
+	   whichever of its two desktop modes the site runs (Desktop Settings ->
+	   Desktop Page):
+
+	   * Apps (the default since 16.50): boot.module_sidebars - every module
+	     shell this user may open, permission-filtered by Frappe - grouped by
+	     their app in the order of the apps screen (app_data, sequence_id).
+	     A desk app's modules are tiles of their own; an app with its own UI
+	     outside the desk (Helpdesk, CRM, Insights) is one tile into that UI;
+	     the framework's own modules sit together in one folder.
+	   * Desktop Icons: boot.desktop_icons, in the user's saved Desktop Layout.
+
+	   Every tile is drawn with the app's own 16.50 desktop icon when it ships
+	   one (public/icons/desktop_icons/<solid|subtle>/<module>.svg, in the style
+	   Desktop Settings -> Icon Style chose), then the OneSpace icon generated
+	   for its app, then the module's glyph on a OneSpace tile. */
+
+	tiles() {
+		if (this._tiles) return this._tiles;
+		const icons = (frappe.boot && frappe.boot.desktop_icons) || [];
+		this._tiles = icons.length ? this.tiles_from_icons() : this.tiles_from_apps();
+		return this._tiles;
+	}
+
+	/* The 16.50 icon an app ships for this label, if it ships one. */
+	v16_icon(app, label) {
+		if (!app || !label || !frappe.scrub) return null;
+		const style = String((frappe.boot && frappe.boot.desktop_icon_style) || "Subtle").toLowerCase();
+		const urls = ((frappe.boot && frappe.boot.desktop_icon_urls) || {})[app] || {};
+		const rel = `assets/${app}/icons/desktop_icons/${style}/${frappe.scrub(label)}.svg`;
+		return (urls[style] || []).includes(rel) ? "/" + rel : null;
+	}
+
+	app_logo(app) {
+		const url = Array.isArray(app.app_logo_url) ? app.app_logo_url[0] : app.app_logo_url;
+		return url || null;
+	}
+
+	module_tile(shell) {
+		const sidebar = frappe.app && frappe.app.sidebar;
+		const label = shell.label || shell.name;
+		return {
+			key: "m:" + shell.name,
+			label,
+			module: shell.module || shell.name,
+			app: shell.app,
+			glyph: shell.header_icon,
+			icon_url: this.v16_icon(shell.app, label) || this.v16_icon(shell.app, shell.name),
+			route: (sidebar && sidebar.module_landing_route && sidebar.module_landing_route(shell.name)) || null,
+		};
+	}
+
+	app_tile(app, children) {
+		const sidebar = frappe.app && frappe.app.sidebar;
+		const logo = this.app_logo(app);
+		return {
+			key: "a:" + app.app_name,
+			label: app.app_title || app.app_name,
+			app: app.app_name,
+			logo,
+			generated: !!(logo && (logo.startsWith("data:image/svg") || logo === this.brand.icon)),
+			route:
+				(sidebar && sidebar.app_landing_route && sidebar.app_landing_route(app)) || app.app_route || "/desk",
+			children: children && children.length ? children : null,
+		};
+	}
+
+	tiles_from_apps() {
+		const boot = frappe.boot || {};
+		const sidebar = frappe.app && frappe.app.sidebar;
+		const apps = (boot.app_data || []).slice().sort((a, b) => (a.sequence_id ?? 100) - (b.sequence_id ?? 100));
+		const by_app = {};
+		Object.values(boot.module_sidebars || {}).forEach((shell) => {
+			(by_app[shell.app] = by_app[shell.app] || []).push(shell);
+		});
+		const names = [...new Set([...apps.map((a) => a.app_name), ...Object.keys(by_app)])];
+		const out = [];
+
+		names.forEach((name) => {
+			const app = apps.find((a) => a.app_name === name) || { app_name: name, app_title: name };
+			const modules = (by_app[name] || []).map((s) => this.module_tile(s)).filter((t) => t.route);
+			const outside_desk =
+				app.app_route && sidebar && sidebar.is_desk_route && !sidebar.is_desk_route(app.app_route);
+
+			// OneSpace's own settings: one tile, for whoever may open them.
+			if (name === "onespace") {
+				if (modules.length) {
+					out.push(
+						Object.assign(this.app_tile(app), {
+							logo: this.brand.icon,
+							generated: true,
+							route: "/desk/onespace-settings",
+						})
+					);
+				}
+				return;
+			}
+			if (outside_desk) {
+				if (app.on_apps_screen !== false) out.push(this.app_tile(app));
+				return;
+			}
+			if (!modules.length) return;
+			// The framework's modules are administration; together they are one
+			// folder rather than nine tiles among the business apps.
+			if (name === "frappe") {
+				out.push(this.app_tile(app, modules));
+				return;
+			}
+			out.push(...modules);
+		});
+		return out;
+	}
+
+	/* Desktop Icons mode: the user's own Desktop Layout, merged against boot.
+	   Boot is the permission filter, so a saved entry boot no longer offers is
+	   dropped and anything boot gained since (a newly installed app) is
+	   appended. */
+	tiles_from_icons() {
+		const boot = frappe.boot.desktop_icons || [];
 		const layout = this.data.layout;
-		if (!Array.isArray(layout) || !layout.length) return boot;
-		const by_label = new Map(boot.map((i) => [i.label, i]));
-		const seen = new Set();
-		const merged = [];
-		layout.forEach((saved) => {
-			const live = saved && by_label.get(saved.label);
-			if (!live || seen.has(saved.label)) return;
-			seen.add(saved.label);
-			merged.push(Object.assign({}, live, { hidden: cint(saved.hidden) }));
-		});
-		boot.forEach((i) => {
-			if (!seen.has(i.label)) merged.push(i);
-		});
-		return (this._icons = merged);
-	}
-
-	children_of(label) {
-		return this.all_icons().filter((i) => i.parent_icon === label && !cint(i.hidden));
-	}
-
-	/* Not simply "icons without a parent": Frappe hides the icon of the app the
-	   desk belongs to (ERPNext on an ERPNext site) and hangs Selling, Stock and
-	   the rest beneath it. A child whose parent is hidden is a destination of
-	   its own, as the sidebar treats it. */
-	top_level() {
-		const icons = this.all_icons();
+		let icons = boot;
+		if (Array.isArray(layout) && layout.length) {
+			const by_label = new Map(boot.map((i) => [i.label, i]));
+			const seen = new Set();
+			icons = [];
+			layout.forEach((saved) => {
+				const live = saved && by_label.get(saved.label);
+				if (!live || seen.has(saved.label)) return;
+				seen.add(saved.label);
+				icons.push(Object.assign({}, live, { hidden: cint(saved.hidden) }));
+			});
+			boot.forEach((i) => {
+				if (!seen.has(i.label)) icons.push(i);
+			});
+		}
 		const hidden = new Set(icons.filter((i) => cint(i.hidden)).map((i) => i.label));
-		return icons.filter((i) => !cint(i.hidden) && (!i.parent_icon || hidden.has(i.parent_icon)));
+		const visible = icons.filter((i) => !cint(i.hidden));
+		const to_tile = (icon) => {
+			const own = icon.onespace_label || icon.label;
+			const kids = visible.filter((i) => i.parent_icon === icon.label);
+			const folder = kids.length > 0 || icon.icon_type === "Folder";
+			return {
+				key: "i:" + icon.label,
+				label: icon.label,
+				module: icon.module || own,
+				app: icon.app,
+				glyph: icon.icon,
+				logo: icon.icon_image || icon.logo_url || null,
+				generated: !!cint(icon.onespace_icon),
+				icon_url: icon.icon_type === "Folder" ? null : this.v16_icon(icon.app, own),
+				route: folder ? null : this.route_for(icon),
+				children: folder ? kids.map(to_tile) : null,
+			};
+		};
+		// Not simply "icons without a parent": Frappe hides the icon of the app the
+		// desk belongs to and hangs its modules beneath it. A child whose parent is
+		// hidden is a destination of its own, as the sidebar treats it.
+		return visible.filter((i) => !i.parent_icon || hidden.has(i.parent_icon)).map(to_tile);
 	}
 
-	kind_of(icon) {
-		const text = `${icon.label || ""} ${icon.module || ""} ${icon.app || ""}`;
-		const kind = OS_APP_KINDS.find((k) => k.re.test(text));
-		if (kind) return kind;
+	all_tiles() {
+		const flat = [];
+		this.tiles().forEach((t) => {
+			if (t.children) flat.push(...t.children);
+			else flat.push(t);
+		});
+		return flat;
+	}
+
+	/* What a tile is: its subtitle and its tab. Exact module names first - the
+	   ones the framework, ERPNext and HR ship - then keywords, then its app. */
+	kind_of(tile) {
+		const exact =
+			OS_MODULES[String(tile.module || "").toLowerCase()] || OS_MODULES[String(tile.label || "").toLowerCase()];
+		const text = `${tile.label || ""} ${tile.module || ""} ${tile.app || ""}`;
+		const kind = exact || OS_APP_KINDS.find((k) => k.re.test(text));
 		let h = 0;
-		const label = icon.label || "";
+		const label = tile.label || "";
 		for (let i = 0; i < label.length; i++) h = (h * 31 + label.charCodeAt(i)) >>> 0;
-		return { hue: OS_HUES[h % OS_HUES.length], sub: "", cat: null };
+		return {
+			hue: (kind && kind.hue) || OS_HUES[h % OS_HUES.length],
+			sub: (kind && kind.sub) || "",
+			cat: (exact && exact.cat) || OS_APP_CATEGORY[tile.app] || (kind && kind.cat) || null,
+		};
 	}
 
 	render_tabs(items) {
@@ -468,21 +670,25 @@ class OneSpaceLauncher {
 	}
 
 	render_apps() {
-		const base = this.parent_label ? this.children_of(this.parent_label) : this.top_level();
-		this.render_tabs(base);
 		const q = this.query;
-		const items = base.filter((icon) => {
-			const kind = this.kind_of(icon);
+		const folder = this.parent_key && this.tiles().find((t) => t.key === this.parent_key);
+		if (this.parent_key && !folder) this.parent_key = null;
+		// A search looks inside folders too: a module should be findable by name
+		// wherever it sits.
+		const base = folder ? folder.children : q ? this.all_tiles() : this.tiles();
+		this.render_tabs(base);
+		const items = base.filter((tile) => {
+			const kind = this.kind_of(tile);
 			if (this.tab !== "all" && kind.cat !== this.tab) return false;
 			if (!q) return true;
-			return `${__(icon.label || "")} ${kind.sub}`.toLowerCase().includes(q);
+			return `${__(tile.label || "")} ${kind.sub}`.toLowerCase().includes(q);
 		});
 
 		this.$apps.empty();
-		if (this.parent_label) {
-			$(`<button type="button" class="os-back">${os_icon("back")}<span>${this.esc(__(this.parent_label))}</span></button>`)
+		if (folder) {
+			$(`<button type="button" class="os-back">${os_icon("back")}<span>${this.esc(__(folder.label))}</span></button>`)
 				.on("click", () => {
-					this.parent_label = null;
+					this.parent_key = null;
 					this.render_apps();
 				})
 				.appendTo(this.$apps);
@@ -494,33 +700,31 @@ class OneSpaceLauncher {
 
 		const counts = this.data.module_counts || {};
 		const $grid = $('<div class="os-grid" role="list"></div>').appendTo(this.$apps);
-		items.forEach((icon) => {
-			const kind = this.kind_of(icon);
-			const kids = this.children_of(icon.label);
-			const is_folder = icon.icon_type === "Folder" || kids.length > 0;
-			const badge = cint(counts[icon.module] || counts[icon.label] || 0);
-			const sub = is_folder ? __("{0} apps", [kids.length]) : kind.sub;
-			const route = is_folder ? "#" : this.route_for(icon);
+		items.forEach((tile) => {
+			const kind = this.kind_of(tile);
+			const is_folder = Array.isArray(tile.children);
+			const badge = cint(counts[tile.module] || counts[tile.label] || 0);
+			const sub = is_folder ? __("{0} apps", [tile.children.length]) : kind.sub;
+			const route = is_folder ? "#" : tile.route || "#";
 			const external = /^https?:\/\//i.test(route) && !route.startsWith(window.location.origin);
+			const full_tile = !!(tile.icon_url || tile.generated);
 
 			const $tile = $(`
 				<a class="os-app" role="listitem" href="${this.esc(route)}"
 					${external ? 'target="_blank" rel="noopener noreferrer"' : ""}>
-					<span class="os-app-icon os-hue-${kind.hue}${this.has_logo(icon) ? " has-logo" : ""}${
-						cint(icon.onespace_icon) ? " is-tile" : ""
-					}">
-						${this.icon_html(icon)}
+					<span class="os-app-icon os-hue-${kind.hue}${full_tile ? " is-tile" : tile.logo ? " has-logo" : ""}">
+						${this.icon_html(tile)}
 						${badge ? `<span class="os-app-badge">${badge > 99 ? "99+" : badge}</span>` : ""}
 					</span>
-					<span class="os-app-label">${this.esc(__(icon.label || ""))}</span>
+					<span class="os-app-label">${this.esc(__(tile.label || ""))}</span>
 					${sub ? `<span class="os-app-sub">${this.esc(sub)}</span>` : ""}
 				</a>
 			`).appendTo($grid);
-			$tile.attr("title", __(icon.label || ""));
+			$tile.attr("title", __(tile.label || ""));
 			if (is_folder) {
 				$tile.on("click", (e) => {
 					e.preventDefault();
-					this.parent_label = icon.label;
+					this.parent_key = tile.key;
 					this.render_apps();
 					this.$apps[0].scrollIntoView({ block: "nearest", behavior: "smooth" });
 				});
@@ -528,51 +732,26 @@ class OneSpaceLauncher {
 		});
 	}
 
-	has_logo(icon) {
-		return !!(icon.icon_image || icon.logo_url);
+	icon_html(tile) {
+		const src = tile.icon_url || tile.logo;
+		if (src) return `<img src="${this.esc(src)}" alt="" loading="lazy">`;
+		if (tile.glyph && frappe.utils.icon) {
+			return frappe.utils.icon(tile.glyph, "lg", "", "", "", true);
+		}
+		return `<span class="os-app-letter">${this.esc(__(tile.label || "?").charAt(0).toUpperCase())}</span>`;
 	}
 
-	icon_html(icon) {
-		if (this.has_logo(icon)) {
-			return `<img src="${this.esc(icon.icon_image || icon.logo_url)}" alt="" loading="lazy">`;
-		}
-		if (icon.icon && frappe.utils.icon) {
-			return frappe.utils.icon(icon.icon, "lg", "", "", "", true);
-		}
-		return `<span class="os-app-letter">${this.esc((__(icon.label || "?")).charAt(0).toUpperCase())}</span>`;
-	}
-
-	/* Where a tile goes, resolved as Frappe's own apps screen resolves it. */
+	/* Desktop Icons mode: where an icon goes, resolved as Frappe's own grid does. */
 	route_for(icon) {
 		if (icon.link_type === "External" && icon.link) return icon.link;
-
 		const shell =
-			icon.link_type === "Workspace Sidebar" &&
 			frappe.utils.sidebar_for_module &&
 			frappe.utils.sidebar_for_module(icon.module || icon.onespace_label || icon.label);
 		const sidebar = frappe.app && frappe.app.sidebar;
 		const landing = shell && sidebar && sidebar.module_landing_route && sidebar.module_landing_route(shell.name);
 		if (landing) return landing;
-		const first_link = shell && frappe.utils.get_route_for_icon && frappe.utils.get_route_for_icon(icon);
+		const first_link = frappe.utils.get_route_for_icon && frappe.utils.get_route_for_icon(icon);
 		if (first_link) return first_link;
-
-		const items =
-			frappe.boot.workspace_sidebar_item &&
-			frappe.boot.workspace_sidebar_item[(icon.onespace_label || icon.label || "").toLowerCase()];
-		if (items) {
-			const first = (items.items || []).find((i) => i.type === "Link");
-			if (first && frappe.utils.generate_route) {
-				try {
-					return frappe.utils.generate_route({
-						type: first.link_type,
-						name: first.link_to,
-						route_options: { sidebar: icon.label },
-					});
-				} catch (e) {
-					/* fall through */
-				}
-			}
-		}
 		if (icon.link) return icon.link;
 		if (icon.link_to) return "/desk/" + frappe.router.slug(icon.link_to);
 		return "#";
@@ -586,7 +765,7 @@ class OneSpaceLauncher {
 			.then((data) => {
 				this.data = data || {};
 				this.loaded_at = Date.now();
-				this._icons = null; // re-merge against the saved layout
+				this._tiles = null; // re-merge against the saved layout
 				this.render_hero();
 				if (this.data.company) this.$root.find(".os-company").text(this.data.company);
 				this.render_apps();
